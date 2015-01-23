@@ -3,7 +3,7 @@
 *Updated January, 2015* <br>
 Below is a layer-by-layer breakdown of how I test my Python projects, starting with my Github repository and ending with the test files themselves.
 
-#### Layer 1: Travis-CI
+## Layer 1: Travis-CI
 www.Travis-CI.org
 
 To integrate your project with Travis, go to the Travis website and log in with your Github credentials. 
@@ -13,7 +13,7 @@ To integrate your project with Travis, go to the Travis website and log in with 
 
 Testing begins with Travis-CI, which hooks into your Github repository to automatically run tests on pull requests and current production branches. It provides a nice visual representation of when tests are failing and a decent overview of all the tests scheduled to run. Travis integration is run through a `.travis.yml` configuration file in the main project repository. Although Travis is itself a capable test runner, it is important to maintain the ability to run tests locally without having to submit a pull request to test. That's why we'll be using Tox as our test runner.
 
-#### Layer 2: Tox
+## Layer 2: Tox
 http://tox.readthedocs.org/en/latest/index.html
 
 ***To install*** <br>
@@ -43,7 +43,7 @@ What's pretty cool is that the way to fully test all permutations of dependencie
 So, you get unlimited "generated" environments, but only one main testing environment *testenv*. However, you can run different combinations of dependencies with that main *testenv*, which makes it very powerful.
 
  
-#### Layer 3: flake8
+## Layer 3: flake8
 http://flake8.readthedocs.org/en/2.2.3/
 
 Flake8 is a linter that we use to check for code style and small syntax errors. We run flake8 in its own testing environment through Tox.
@@ -53,13 +53,13 @@ Flake8 will be installed through the Tox testing environment, however we can run
 **Note:** If flake8 catches any syntax problems, Tox will throw an `InvocationError`. Once flake8 issues are resolved, that message will go away.
 
 
-#### Layer 4: coverage
+## Layer 4: coverage
 https://pypi.python.org/pypi/coverage
 
 The Coverage module records the test coverage as different tests are run. We run it through the wrapper function `coverage_wrapper.py` in the main `[testenv]` testing environment through Tox. The wrapper is used to ensure that file inheritance works out well. Make sure that each directory in the project (including the tests folder) has a `__init__.py` file in it. The wrapper runs tests through the `pytest` module.
 
 
-#### Layer 5: pytest
+## Layer 5: pytest
 https://pytest.org
 
 Pytest is invoked through `coverage_wrapper.py` and installed on the Tox testing environment. We can run it separately by installing `pip install pytest` and running `py.test` from the project directory. Pytest crawls through the current directory, finding and running any test scripts with the filename prefix of `test_`, such as `test_mypyogram.py`. It's a good idea to keep all tests in a testing directory. 
