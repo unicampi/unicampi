@@ -1,0 +1,11 @@
+# Default things to ignore
+env
+.tox
+htmlcov
+*.pyc
+*.egg-info
+*.coverage
+
+# Project-specific ignores
+flasher_config.ini
+*.csv
