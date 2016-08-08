@@ -1,0 +1,17 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+    <div class="row column text-center">
+        {% if disciplines %}
+        {% for discipline in disciplines %}
+            <a href="{{ discipline.url }}">
+            <div class="callout small">
+                {{discipline}}
+            </div>
+            </a>
+        {% endfor %}
+        {% else %}
+            <h2> This is a discipline page, but no discipline was found</h2>
+        {% endif %}
+    </div>
+{% endblock %}

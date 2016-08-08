@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="no-js" lang="pt-br">
+
+<head>
+	<meta charset="utf-8"/>
+	<title>Stalkeador Unicamp</title>
+
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'css/foundation.min.css' %}" type="text/css"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	{% block stylesheets %}
+	{% endblock %}
+</head>
+
+<body class="body">
+	<div class="top-bar">
+		<div class="top-bar-left">
+			<ul class="menu">
+				<li><a href="#">One</a></li>
+				<li><a href="#">Two</a></li>
+				<li><a href="#">Three</a></li>
+				<li><a href="#">Four</a></li>
+			</ul>
+		</div>
+		<div class="top-bar-right">
+			<ul class="menu">
+				<li><a href="#">Login</a></li>
+			</ul>
+		</div>
+	</div>
+
+
+	<div class="callout large primary">
+	    <div class="row column text-center">
+	        <h1>UNISTALKER ou GDA</h1>
+	        <h2 class="subheader">Vamos ver se o projeto vai para frente</h2>
+			<h6 class="subheader">Tem que fazer um design legal - nao essa bosta</h6>
+	    </div>
+	    <form action="/" method="get">
+	        <div class="row">
+	            <div class="medium-6 small-centered columns">
+	                <div class="input-group">
+	                    <input class="input-group-field text-center" type="text" name="search" placeholder="Nome, RA, Professor, Matéria...">
+	                    <div class="input-group-button">
+	                        <input type="submit" class="button" value="Buscar">
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </form>
+	</div>
+	<div class="row medium-8 large-7 columns">
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>
+
+</html>

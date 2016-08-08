@@ -1,0 +1,20 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+    <div class="row column text-center">
+        {% for discipline in disciplines %}
+            <a href="{{ discipline.url }}">
+                <div class="callout small">
+                    {{ discipline }}
+                </div>
+            </a>
+        {% endfor %}
+        {% for student in students %}
+            <a href="{{ student.url }}">
+                <div class="callout small">
+                    {{ student }}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
