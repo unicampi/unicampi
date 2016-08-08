@@ -22,7 +22,7 @@ pip3 install -r dependencies.txt
 ```
 
 ### static's
-Para o design html está sendo usada o framework (Foundation)[http://foundation.zurb.com/sites/docs/] . Isso pode ser alterado a qualquer momento
+Para o design html está sendo usada o framework [Foundation](http://foundation.zurb.com/sites/docs/) . Isso pode ser alterado a qualquer momento
 
 ## Rodando
 O projeto utiliza-se do framework django. Para rodar execute:
