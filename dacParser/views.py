@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from dacParser.dacParser import generateAllDisciplinesFrom
 from dacParser.models import Student, Discipline, Teacher
 
+
 def updateDisciplines(request):
     print("Parseando disciplinas")
     # Por enquanto esotu testanto somente com disciplinas do IC
