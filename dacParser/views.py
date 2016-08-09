@@ -1,14 +1,18 @@
 from django.http import HttpResponse
-from dacParser.dacParser import generateAllDisciplinesFrom
+from dacParser.tools.dacParser import generateAllDisciplinesFrom
 from dacParser.models import Student, Discipline, Teacher
 
 
-def updateDisciplines(request):
-    print("Parseando disciplinas")
+def updateDisciplines(request, institute):
     # Por enquanto esotu testanto somente com disciplinas do IC
     # Pode-se usar as outras funções do dacParser
-    disciplines = generateAllDisciplinesFrom('IC')
-    print("Terminou de Parsear disciplinas")
+    try:
+        print("Parseando disciplinas de "+institute)
+        disciplines = generateAllDisciplinesFrom(institute)
+        print("Terminou de Parsear disciplinas")
+    except:
+        print("Erro ao parsear disciplinas")
+
 
     for discipline in disciplines:
         # Creates Teacher Model
@@ -34,6 +38,7 @@ def updateDisciplines(request):
             StudentModel, created = Student.objects.get_or_create(
                 ra = studentInDis[0],
                 name = studentInDis[1],
+                course = studentInDis[2],
             )
             # Insere a disciplina no aluno
             StudentModel.disciplines.add(DisciplineModel)

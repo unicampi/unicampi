@@ -1,11 +1,14 @@
 from django.db import models
+import uuid                   # To generate tokens
 
 
 # We should discuss all the models
 # This object stores student
 class Student(models.Model):
-    ra = models.IntegerField()
+    ra = models.CharField(max_length=7)
     name = models.CharField(max_length=150)
+    course = models.IntegerField()
+    course_type = models.CharField(max_length=10)
     disciplines = models.ManyToManyField('Discipline')
 
     def __str__(self):
@@ -47,6 +50,12 @@ class Discipline(models.Model):
     def url(self):
         return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.classes
 
+    # This function returns tokens for each student in the discipline like :
+    # [(Student, token), (...),]
+    def generateTokens(self):
+        list = []
+        for student in students.all():
+            list.append((student,str(uuid.uuid4())))
     # This is to avoid having two or more equal students, they are the same if
     # the name and RA are the same
     class Meta:
@@ -60,3 +69,12 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# This is an object for a course
+# eache course has an year and each year has a curriculun
+class Course(models.Model):
+    name = models.CharField(max_length=150)
+    code = models.IntegerField()
+    year = models.CharField(max_length=10)
+    # Podemos colocar catalogos
