@@ -2,6 +2,9 @@
 
 {% block content %}
     <div class="row column text-center">
+        {% if disciplines %}
+        <h3> Disciplinas </h3>
+        {% endif %}
         {% for discipline in disciplines %}
             <a href="{{ discipline.url }}">
                 <div class="callout small">
@@ -9,6 +12,9 @@
                 </div>
             </a>
         {% endfor %}
+        {% if students %}
+        <h3> Alunos </h3>
+        {% endif %}
         {% for student in students %}
             <a href="{{ student.url }}">
                 <div class="callout small">
