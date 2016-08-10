@@ -43,3 +43,14 @@ O projeto deve seguir as "normas" [PEP8](http://pep8.org/) utilizando o package 
 Não use o autopep8 no projeto
 
 ## Todo's
+Para a versão 0.5:
+[ ] Fazer o BD que tem resposta e pergunta
+[ ] Gerar a view com forms
+[ ] Mandar email
+[ ] Gerar Tokens e lidar com a página
+[ ] Refazer o modelo de disciplina usando Classe e Disciplina
+
+Para versão 0.6 (codenome GDE++)
+[ ] Pegar modalidade dos alunos
+[ ] Pegar Curriculo de cursos
+[ ] Pegar o cardapio
