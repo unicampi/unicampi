@@ -19,6 +19,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include('dacParser.urls')),
+    url(r'^vote/', include('gda.urls')),
     url(r'^', include('stalkeador.urls')),
 ]
 #
