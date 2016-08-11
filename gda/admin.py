@@ -1,4 +1,4 @@
 from django.contrib import admin
-from gda.models import Tokens
+from gda.models import Token
 
-admin.site.register(Tokens)
+admin.site.register(Token)
