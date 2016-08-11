@@ -1,49 +1,68 @@
 from django.http import HttpResponse
-from dacParser.tools.dacParser import generateAllDisciplinesFrom
-from dacParser.models import Student, Discipline, Teacher
+from dacParser.tools.dacParser import generateAllCoursesFrom
+from dacParser.tools.dacParserHelper import *
+from dacParser.models import Student, Class, Course, Teacher
 
 
 def updateDisciplines(request, institute):
-    # Por enquanto esotu testanto somente com disciplinas do IC
-    # Pode-se usar as outras funções do dacParser
+    # First parses all the classes in this semester
     try:
-        print("Parseando disciplinas de "+institute)
-        disciplines = generateAllDisciplinesFrom(institute)
+        print("Parseando disciplinas de "+institute.upper())
+        courses = generateAllCoursesFrom(institute.upper())
         print("Terminou de Parsear disciplinas")
     except:
         print("Erro ao parsear disciplinas")
 
-
-    for discipline in disciplines:
-        # Creates Teacher Model
-        TeacherModel, created = Teacher.objects.get_or_create(
-            name = discipline.teacher
+    # If everything is alright, we hava an array of Courses
+    for course in courses:
+        # Creats Course Model
+        CouseModel, created = Course.objects.all().get_or_create(
+            code = course.code,
+            name = course.name,
+            type = course.type,
         )
+        print(course)
 
-        # Creates discipline Model
-        DisciplineModel, created = Discipline.objects.get_or_create(
-            name = discipline.name,
-            code = discipline.code,
-            year = discipline.year,
-            teacher = TeacherModel,
-            classes = discipline.classes,
-            semester = discipline.semester,
-            vacancies = discipline.vacancies,
-            registered = discipline.registered,
-        )
-        # Now we're going to create a Student model and add it to discipline
-        # as we are going to add the discipline to the student
-        studentsInDiscipline = discipline.students
-        for studentInDis in studentsInDiscipline:
-            StudentModel, created = Student.objects.get_or_create(
-                ra = studentInDis[0],
-                name = studentInDis[1],
-                course = studentInDis[2],
+        # Runs the array of classes in course
+        for clas in course.classes:
+            # Creates Teacher Model
+            if clas.teacher:
+                print('1')
+                TeacherModel, created = Teacher.objects.get_or_create(
+                    name = clas.teacher
+                )
+            else:
+                print('2')
+                TeacherModel, created = Teacher.objects.get_or_create(
+                    name = 'Sem Professor'
+                )
+
+            print(clas)
+            print(course.code)
+            # Creates discipline Model
+            ClasseModel, created = Class.objects.get_or_create(
+                code = course.code,
+                class_id = clas.class_id,
+                year = clas.year,
+                semester = clas.semester,
+                teacher = TeacherModel,
+                vacancies = clas.vacancies,
+                registered = clas.registered,
             )
-            # Insere a disciplina no aluno
-            StudentModel.disciplines.add(DisciplineModel)
-            # Insere o estudante na Disciplina
-            DisciplineModel.students.add(StudentModel)
+            # Now we're going to create a Student model and add it to discipline
+            # as we are going to add the discipline to the student
+            studentsInClass = clas.students
+            for student in studentsInClass:
+                StudentModel, created = Student.objects.get_or_create(
+                    ra = student.ra,
+                    name = student.name,
+                    school = student.school,
+                    course_type = student.course_type,
+                )
+                # Insere a disciplina no aluno
+                StudentModel.disciplines.add(ClasseModel)
+                # Insere o estudante na Disciplina
+                ClasseModel.students.add(StudentModel)
     print("Terminamos de gerar informações")
 
     return HttpResponse("Everything must be ok")

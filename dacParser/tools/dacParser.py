@@ -15,33 +15,6 @@ import sys                      # To generate
 from dacParser.tools.dacParserHelper import *
 
 
-# url and patterns for getting all the disciplines from unicamp
-dacws = "http://www.dac.unicamp.br/"
-URL_ALL_INSTITUTES = dacws + 'sistemas/horarios/grad/G2S0/indiceP.htm'
-INSTITUTES_CODES_PATTERN = '<font size=-1>([A-Z]*)\s*?<\/font>'
-INSTITUTES_NAMES_PATTERN = 'htm\s*?\">(.+?)\s*?<\/a>'
-
-URL_DISCIPLINES = dacws + 'sistemas/horarios/grad/G2S0/%s.htm'
-URL_DISCIPLINE = dacws + 'sistemas/horarios/grad/G2S0/%s.htm'
-DISCIPLINE_NAME_PATTERN = '[A-Za-z][A-Za-z ][0-9]{3}(?= )'
-CLASSES_NAME_PATTERN = '([A-Z])\s+\n'
-
-# urls for listing all the stundents in a discipline
-DACURL = 'http://www.daconline.unicamp.br/altmatr/menupublico.do'
-URLSUBJECT = 'http://www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do?org.apache.struts.taglib.html.TOKEN=%s&cboSubG=%s&cboSubP=0&cboAno=%s&txtDisciplina=%s&txtTurma=%s&btnAcao=Continuar'
-URLTXT = 'http://www.daconline.unicamp.br/altmatr/fileDownloadPublico.do'
-
-# These are Patterns to extract information from
-# www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do
-PROFESSOR_PATTERN = 'Docente:</span>&nbsp;&nbsp;(?P<professor>.+)</td>'
-DISCIPLINE_PATTERN = 'Disciplina:</span>&nbsp;&nbsp;(?P<disciplina>[A-Za-z][A-Za-z ][0-9]{3}) (?P<turma>[A-Za-z0-9]) &nbsp;&nbsp; -&nbsp;&nbsp; (?P<materia>.+)</td>'
-VACANCIES_PATTERN = '&nbsp;(\d+) vagas&nbsp;&nbsp;-&nbsp;&nbsp;(\d+) matriculados&nbsp;&nbsp;'
-RA_PATTERN = '<td height="18" bgcolor="white" align="center" class="corpo" width="80">([0-9]+)</td>'
-NAME_PATTERN = '<td height="18" bgcolor="white" width="270" align="left" class="corpo">&nbsp;&nbsp;&nbsp;&nbsp;(.+)</td>'
-COURSE_PATTERN = '<td height="18" bgcolor="white" width="60" align="center" class="corpo">(\d{1,})</td>'
-C_TYPE_PATTERN = '<td height="18" bgcolor="white" width="140" align="center" class="corpo">([A-Za-z][A-Za-z ])<\/td>'
-
-
 # This function returns a list containing all the institutes and it's name
 # [('CEL', '	Centro de Ensino de Línguas'),...,...]
 def getAllInstitutes():
@@ -64,8 +37,10 @@ def getAllInstitutes():
     return allInstitutes
 
 
-# This function returns the information about an especific subject class
-def getDiscipline(discipline, classes, year, semester):
+# This function returns the information about an especific discipline class ins
+# ide a class object
+# This returns a tuple, (course, discipline)
+def getClass(discipline, classes, year, semester):
     # Getting a token to check dac page
     # For that, we must keep a session open because expiration
     session = requests.Session()
@@ -79,6 +54,31 @@ def getDiscipline(discipline, classes, year, semester):
     page = session.get(URLSUBJECT % (token, semester, year, discipline,
                                      classes))
 
+    # Gets discipline code, classes, and name
+    course_parse = re.findall(DISCIPLINE_PATTERN, page.text)
+
+    if not course_parse:
+        sys.stderr.write("getDiscipline: Turma %s inválida.\n" % (discipline +
+                         classes))
+    else:
+        # Gets the discipline list = [subject_code, classes, subject_name']
+        course_parse = course_parse[0]
+        subject_code = course_parse[0]
+        class_id = course_parse[1]
+        subject_name = ' '.join(course_parse[2].split())
+        # Creates the object Course
+        course = CourseP(subject_name, subject_code, "U")
+
+    # Gets registered/vacancies
+    discipline_parse = re.findall(VACANCIES_PATTERN, page.text)
+    if not discipline_parse:
+        sys.stderr.write("getDiscipline: Turma %s 0 vagas.\n" % (discipline +
+                         classes))
+    else:
+        discipline_parse = discipline_parse[0]
+        vacancies = discipline_parse[0]
+        registered = discipline_parse[1]
+
     # Gets teacher's name removing any escess white space
     teacher = re.findall(PROFESSOR_PATTERN, page.text)
     if not teacher:
@@ -87,52 +87,28 @@ def getDiscipline(discipline, classes, year, semester):
     else:
         teacher = ' '.join(teacher[0].split())
 
-    # Gets discipline code, classes, and name
-    discipline_obj = re.findall(DISCIPLINE_PATTERN, page.text)
-    if not discipline_obj:
-        sys.stderr.write("getDiscipline: Turma %s inválida.\n" % (discipline +
-                         classes))
-    else:
-        # Gets the discipline list = [subject_code, classes, subject_name']
-        discipline_obj = discipline_obj[0]
-        subject_code = discipline_obj[0]
-        classes = discipline_obj[1]
-        subject_name = ' '.join(discipline_obj[2].split())
-
-    # Gets registered/vacancies
-    discipline_obj = re.findall(VACANCIES_PATTERN, page.text)
-    if not discipline_obj:
-        sys.stderr.write("getDiscipline: Turma %s 0 vagas.\n" % (discipline +
-                         classes))
-    else:
-        discipline_obj = discipline_obj[0]
-        vacancies = discipline_obj[0]
-        registered = discipline_obj[1]
-
     # Gets all the RA and names and join then together, creating a list of
-    # tuples [(RA,NAME),...,]
+    # objects students
     names = re.findall(NAME_PATTERN, page.text)
     ra_list = re.findall(RA_PATTERN, page.text)
-    course = re.findall(COURSE_PATTERN, page.text)
-
-    print(subject_code+classes)
+    school = re.findall(SCHOOL_PATTERN, page.text)
 
     students = []
     for i in range(len(ra_list)):
-        students.append((ra_list[i], names[i].strip(), course[i]))
+        student = StudentP(ra_list[i], names[i], school[i])
+        students.append(student)
 
-    # Creates subject object
-    subject = Discipline(subject_name, subject_code, classes, year, semester,
-                         teacher, vacancies, registered, students)
+    # Creates the discipline and add it to the course
+    discipline = ClassP(course, class_id, year, semester, teacher, vacancies, registered, students)
 
-    return subject
+    return course, discipline
 
 
 # This function should look on dac webpage and get all the subjects that are
 # being offered from institute passade as argument in this semester with it
 # classes as:
 # [( MC458 , (A,B,C,D) ), (MC040 , (A) ), ... ]
-def getAllDisciplines(institute):
+def getAllCourses(institute):
     # Start a webbrowsin session
     session = requests.Session()
 
@@ -150,19 +126,26 @@ def getAllDisciplines(institute):
     return offered_disciplines
 
 
-# This function gets all the information about all the subjects from institute
-# and return it as an array of Subjects
-def generateAllDisciplinesFrom(institute):
+# This function gets all the information about all the courses from institute
+# and return it as an array of course
+def generateAllCoursesFrom(institute):
     subjects = []
     # Get all the offered disciplines
-    offered_disciplines = getAllDisciplines(institute)
+    offered_disciplines = getAllCourses(institute)
 
     # get each of the disciplines offered
     for offered_discipline in offered_disciplines:
+
         # get each of the classes offered
-        for classes in offered_discipline[1]:
-            subject = getDiscipline(offered_discipline[0], classes, 2016, 2)
-            subjects.append(subject)
+        classes = []
+        for classe in offered_discipline[1]:
+            course, dis = getClass(offered_discipline[0], classe, 2016, 2)
+            classes.append(dis)
+        course.classes = classes
+        print(course)
+        subjects.append(course)
+
+
     return subjects
 
 
@@ -181,8 +164,5 @@ def generateAllDisciplinesUnicamp():
 
 
 def tests():
-    discipline = getDiscipline('MC458', 'A', '2016', '2')
+    discipline = getClass('MC458', 'A', '2016', '2')
     print(discipline)
-    mailList = discipline.generateAcademicEmail
-    for mail in mailList:
-        print(mail)

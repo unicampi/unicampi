@@ -1,33 +1,90 @@
-# This is the object thar stores subjects
-class Discipline(object):
+# Henrique Noronha Facioli
+# Using python3
+# These are the urls and regex for pasring dac
+
+
+# url and patterns for getting all the disciplines from unicamp
+dacws = "http://www.dac.unicamp.br/"
+URL_ALL_INSTITUTES = dacws + 'sistemas/horarios/grad/G2S0/indiceP.htm'
+INSTITUTES_CODES_PATTERN = '<font size=-1>([A-Z]*)\s*?<\/font>'
+INSTITUTES_NAMES_PATTERN = 'htm\s*?\">(.+?)\s*?<\/a>'
+
+URL_DISCIPLINES = dacws + 'sistemas/horarios/grad/G2S0/%s.htm'
+URL_DISCIPLINE = dacws + 'sistemas/horarios/grad/G2S0/%s.htm'
+DISCIPLINE_NAME_PATTERN = '[A-Za-z][A-Za-z ][0-9]{3}(?= )'
+CLASSES_NAME_PATTERN = '([A-Z])\s+\n'
+
+# urls for listing all the stundents in a discipline
+DACURL = 'http://www.daconline.unicamp.br/altmatr/menupublico.do'
+URLSUBJECT = 'http://www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do?org.apache.struts.taglib.html.TOKEN=%s&cboSubG=%s&cboSubP=0&cboAno=%s&txtDisciplina=%s&txtTurma=%s&btnAcao=Continuar'
+URLTXT = 'http://www.daconline.unicamp.br/altmatr/fileDownloadPublico.do'
+
+# These are Patterns to extract information from
+# www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do
+PROFESSOR_PATTERN = 'Docente:</span>&nbsp;&nbsp;(?P<professor>.+)</td>'
+DISCIPLINE_PATTERN = 'Disciplina:</span>&nbsp;&nbsp;(?P<disciplina>[A-Za-z][A-Za-z ][0-9]{3}) (?P<turma>[A-Za-z0-9]) &nbsp;&nbsp; -&nbsp;&nbsp; (?P<materia>.+)</td>'
+TYPE_DISCIPLINE_PA = '<tr height="18">											<td bgcolor="#f2f2f2" class="corpo" height="18">&nbsp;&nbsp; <span class="itemtabela">N&iacute;vel:<\/span>&nbsp;&nbsp;(\w+)<\/td>										<\/tr>'
+VACANCIES_PATTERN = '&nbsp;(\d+) vagas&nbsp;&nbsp;-&nbsp;&nbsp;(\d+) matriculados&nbsp;&nbsp;'
+STUDENT_PATTERN = ''
+
+RA_PATTERN = '<td height="18" bgcolor="white" align="center" class="corpo" width="80">([0-9]+)</td>'
+NAME_PATTERN = '<td height="18" bgcolor="white" width="270" align="left" class="corpo">&nbsp;&nbsp;&nbsp;&nbsp;(.+)</td>'
+SCHOOL_PATTERN = '<td height="18" bgcolor="white" width="60" align="center" class="corpo">(\d{1,})</td>'
+C_TYPE_PATTERN = '<td height="18" bgcolor="white" width="140" align="center" class="corpo">([A-Za-z][A-Za-z ])<\/td>'
+
+
+# This is the object thar stores a subjcect information
+class CourseP(object):
     name = ""
     code = ""
-    year = ""
-    semester = ""
-    classes = ""
-    teacher = ""
-    vacancies = 0
-    registered = 0
-    students = object
+    type = ""   # undergrad or grad
+    classes = object    # an array of Class
 
-    def __init__(self, name, code, classes, year, semester, teacher, vacancies,
-                 registered, students):
+    def __init__(self, name, code, type):
         self.name = name
         self.code = code
-        self.classes = classes
-        self.year = year
-        self.semester = semester
-        self.teacher = teacher
-        self.vacancies = vacancies
-        self.registered = registered
-        self.students = students
+        self.type = type
 
     # TO help on debug and kind of pretty
     def __str__(self):
         beautiprint = '''
         Name        : %s
         Code        : %s
-        Classes     : %s
+        Type        : %s
+        # Classes   : %s
+        '''
+        return (beautiprint %
+                (self.name, self.code, self.type,str(len(self.classes))))
+
+    def __eq__(self, other):
+        return self.code == other.code
+
+
+class ClassP(object):
+    course = object
+    class_id = ""
+    semester = ""
+    year = ""
+    teacher = ""
+    vacancies = 0
+    registered = 0
+    students = object
+
+
+    def __init__(self, course, class_id, year, semester, teacher, vacancies,
+                 registered, students):
+        self.course = course
+        self.year = year
+        self.semester = semester
+        self.class_id = class_id
+        self.teacher = teacher
+        self.vacancies = vacancies
+        self.registered = registered
+        self.students = students
+
+    def __str__(self):
+        beautiprint = '''
+        Class ID    : %s
         Year        : %s
         Semester    : %s
         Teacher     : %s
@@ -35,30 +92,20 @@ class Discipline(object):
         Students    : %s
         '''
         return (beautiprint %
-                (self.name, self.code, self.classes, self.year, self.semester,
-                 self.teacher, self.registered, self.vacancies,
-                 self.students))
+                (self.class_id, self.year, self.semester, self.teacher,
+                 self.registered, self.vacancies, self.students))
 
-    # Return True if the student is in this discipline
-    def searchStudentName(self, studentName):
-        for student in self.students:
-            if(studentName == student[1]):
-                return True
-        return False
 
-    # Return True if the student is in this discipline
-    def searchStudentRA(self, studentRA):
-        for student in self.students:
-            if(studentName == student[0]):
-                return True
-        return False
+class StudentP(object):
+    ra = ""
+    name = ""
+    school = ""
+    course_type = ""
 
-    # Generate a list tha contains all the dac mail from the students
-    def generateAcademicEmail(self):
-        mailList = []
-        for student in self.students:
-            firstLetter = student[1][0].lower()
-            ra = str(student[0])
-            mail = '@dac.unicamp.br'
-            mailList.append(firstLetter+ra+mail)
-        return mailList
+    def __init__(self, ra, name, school):
+        self.ra = ra
+        self.name = name
+        self.school = school
+
+    def __str__(self):
+        return self.ra - self.name

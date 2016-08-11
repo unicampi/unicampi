@@ -3,13 +3,16 @@ import uuid                   # To generate tokens
 
 
 # We should discuss all the models
-# This object stores student
+
 class Student(models.Model):
+    """
+    Modelo de um aluno da unicamp
+    """
     ra = models.CharField(max_length=7)
     name = models.CharField(max_length=150)
-    course = models.IntegerField()
-    course_type = models.CharField(max_length=10)
-    disciplines = models.ManyToManyField('Discipline')
+    school = models.IntegerField()
+    course_type = models.CharField(max_length=4)
+    disciplines = models.ManyToManyField('Class')
 
     def __str__(self):
         return (str(self.ra) + ' - ' + self.name)
@@ -25,47 +28,106 @@ class Student(models.Model):
         return (firstLetter + ra + mail)
 
     # This is to avoid having two or more equal students, they are the same if
-    # the name and RA are the same
+    # the name RA and School is the same
     class Meta:
-        unique_together = ["name", "ra"]
+        unique_together = ["name", "ra", "school"]
 
 
-# This is the object thar stores subjects
-class Discipline(models.Model):
-    name = models.CharField(max_length=150)
-    code = models.CharField(max_length=150)
-    year = models.CharField(max_length=5)
-    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
-    classes = models.CharField(max_length=150)
-    students = models.ManyToManyField(Student)
-    semester = models.CharField(max_length=2)
-    vacancies = models.IntegerField()
-    registered = models.IntegerField()
+class Course(models.Model):
+    """
+    Detalhes sobre uma disciplina. Cada disciplina possui um questionário
+    associado.
+    """
 
-    # To help on debug and kind of pretty
+    COURSE_TYPE = [
+        ('U', 'Undergraduate'),
+        ('G', 'Graduate'),
+    ]
+    code = models.CharField(max_length=6, primary_key=True)
+    name = models.CharField(max_length=128)
+    type = models.CharField(max_length=1, choices=COURSE_TYPE)
+    classes = models.ManyToManyField('Class')
+    descryption = models.CharField(max_length=1024)
+
+    class Meta:
+        unique_together = ('code', 'name', 'type')
+
     def __str__(self):
-        return (self.code + ' ' + self.classes + ' - ' + self.name)
+        return self.code + ' - ' + self.name
 
     # This method returns a string containing the path to the object
     def url(self):
-        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.classes
+        return '/d/'+self.code
 
-    # This function returns tokens for each student in the discipline like :
-    # [(Student, token), (...),]
-    def generateTokens(self):
-        list = []
-        for student in students.all():
-            list.append((student,str(uuid.uuid4())))
-    # This is to avoid having two or more equal students, they are the same if
-    # the name and RA are the same
+
+class Class(models.Model):
+    """
+    Detalhes sobre cada turma de uma disciplina, as respostas aos questionários
+    ficam associadas à turma.
+    """
+
+    code = models.CharField(max_length=6)   #duplicated but im logically inbcpb
+    class_id = models.CharField(max_length=2)
+    semester = models.CharField(max_length=2)
+    year = models.CharField(max_length=5)
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    vacancies = models.IntegerField()
+    registered = models.IntegerField()
+    students = models.ManyToManyField(Student)
+
     class Meta:
-        unique_together = ["name", "code", "classes", "year", "semester",
-                            "teacher"]
+        unique_together = (("code","class_id", "year", "semester"),)
+
+    def __str__(self):
+        return self.code+'-'+self.class_id+' '+self.semester+'s'+self.year
+
+    # This method returns a string containing the path to the object
+    def url(self):
+        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.class_id
+
+
+
+# This is the object thar stores subjects
+#class Discipline(models.Model):
+#    name = models.CharField(max_length=150)
+#    code = models.CharField(max_length=150)
+#    year = models.CharField(max_length=5)
+#    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+#    classes = models.CharField(max_length=150)
+#    students = models.ManyToManyField(Student)
+#    semester = models.CharField(max_length=2)
+#    vacancies = models.IntegerField()
+#    registered = models.IntegerField()
+#
+#    # To help on debug and kind of pretty
+#    def __str__(self):
+#        return (self.code + ' ' + self.classes + ' - ' + self.name)
+#
+#    # This method returns a string containing the path to the object
+#    def url(self):
+#        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.classes
+#
+#    # This function returns tokens for each student in the discipline like :
+#    # [(Student, token), (...),]
+#    def generateTokens(self):
+#        list = []
+#        for student in students.all():
+#            list.append((student,str(uuid.uuid4())))
+#    # This is to avoid having two or more equal students, they are the same if
+#    # the name and RA are the same
+#    class Meta:
+#        unique_together = ["name", "code", "classes", "year", "semester",
+#                            "teacher"]
 
 
 # This object stores the teacher
 class Teacher(models.Model):
+    """
+    Modelo de um professor
+
+    """
     name = models.CharField(max_length=150)
+    mail = models.CharField(max_length=150)
 
     def __str__(self):
         return self.name
@@ -73,8 +135,8 @@ class Teacher(models.Model):
 
 # This is an object for a course
 # eache course has an year and each year has a curriculun
-class Course(models.Model):
-    name = models.CharField(max_length=150)
-    code = models.IntegerField()
-    year = models.CharField(max_length=10)
-    # Podemos colocar catalogos
+#class Course(models.Model):
+#    name = models.CharField(max_length=150)
+#    code = models.IntegerField()
+#    year = models.CharField(max_length=10)
+#    # Podemos colocar catalogos
