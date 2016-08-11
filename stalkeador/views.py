@@ -49,6 +49,10 @@ def student(request, studentRA):
 # returns a list containing all the disciplines with the code
 def discipline(request, code, year, semester, classes):
     try:
+        # Always will be about a course:
+        course = Course.objects.all().get(
+            code = code.upper()
+        )
         if classes:
             discipline = Class.objects.all().get(
                 code = code.upper(),
@@ -56,10 +60,13 @@ def discipline(request, code, year, semester, classes):
                 semester = semester,
                 class_id = classes
             )
+            out = {
+                'course': course,
+                'discipline': discipline,
+            }
             # How its the most especif query, it renders the page of the
             # discipline
-            return render(request, 'stalkeador/discipline.html',
-                            {'discipline': discipline})
+            return render(request, 'stalkeador/discipline.html', out)
         elif semester:
             disciplines = Class.objects.all().filter(
                 code = code.upper(),
@@ -77,7 +84,8 @@ def discipline(request, code, year, semester, classes):
             )
 
         out = {
-            'disciplines': disciplines
+            'course': course,
+            'disciplines': disciplines,
         }
         return render(request, 'stalkeador/disciplines.html', out)
     except:
