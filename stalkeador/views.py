@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q
-from dacParser.models import Student, Discipline
+from dacParser.models import Student, Class, Course, Teacher
 
 
 # This is the index page (homepage).
@@ -19,8 +19,8 @@ def index(request):
 
                 query = (Q(code__contains=str(s_id)) |
                             Q(name__contains=str(s_id)))
+                disciplines = Course.objects.all().filter(query)
 
-                disciplines = Discipline.objects.all().filter(query)
                 results = {
                     'students': students,
                     'disciplines': disciplines
@@ -50,29 +50,29 @@ def student(request, studentRA):
 def discipline(request, code, year, semester, classes):
     try:
         if classes:
-            discipline = Discipline.objects.all().get(
+            discipline = Class.objects.all().get(
                 code = code.upper(),
                 year = year,
                 semester = semester,
-                classes = classes
+                class_id = classes
             )
             # How its the most especif query, it renders the page of the
             # discipline
             return render(request, 'stalkeador/discipline.html',
                             {'discipline': discipline})
         elif semester:
-            disciplines = Discipline.objects.all().filter(
+            disciplines = Class.objects.all().filter(
                 code = code.upper(),
                 year = year,
                 semester = semester,
             )
         elif classes:
-            disciplines = Discipline.objects.all().filter(
+            disciplines = Class.objects.all().filter(
                 code = code.upper(),
                 year = year,
             )
         else:
-            disciplines = Discipline.objects.all().filter(
+            disciplines = Class.objects.all().filter(
                 code = code.upper(),
             )
 
