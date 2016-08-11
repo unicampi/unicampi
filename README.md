@@ -35,7 +35,9 @@ python3 manage.py runserver
 ```
 
 Para criar um usuário administrador execute `python3 manage.py createsuperuser`.
-Para fazer o download das informações do site da dac, a path é /update/disciplines
+
+Por enquanto, para fazer o download das informações do site da dac, a path é /update/disciplines/$INSTITUTO
+onde $INSTUTO é o código do instituto (IC, FEEC, FEQ, ...)
 
 
 ## PEP8
@@ -48,7 +50,7 @@ Para a versão 0.5:
 - [ ] Gerar a view com forms
 - [ ] Mandar email
 - [ ] Gerar Tokens e lidar com a página
-- [ ] Refazer o modelo de disciplina usando Classe e Disciplina
+- [X] Refazer o modelo de disciplina usando Classe e Disciplina
 
 Para versão 0.6 (codenome GDE++)
 - [ ] Pegar modalidade dos alunos
