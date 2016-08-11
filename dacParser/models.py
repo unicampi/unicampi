@@ -1,5 +1,6 @@
 from django.db import models
 import uuid                   # To generate tokens
+from unidecode import unidecode
 
 
 # We should discuss all the models
@@ -23,6 +24,7 @@ class Student(models.Model):
 
     def AcademicEmail(self):
         firstLetter = self.name[0].lower()
+        firstLetter = unidecode(firstLetter)
         ra = str(self.ra)
         mail = '@dac.unicamp.br'
         return (firstLetter + ra + mail)
