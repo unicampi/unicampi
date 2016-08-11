@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     # URL for student
     url(
-        r'^s/(?P<studentRA>\d{6})$',
+        r'^s/(?P<studentRA>\d{5,6})$',
         views.student,
         name='student'
     ),
