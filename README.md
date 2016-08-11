@@ -50,7 +50,7 @@ Para a versão 0.5
 - [ ] Fazer o BD que tem resposta e pergunta
 - [ ] Gerar a view com forms
 - [ ] Mandar email
-- [ ] Gerar Tokens e lidar com a página
+- [X] Gerar Tokens e lidar com a página
 - [X] Refazer o modelo de disciplina usando Classe e Disciplina
 
 Para versão 0.6
