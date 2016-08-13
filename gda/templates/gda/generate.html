@@ -1,0 +1,18 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+<div class="row column text-left">
+    {% if students %}
+    <h4> Tokens gerados para os seguintes alunos</h4>
+    {% for student in students %}
+        <a href="{{ discipline.url }}">
+            <div class="callout small">
+                {{ student }}
+            </div>
+        </a>
+    {% endfor %}
+    {% else %}
+    <h4> Não gerou tokens </h4>
+    {% endif %}
+</div>
+{% endblock %}
