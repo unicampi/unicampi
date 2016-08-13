@@ -80,9 +80,9 @@ def sendMail(request, code, year, semester, classes):
                 FROM_EMAIL,
                 [token.student.AcademicEmail()]
             )
-            print('Enviando email')
-            print(email)
-            email.send()
+
+            # Uncomment the line bellow to send emails
+            #email.send()
     except:
         raise Http404("Erro ao enviar emails")
 
