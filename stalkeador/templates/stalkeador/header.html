@@ -23,9 +23,16 @@
 			</ul>
 		</div>
 		<div class="top-bar-right">
+			{% if user.is_authenticated %}
+			<ul class="menu">
+				<li><a href="/admin">{{user}}</a></li>
+				<li><a href="/admin/logout">Logout</a></li>
+			</ul>
+			{% else %}
 			<ul class="menu">
 				<li><a href="/admin">Login</a></li>
 			</ul>
+			{% endif %}
 		</div>
 	</div>
 
