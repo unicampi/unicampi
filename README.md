@@ -49,7 +49,7 @@ Não use o autopep8 no projeto
 Para a versão 0.5
 - [ ] Fazer o BD que tem resposta e pergunta
 - [ ] Gerar a view com forms
-- [ ] Mandar email
+- [X] Mandar email
 - [X] Gerar Tokens e lidar com a página
 - [X] Refazer o modelo de disciplina usando Classe e Disciplina
 
