@@ -12,18 +12,32 @@ def index(request):
         if(s_id):
             try:
                 # To search for everything, i'm using Q objetc
-                # [ https://docs.djangoproject.com/en/1.10/ref/models/querysets/ ]
-                # First, looking for students:
-                query = Q(name__contains=str(s_id)) | Q(ra=s_id)
-                students = Student.objects.all().filter(query).order_by('ra')
+                # https://docs.djangoproject.com/en/1.10/ref/models/querysets/
+                # Search for students:
+                final_query = Q()
+                words = s_id.split()
+                for word in words:
+                    query = (Q(name__contains=str(word)) |
+                             Q(ra__contains=word))
+                    final_query = query & final_query
+                students = Student.objects.all().filter(final_query).order_by('ra')
 
-                query = (Q(code__contains=str(s_id)) |
-                            Q(name__contains=str(s_id)))
-                disciplines = Course.objects.all().filter(query)
-
+                # Searchs classes
+                final_query = Q()
+                words = s_id.split()
+                for word in words:
+                    query = (Q(code__contains=str(s_id)) |
+                             Q(name__contains=str(s_id)))
+                    final_query = query & final_query
+                disciplines = Course.objects.all().filter(final_query).order_by('code')
+                
+                # Searches Teacher
+                query = Q(name__contains=str(s_id))
+                teachers = Teacher.objects.all().filter(query).order_by('name')
                 results = {
                     'students': students,
-                    'disciplines': disciplines
+                    'disciplines': disciplines,
+                    'teachers': teachers,
                     }
 
                 return render(request, 'stalkeador/home-searcher.html', results)
