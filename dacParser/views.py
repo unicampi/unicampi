@@ -1,9 +1,49 @@
-from django.http import HttpResponse
-from dacParser.tools.dacParser import generateAllCoursesFrom
+from django.shortcuts import render
+from django.http import HttpResponse, Http404
+from django.contrib.auth.decorators import login_required
+
+from dacParser.tools.dacParser import generateAllCoursesFrom, getAllInstitutes
 from dacParser.tools.dacParserHelper import *
-from dacParser.models import Student, Class, Course, Teacher
+from dacParser.models import Student, Class, Course, Teacher, Institute
+
+@login_required
+def updatePage(request):
+    try:
+        allInstitutes = Institute.objects.all().order_by('code')
+    except:
+        raise Http404("Erro ao parsear institutos")
+
+    results = {
+        'institutes': allInstitutes
+    }
+
+    return render(request, 'dacParser/update.html', results)
 
 
+def updateInstitutes(request):
+    try:
+        institutes = getAllInstitutes()
+    except:
+        raise Http404("Erro ao parsear institutos")
+
+    allInstitutes = []
+    for institute in institutes:
+        try:
+            inst, created = Institute.objects.all().get_or_create(
+                code = institute[0],
+                name = institute[1],
+            )
+            allInstitutes.append(inst)
+        except:
+            raise Http404("Erro ao criar institutos")
+
+    results = {
+        'institutes': allInstitutes
+    }
+    return render(request, 'dacParser/update.html', results)
+
+
+@login_required
 def updateDisciplines(request, institute):
     # First parses all the classes in this semester
     try:
@@ -27,17 +67,13 @@ def updateDisciplines(request, institute):
         for clas in course.classes:
             # Creates Teacher Model
             if clas.teacher:
-                print('1')
                 TeacherModel, created = Teacher.objects.get_or_create(
                     name = clas.teacher
                 )
             else:
-                print('2')
                 TeacherModel, created = Teacher.objects.get_or_create(
                     name = 'Sem Professor'
                 )
-
-            print(clas)
             print(course.code)
             # Creates discipline Model
             ClasseModel, created = Class.objects.get_or_create(
@@ -49,8 +85,8 @@ def updateDisciplines(request, institute):
                 vacancies = clas.vacancies,
                 registered = clas.registered,
             )
-            # Now we're going to create a Student model and add it to discipline
-            # as we are going to add the discipline to the student
+            # Now were going to create a Student model and add it to discipline
+            # as we add the discipline to the student
             studentsInClass = clas.students
             for student in studentsInClass:
                 StudentModel, created = Student.objects.get_or_create(

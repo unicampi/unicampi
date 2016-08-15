@@ -1,9 +1,9 @@
 {% extends "stalkeador/header.html" %}
 
 {% block content %}
-    <div class="row column text-center">
+    <div class="row column">
         {% if disciplines %}
-        <h3> Disciplinas </h3>
+        <h3 class="text-center"> Disciplinas </h3>
         {% endif %}
         {% for discipline in disciplines %}
             <a href="{{ discipline.url }}">
@@ -13,7 +13,7 @@
             </a>
         {% endfor %}
         {% if students %}
-        <h3> Alunos </h3>
+        <h3 class="text-center"> Alunos </h3>
         {% endif %}
         {% for student in students %}
             <a href="{{ student.url }}">

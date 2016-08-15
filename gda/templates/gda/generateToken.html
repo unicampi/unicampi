@@ -1,0 +1,21 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+<div class="row column text-left">
+    <div class='row column text-center'>
+        <a href="{{discipline.url}}"><button class="button">Voltar</button></a>
+    </div>
+    {% if students %}
+        <h4 class='text-center'> Tokens gerados para {{ students|length }} de {{ discipline.registered }} </h4>
+        {% for student in students %}
+            <a href="{{ student.url }}">
+                <div class="callout small success">
+                    {{ student }}
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <h4> Não gerou tokens </h4>
+    {% endif %}
+</div>
+{% endblock %}
