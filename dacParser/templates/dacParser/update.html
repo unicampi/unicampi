@@ -1,0 +1,16 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+    <a href="institutes">
+        <div class="callout small">
+            Atualizar institutos da Unicamp
+        </div>
+    </a>
+    {% for institute in institutes %}
+        <a href="disciplines/{{ institute.code }}">
+            <div class="callout small">
+                {{ institute }}
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}

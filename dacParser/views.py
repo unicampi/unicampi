@@ -1,8 +1,46 @@
-from django.http import HttpResponse
+from django.shortcuts import render
+from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
-from dacParser.tools.dacParser import generateAllCoursesFrom
+
+from dacParser.tools.dacParser import generateAllCoursesFrom, getAllInstitutes
 from dacParser.tools.dacParserHelper import *
-from dacParser.models import Student, Class, Course, Teacher
+from dacParser.models import Student, Class, Course, Teacher, Institute
+
+@login_required
+def updatePage(request):
+    try:
+        allInstitutes = Institute.objects.all().order_by('code')
+    except:
+        raise Http404("Erro ao parsear institutos")
+
+    results = {
+        'institutes': allInstitutes
+    }
+
+    return render(request, 'dacParser/update.html', results)
+
+
+def updateInstitutes(request):
+    try:
+        institutes = getAllInstitutes()
+    except:
+        raise Http404("Erro ao parsear institutos")
+
+    allInstitutes = []
+    for institute in institutes:
+        try:
+            inst, created = Institute.objects.all().get_or_create(
+                code = institute[0],
+                name = institute[1],
+            )
+            allInstitutes.append(inst)
+        except:
+            raise Http404("Erro ao criar institutos")
+
+    results = {
+        'institutes': allInstitutes
+    }
+    return render(request, 'dacParser/update.html', results)
 
 
 @login_required

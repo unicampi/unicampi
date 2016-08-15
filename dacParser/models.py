@@ -8,8 +8,10 @@ from unidecode import unidecode
 class Student(models.Model):
     """
     Modelo de um aluno da unicamp
+    school é o número do curso da unicamp
+    course_type é p tipo do curso - nao se aplica a todos
     """
-    ra = models.CharField(max_length=7)
+    ra = models.CharField(max_length=7, unique=True)
     name = models.CharField(max_length=150)
     school = models.IntegerField()
     course_type = models.CharField(max_length=4)
@@ -88,40 +90,6 @@ class Class(models.Model):
         return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.class_id
 
 
-
-# This is the object thar stores subjects
-#class Discipline(models.Model):
-#    name = models.CharField(max_length=150)
-#    code = models.CharField(max_length=150)
-#    year = models.CharField(max_length=5)
-#    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
-#    classes = models.CharField(max_length=150)
-#    students = models.ManyToManyField(Student)
-#    semester = models.CharField(max_length=2)
-#    vacancies = models.IntegerField()
-#    registered = models.IntegerField()
-#
-#    # To help on debug and kind of pretty
-#    def __str__(self):
-#        return (self.code + ' ' + self.classes + ' - ' + self.name)
-#
-#    # This method returns a string containing the path to the object
-#    def url(self):
-#        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.classes
-#
-#    # This function returns tokens for each student in the discipline like :
-#    # [(Student, token), (...),]
-#    def generateTokens(self):
-#        list = []
-#        for student in students.all():
-#            list.append((student,str(uuid.uuid4())))
-#    # This is to avoid having two or more equal students, they are the same if
-#    # the name and RA are the same
-#    class Meta:
-#        unique_together = ["name", "code", "classes", "year", "semester",
-#                            "teacher"]
-
-
 # This object stores the teacher
 class Teacher(models.Model):
     """
@@ -142,3 +110,14 @@ class Teacher(models.Model):
 #    code = models.IntegerField()
 #    year = models.CharField(max_length=10)
 #    # Podemos colocar catalogos
+
+
+class Institute(models.Model):
+    """
+    Modelo de um instituto da unicamp
+    """
+    name = models.CharField(max_length=150)
+    code = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.code + ' - ' + self.name
