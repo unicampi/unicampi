@@ -1,9 +1,11 @@
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from dacParser.tools.dacParser import generateAllCoursesFrom
 from dacParser.tools.dacParserHelper import *
 from dacParser.models import Student, Class, Course, Teacher
 
 
+@login_required
 def updateDisciplines(request, institute):
     # First parses all the classes in this semester
     try:
@@ -27,17 +29,13 @@ def updateDisciplines(request, institute):
         for clas in course.classes:
             # Creates Teacher Model
             if clas.teacher:
-                print('1')
                 TeacherModel, created = Teacher.objects.get_or_create(
                     name = clas.teacher
                 )
             else:
-                print('2')
                 TeacherModel, created = Teacher.objects.get_or_create(
                     name = 'Sem Professor'
                 )
-
-            print(clas)
             print(course.code)
             # Creates discipline Model
             ClasseModel, created = Class.objects.get_or_create(
@@ -49,8 +47,8 @@ def updateDisciplines(request, institute):
                 vacancies = clas.vacancies,
                 registered = clas.registered,
             )
-            # Now we're going to create a Student model and add it to discipline
-            # as we are going to add the discipline to the student
+            # Now were going to create a Student model and add it to discipline
+            # as we add the discipline to the student
             studentsInClass = clas.students
             for student in studentsInClass:
                 StudentModel, created = Student.objects.get_or_create(
