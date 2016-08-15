@@ -3,6 +3,7 @@ from django.http import Http404
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 
+from gda.tools.tokenGenerator import generateToken
 from dacParser.models import Class, Student
 from gda.models import Token
 
@@ -11,6 +12,7 @@ FROM_EMAIL = 'GDA TESTER <gdatester@gmail.com>'
 
 
 # Generates tokens for all the students from a discipline
+# /manage/d/MM000/YYYY/S/C/generate
 @login_required
 def generateTokens(request, code, year, semester, classes):
     try:
@@ -28,7 +30,9 @@ def generateTokens(request, code, year, semester, classes):
     try:
         students_ok = []
         for student in discipline.students.all():
+            tkn_str = generateToken(student.name+discipline.code)
             token, created = Token.objects.all().get_or_create(
+                token = tkn_str,
                 student = student,
                 discipline = discipline
             )
@@ -44,6 +48,7 @@ def generateTokens(request, code, year, semester, classes):
 
 
 # Send email for all the students in a class
+# /manage/d/MM000/YYYY/S/C/send
 @login_required
 def sendMail(request, code, year, semester, classes):
     try:
@@ -61,7 +66,6 @@ def sendMail(request, code, year, semester, classes):
         tokens = Token.objects.all().filter(
             discipline = discipline
         )
-        print(tokens.all())
     except:
         raise Http404("Não encontrou a materia desejada")
 
@@ -71,7 +75,7 @@ def sendMail(request, code, year, semester, classes):
             header = '[GDA][%s] Avaliação da matéria %s' % (discipline.code,
                                                             discipline)
             link = URL + 'vote' + str(discipline.url()) + '/' + str(token.token)
-            message = 'Olá, essa é uma mensagem automatica para envio do link de votação do GDA. \nO link para sua votação é: %s\n\n O link é a unica maneira de votar, então guarde secretamente o seu link <3' % link
+            message = 'Olá, essa é uma mensagem automatica para envio do link de votação do GDA. \nO link para sua votação é: %s\nO link é a unica maneira de votar, então guarde secretamente o seu link <3\n\n' % link
 
             # New email
             email = EmailMessage(
@@ -81,6 +85,10 @@ def sendMail(request, code, year, semester, classes):
                 [token.student.AcademicEmail()]
             )
 
+            # I wrote these prints just to show whas going on
+            print('TO: ' + str(token.student))
+            print(header)
+            print(message)
             # Uncomment the line bellow to send emails
             #email.send()
     except:
@@ -91,7 +99,8 @@ def sendMail(request, code, year, semester, classes):
     return render(request, 'gda/generate.html')
 
 
-# This is the function to create the view from the token
+# This is the function to create the view from the token page
+# /vote/d/MM000/YYYY/S/C/TOKEN
 def dealToken(request, code, year, semester, classes, token):
     try:
         # First we dicover wich is the discipline
@@ -101,18 +110,20 @@ def dealToken(request, code, year, semester, classes, token):
             semester = semester,
             class_id = classes
         )
+        print(discipline)
         # Search for token
-        token = Token.objects.all().get(
+        token_obj = Token.objects.all().get(
             discipline = discipline,
             token = token,
         )
 
-        print(token)
-
-        out = {
-            'discipline': discipline,
-            'token': token,
-        }
-        return render(request, 'gda/vote.html', out)
+        if token_obj:
+            out = {
+                'discipline': discipline,
+                'token': token_obj,
+            }
+            return render(request, 'gda/vote.html', out)
+        else:
+            return render(request, 'gda/vote.html')
     except:
-        return render(request, 'gda/vote.html')
+        raise Http404("Erro ao procurar tokens")
