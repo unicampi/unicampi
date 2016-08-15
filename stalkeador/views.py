@@ -15,7 +15,7 @@ def index(request):
                 # [ https://docs.djangoproject.com/en/1.10/ref/models/querysets/ ]
                 # First, looking for students:
                 query = Q(name__contains=str(s_id)) | Q(ra=s_id)
-                students = Student.objects.all().filter(query)
+                students = Student.objects.all().filter(query).order_by('ra')
 
                 query = (Q(code__contains=str(s_id)) |
                             Q(name__contains=str(s_id)))
