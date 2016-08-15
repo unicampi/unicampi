@@ -37,8 +37,8 @@ python3 manage.py runserver
 
 Para criar um usuário administrador execute `python3 manage.py createsuperuser`.
 
-Por enquanto, para fazer o download das informações do site da dac, a path é /update/disciplines/$INSTITUTO
-onde $INSTUTO é o código do instituto (IC, FEEC, FEQ, ...)
+Por enquanto, para fazer o download das informações do site da dac, a path é /update/$INSTITUTO
+onde $INSTITUTO é o código do instituto (IC, FEEC, FEQ, ...)
 
 
 ## PEP8
