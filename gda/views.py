@@ -39,18 +39,23 @@ def generateTokens(request, code, year, semester, classes):
             students_ok.append(token.student)
 
         out = {
-            'students': students_ok
+            'discipline': discipline,
+            'students': students_ok,
         }
     except:
         raise Http404("Não foi possivel gerar token")
 
-    return render(request, 'gda/generate.html', out)
+    return render(request, 'gda/generateToken.html', out)
 
 
 # Send email for all the students in a class
 # /manage/d/MM000/YYYY/S/C/send
 @login_required
 def sendMail(request, code, year, semester, classes):
+    try:
+        generateTokens(request, code, year, semester, classes)
+    except:
+        raise Http404("Não foi possivel gerar token")
     try:
         # First, gets class
         discipline = Class.objects.all().get(
@@ -94,9 +99,11 @@ def sendMail(request, code, year, semester, classes):
     except:
         raise Http404("Erro ao enviar emails")
 
+    out = {
+        'discipline': discipline,
+    }
 
-
-    return render(request, 'gda/generate.html')
+    return render(request, 'gda/sendEmail.html', out)
 
 
 # This is the function to create the view from the token page
