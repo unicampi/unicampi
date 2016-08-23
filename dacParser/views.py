@@ -93,7 +93,7 @@ def updateDisciplines(request, institute):
                     ra = student.ra,
                     name = student.name,
                     school = student.school,
-                    course_type = student.course_type,
+                    course_type = student.course_modality,
                 )
                 # Insere a disciplina no aluno
                 StudentModel.disciplines.add(ClasseModel)

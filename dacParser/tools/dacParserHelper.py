@@ -32,6 +32,10 @@ NAME_PATTERN = '<td height="18" bgcolor="white" width="270" align="left" class="
 SCHOOL_PATTERN = '<td height="18" bgcolor="white" width="60" align="center" class="corpo">(\d{1,})</td>'
 C_TYPE_PATTERN = '<td height="18" bgcolor="white" width="140" align="center" class="corpo">([A-Za-z][A-Za-z ])<\/td>'
 
+STUDENT_PATTERN = '<td height="18" bgcolor="white" align="center" class="corpo" width="30">36</td>\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" align="center" class="corpo" width="80">(?P<ra>[0-9]+)</td>\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" width="270" align="left" class="corpo">&nbsp;&nbsp;&nbsp;&nbsp;(?P<nome>.+)</td>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t   <td height="18" bgcolor="white" width="60" align="center" class="corpo">(?P<school>\d{1,})</td>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" width="60" align="center" class="corpo">G</td>\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" width="140" align="center" class="corpo">(?P<coursetype>[A-Za-z][A-Za-z ])</td>\n\t\t\t\t\t\t\t\t</tr>'
+
+STUDENT_TYPE = ('<td height="18" bgcolor="white" width="60" align="center" class="corpo">(.+)<\/td>\n'+
+        '									<td height="18" bgcolor="white" width="140" align="center" class="corpo">(.+)?<\/td>')
 
 # This is the object thar stores a subjcect information
 class CourseP(object):
@@ -40,10 +44,11 @@ class CourseP(object):
     type = ""   # undergrad or grad
     classes = object    # an array of Class
 
-    def __init__(self, name, code, type):
+    def __init__(self, name, code, type, classes):
         self.name = name
         self.code = code
         self.type = type
+        self.classes = classes
 
     # TO help on debug and kind of pretty
     def __str__(self):
@@ -89,23 +94,26 @@ class ClassP(object):
         Semester    : %s
         Teacher     : %s
         Regis/Vacan : %s/%s
-        Students    : %s
         '''
         return (beautiprint %
                 (self.class_id, self.year, self.semester, self.teacher,
-                 self.registered, self.vacancies, self.students))
+                 self.registered, self.vacancies))
 
 
 class StudentP(object):
     ra = ""
     name = ""
     school = ""
-    course_type = ""
+    type = ""
+    course_modality = ""
 
-    def __init__(self, ra, name, school):
+    def __init__(self, ra, name, school, type, course_modality):
         self.ra = ra
         self.name = name
         self.school = school
+        self.type = type
+        self.course_modality = course_modality
 
     def __str__(self):
-        return self.ra - self.name
+        return (self.ra + ' ' + self.name + ' - ' + self.school + ' ' +
+                self.course_modality)
