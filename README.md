@@ -21,6 +21,13 @@ Para desativar o ambiente, basta executar o comando `deactivate`, carregado ao s
 pip3 install -r dependencies.txt
 ```
 
+Criei um script para subir a virtualenv e instalar dependências. Basta rodar:
+```
+chmod +x virtualenv_up.sh (necessário rodar só a primeira vez)
+./virtualenv_up.sh
+```
+
+
 ### static's
 Para o design html está sendo usada o framework [Foundation](http://foundation.zurb.com/sites/docs/) . Isso pode ser alterado a qualquer momento
 
