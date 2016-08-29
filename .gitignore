@@ -4,4 +4,6 @@ env
 # For now, i don't thing we should commit our migrations and bd
 db.sqlite3
 **migrations/*.py
-!**migrations/__init__.py
+
+# Trying to make it accept only the __init__.py, didnt work
+#!**migrations/__init__.py
