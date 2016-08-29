@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #testa se a virtual env esta instalada e decide condicionalmente se é necessário instalá-la ou não
-virtualenv --version
+virtualenv --version >> /dev/null
 
 #caso não exista, instala
 if (( $? )); then
