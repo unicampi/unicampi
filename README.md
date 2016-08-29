@@ -35,15 +35,23 @@ python3 manage.py migrate
 python3 manage.py runserver
 ```
 
+Subi um simples script pra rodar todos esses comando. Para rodá-lo basta rodar:
+
+```
+chmod +x run_script.sh (somente necessário uma vez)
+./run_script
+```
+
 Para criar um usuário administrador execute `python3 manage.py createsuperuser`.
 
 Por enquanto, para fazer o download das informações do site da dac, a path é /update/$INSTITUTO
 onde $INSTITUTO é o código do instituto (IC, FEEC, FEQ, ...)
-
+    
 
 ## PEP8
 O projeto deve seguir as "normas" [PEP8](http://pep8.org/) utilizando o package pep8. Instale com `pip install pep8` e veja se o arquivo está nas normas usando `pep8 nome_do_arquivo.py`
 Não use o autopep8 no projeto
+
 
 ## Todo's
 Para a versão 0.5
