@@ -20,6 +20,7 @@ def updatePage(request):
     return render(request, 'dacParser/update.html', results)
 
 
+@login_required
 def updateInstitutes(request):
     try:
         institutes = getAllInstitutes()
