@@ -12,6 +12,16 @@
                 </div>
             </a>
         {% endfor %}
+        {% if teachers %}
+            <h3 class="text-center"> Professores </h3>
+        {% endif %}
+        {% for teacher in teachers %}
+            <a href="{{ teacher.url }}">
+                <div class="callout small">
+                    {{ teacher }}
+                </div>
+            </a>
+        {% endfor %}
         {% if students %}
         <h3 class="text-center"> Alunos </h3>
         {% endif %}
