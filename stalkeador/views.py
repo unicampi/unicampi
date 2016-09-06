@@ -20,10 +20,15 @@ def index(request):
                 query = (Q(code__contains=str(s_id)) |
                             Q(name__contains=str(s_id)))
                 disciplines = Course.objects.all().filter(query)
+                
+                #searching for teachers
+                query = Q(name__contains=str(s_id))
+                teachers = Teacher.objects.all().filter(query)
 
                 results = {
                     'students': students,
-                    'disciplines': disciplines
+                    'disciplines': disciplines,
+                    'teachers': teachers 
                     }
 
                 return render(request, 'stalkeador/home-searcher.html', results)
