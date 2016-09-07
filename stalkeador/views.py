@@ -49,6 +49,20 @@ def student(request, studentRA):
     except:
         return render(request, 'stalkeador/student.html')
 
+#view for requests on /t/teacherID
+#needs to be improved with some kind of id
+def teacher(request, teacherID): 
+    try:         
+        teacher = Teacher.objects.get(name=teacherID)
+
+        output = {
+                'teacher': teacher
+        }
+
+        return render(request, 'stalkeador/teacher.html', output)
+    except:
+        return render(request, 'stalkeador/teacher.html')
+
 
 # This is for a Discipline page (/s/CODE)
 # returns a list containing all the disciplines with the code
