@@ -1,0 +1,30 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+    {% if teacher%}
+        <div class='row column'>
+            <h3 class="text-center"> {{ teacher.name }} </h3>
+            <table>
+                <caption>Informações do Professor</caption>
+                <thead>
+                    <tr>
+                        <th width="150"></th>
+                        <th width="150"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                           Nome 
+                        </td>
+                        <td>
+                            {{ teacher.name}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <h2> This is a teacher page but no teacher was found </h2>
+    {% endif %}
+{% endblock %}

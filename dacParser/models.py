@@ -102,6 +102,9 @@ class Teacher(models.Model):
     def __str__(self):
         return self.name
 
+    def url(self):
+        return('/t/' + str(self.name))
+
 
 # This is an object for a course
 # eache course has an year and each year has a curriculun
