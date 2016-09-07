@@ -8,6 +8,11 @@ urlpatterns = [
         views.student,
         name='student'
     ),
+    #url for teachers, need to be improved
+    url(r'^t/(?P<teacherID>.*)',
+        views.teacher,
+        name='teacher'
+    ),
     # URL for degrees of discipline
     url(
         # This is a confusing regex it's working but anyhelp would be good
