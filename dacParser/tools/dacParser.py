@@ -67,7 +67,7 @@ def getClass(discipline, classes, year, semester):
         class_id = course_parse[1]
         subject_name = ' '.join(course_parse[2].split())
         # Creates the object Course
-        course = CourseP(subject_name, subject_code, "U")
+        course = CourseP(subject_name, subject_code, "U", [])
 
     # Gets registered/vacancies
     discipline_parse = re.findall(VACANCIES_PATTERN, page.text)
@@ -92,14 +92,18 @@ def getClass(discipline, classes, year, semester):
     names = re.findall(NAME_PATTERN, page.text)
     ra_list = re.findall(RA_PATTERN, page.text)
     school = re.findall(SCHOOL_PATTERN, page.text)
+    type_modality = re.findall(STUDENT_TYPE, page.text)
 
     students = []
     for i in range(len(ra_list)):
-        student = StudentP(ra_list[i], names[i], school[i])
+        student = StudentP(ra_list[i], names[i], school[i], type_modality[i][0]
+                           , type_modality[i][1])
         students.append(student)
 
     # Creates the discipline and add it to the course
-    discipline = ClassP(course, class_id, year, semester, teacher, vacancies, registered, students)
+    discipline = ClassP(course, class_id, year, semester, teacher, vacancies,
+                        registered, students)
+    course.classes.append(discipline)
 
     return course, discipline
 
@@ -145,7 +149,6 @@ def generateAllCoursesFrom(institute):
         print(course)
         subjects.append(course)
 
-
     return subjects
 
 
@@ -164,5 +167,8 @@ def generateAllDisciplinesUnicamp():
 
 
 def tests():
-    discipline = getClass('MC458', 'A', '2016', '2')
+    course, discipline = getClass('MC458', 'A', '2016', '2')
+    print(course)
     print(discipline)
+    for student in discipline.students:
+        print(student)
