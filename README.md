@@ -72,6 +72,7 @@ funcao(sem espaco)                                                             |
 ## Todo's
 Para a versão 0.5
 - [ ] Remodelar os modelos e reestrutuar o código seguindo o padrão em docs
+- [ ] Retirar alunos que sairam do oferecimento do db
 - [ ] Elaborar um modelo para o questionário [perguntas e respostas]
 - [ ] Gerar a view com forms
 - [ ] Elaborar as questões de avaliação dos docentes
