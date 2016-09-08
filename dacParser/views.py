@@ -1,3 +1,5 @@
+import html
+
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
@@ -20,6 +22,7 @@ def updatePage(request):
     return render(request, 'dacParser/update.html', results)
 
 
+@login_required
 def updateInstitutes(request):
     try:
         institutes = getAllInstitutes()
@@ -48,7 +51,7 @@ def updateDisciplines(request, institute):
     # First parses all the classes in this semester
     try:
         print("Parseando disciplinas de "+institute.upper())
-        courses = generateAllCoursesFrom(institute.upper())
+        courses = generateAllCoursesFrom(institute.upper(), 2016, 2)
         print("Terminou de Parsear disciplinas")
     except:
         print("Erro ao parsear disciplinas")
@@ -74,7 +77,6 @@ def updateDisciplines(request, institute):
                 TeacherModel, created = Teacher.objects.get_or_create(
                     name = 'Sem Professor'
                 )
-            print(course.code)
             # Creates discipline Model
             ClasseModel, created = Class.objects.get_or_create(
                 code = course.code,
@@ -91,7 +93,7 @@ def updateDisciplines(request, institute):
             for student in studentsInClass:
                 StudentModel, created = Student.objects.get_or_create(
                     ra = student.ra,
-                    name = student.name,
+                    name = html.unescape(student.name),
                     school = student.school,
                     course_type = student.course_modality,
                 )

@@ -11,7 +11,6 @@ def index(request):
         s_id = request.GET.get('search')
         if(s_id):
             try:
-                # To search for everything, i'm using Q objetc
                 # https://docs.djangoproject.com/en/1.10/ref/models/querysets/
                 # Search for students:
                 final_query = Q()
@@ -37,7 +36,7 @@ def index(request):
                 results = {
                     'students': students,
                     'disciplines': disciplines,
-                    'teachers': teachers,
+                    'teachers': teachers 
                     }
 
                 return render(request, 'stalkeador/home-searcher.html', results)
@@ -57,6 +56,20 @@ def student(request, studentRA):
         return render(request, 'stalkeador/student.html', output)
     except:
         return render(request, 'stalkeador/student.html')
+
+#view for requests on /t/teacherID
+#needs to be improved with some kind of id
+def teacher(request, teacherID): 
+    try:         
+        teacher = Teacher.objects.get(name=teacherID)
+
+        output = {
+                'teacher': teacher
+        }
+
+        return render(request, 'stalkeador/teacher.html', output)
+    except:
+        return render(request, 'stalkeador/teacher.html')
 
 
 # This is for a Discipline page (/s/CODE)
