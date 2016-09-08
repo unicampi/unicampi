@@ -3,6 +3,8 @@ echo -e "#####################################"
 echo -e "# Running only run_script will only #"
 echo -e "# install dependencie and runserver #"
 echo -e "# --------------------------------- #"
+echo -e "# If this is the first time running #"
+echo -e "#     ./run_script.sh first         #"
 echo -e "# To run with a clean migration:    #"
 echo -e "#     ./run_script.sh clean         #"
 echo -e "# To run with a clean db :          #"
@@ -48,11 +50,18 @@ if [[ "$@" == "clean" ]]; then
   python3 manage.py makemigrations gda
   python3 manage.py makemigrations
   python3 manage.py migrate
+elif [[ "$@" == "first" ]]; then
+  echo -e 'This is the first time\n will make migrations and create user'
+  python3 manage.py makemigrations dacParser
+  python3 manage.py makemigrations gda
+  python3 manage.py makemigrations
+  python3 manage.py migrate
+  python3 manage.py createsuperuser
 elif [[ "$@" == "totalclean" ]]; then
   echo 'totalclean'
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
-  rm -rf db.sqlite3s
+  rm -rf db.sqlite3
   python3 manage.py makemigrations dacParser
   python3 manage.py makemigrations gda
   python3 manage.py makemigrations
