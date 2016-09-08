@@ -12,6 +12,7 @@
 import requests                 # To handle http requests - install using pip
 import re                       # Regex
 import sys                      # To generate
+from bs4 import BeautifulSoup
 from dacParser.tools.dacParserHelper import *
 
 
@@ -89,18 +90,24 @@ def getClass(discipline, classes, year, semester):
 
     # Gets all the RA and names and join then together, creating a list of
     # objects students
-    names = re.findall(NAME_PATTERN, page.text)
-    ra_list = re.findall(RA_PATTERN, page.text)
-    school = re.findall(SCHOOL_PATTERN, page.text)
-    type_modality = re.findall(STUDENT_TYPE, page.text)
+    soup = BeautifulSoup(page.text, 'lxml')
 
     students = []
-    for i in range(len(ra_list)):
-        student = StudentP(ra_list[i], names[i], school[i], type_modality[i][0]
-                           , type_modality[i][1])
-        students.append(student)
+    print(registered+discipline+classes)
 
-    # Creates the discipline and add it to the course
+    if int(registered) != 0:
+        # Get the 8th table on the page as it contains the students
+        table = soup.find_all('table')[8]
+            # Runs all the trs (lines on the table)
+        for trs in table.find_all('tr')[2:]:
+            tds = trs.find_all('td')
+            student = StudentP(tds[1].text, tds[2].text, tds[3].text, tds[4].text, tds[5].text)
+
+            students.append(student)
+    else:
+        print('Sem alunos')
+
+
     discipline = ClassP(course, class_id, year, semester, teacher, vacancies,
                         registered, students)
     course.classes.append(discipline)
@@ -117,22 +124,23 @@ def getAllCourses(institute):
     session = requests.Session()
 
     # Get the page with all the subjects
-    page = session.get(URL_DISCIPLINES % institute)
+    page = session.get(URL_SUBJECTS % institute)
     disciplines_in_page = re.findall(DISCIPLINE_NAME_PATTERN, page.text)
 
     offered_disciplines = []
     # Now we go in each subject page and get every classes
     for offered_discipline in disciplines_in_page:
         page = session.get(URL_DISCIPLINE % offered_discipline)
+
         offered_classes = re.findall(CLASSES_NAME_PATTERN, page.text)
-        offered_disciplines.append((offered_discipline, offered_classes))
+        offered_disciplines.append((offered_discipline, offered_classes, ement))
 
     return offered_disciplines
 
 
 # This function gets all the information about all the courses from institute
 # and return it as an array of course
-def generateAllCoursesFrom(institute):
+def generateAllCoursesFrom(institute, year, sem):
     subjects = []
     # Get all the offered disciplines
     offered_disciplines = getAllCourses(institute)
@@ -143,7 +151,7 @@ def generateAllCoursesFrom(institute):
         # get each of the classes offered
         classes = []
         for classe in offered_discipline[1]:
-            course, dis = getClass(offered_discipline[0], classe, 2016, 2)
+            course, dis = getClass(offered_discipline[0], classe, year, sem)
             classes.append(dis)
         course.classes = classes
         print(course)
@@ -167,7 +175,7 @@ def generateAllDisciplinesUnicamp():
 
 
 def tests():
-    course, discipline = getClass('MC458', 'A', '2016', '2')
+    course, discipline = getClass('MC001', 'A', '2016', '2')
     print(course)
     print(discipline)
     for student in discipline.students:
