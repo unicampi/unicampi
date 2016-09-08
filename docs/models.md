@@ -28,6 +28,7 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 | ofering_id  | String        | Determinada turma do modelo. Ex: A |
 | semester    | String        | Semestre do oferecimento           |
 | year        | String        | Ano do oferecimento                |
+| time        | ??            | Colocar o horário e dia da seman   |
 | teacher     | Teacher [n:1] | Semestre do oferecimento           |
 | vacancies   | int           | Capacidade de uma turma            |
 | registered  | int           | Número de alunos matriculados      |
@@ -44,7 +45,7 @@ O modelo que armazena informações sobre um estudante
 | ----------- | ------------- | ----------------------- |
 |***ra***     | ***String***  | ***RA de um aluno***    |
 | name        | String        | Nome                    |
-| course      | int           | Curso de graduação [pós]|
+| course      | String        | Curso de graduação [pós]|
 | course_type | String        | Modalidade do Curso     |
 | oferings    | Ofering [n:n] | Oferecimentos cursados pelo aluno|
 
