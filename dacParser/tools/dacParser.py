@@ -93,7 +93,7 @@ def getClass(discipline, classes, year, semester):
     soup = BeautifulSoup(page.text, 'lxml')
 
     students = []
-    print(registered+discipline+classes)
+    print(discipline+classes)
 
     if int(registered) != 0:
         # Get the 8th table on the page as it contains the students
@@ -133,7 +133,7 @@ def getAllCourses(institute):
         page = session.get(URL_DISCIPLINE % offered_discipline)
 
         offered_classes = re.findall(CLASSES_NAME_PATTERN, page.text)
-        offered_disciplines.append((offered_discipline, offered_classes, ement))
+        offered_disciplines.append((offered_discipline, offered_classes))
 
     return offered_disciplines
 
