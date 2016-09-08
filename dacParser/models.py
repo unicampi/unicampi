@@ -13,7 +13,7 @@ class Student(models.Model):
     """
     ra = models.CharField(max_length=7, unique=True)
     name = models.CharField(max_length=150)
-    school = models.IntegerField()
+    school = models.CharField(max_length=15)
     course_type = models.CharField(max_length=4)
     disciplines = models.ManyToManyField('Class')
 
