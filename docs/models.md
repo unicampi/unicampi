@@ -10,8 +10,8 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 ### Atributos
 | nome atributo | tipo         | descrição                       |
 | ------------- | ------------ | ------------------------------  |
-| code          | String       | Código da disciplina. Ex: MC102 |
-| type  	    | String       | Graducação: **U** Pós: **G**    |
+| ***code***    | ***String*** | ***Código da disciplina. Ex: MC102*** |
+| type  	| String       | Graducação: **U** Pós: **G**    |
 | offering      | Ofering [1:n]| Oferecimentos da disciplina     |
 | descryption   | String       | Ementa da matéria               |
 
@@ -68,7 +68,7 @@ O modelo que armazena informações sobre um estudante
 ### Atributos
 |nome atributo| tipo          | descrição           |
 | ----------- | ------------- | ------------------- |
-|    name     | String        | Nome od professor   |
+|   ***name***| ***String***  | ***Nome do professor***   |
 
 
 ## **Token**
