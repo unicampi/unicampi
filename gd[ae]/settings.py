@@ -11,16 +11,18 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from json import load # To import configuration from json
+
+configuration = load(open('config.json'))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*bt)8wt%q#_^!aomfg0ywof*&ry93v4(f29n6b2px(=a53$kq0'
+SECRET_KEY = configuration['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -125,8 +127,13 @@ STATIC_URL = '/static/'
 
 # This is email configuration
 # https://docs.djangoproject.com/en/1.10/ref/settings/#email-backend
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'gdatester@gmail.com'
-EMAIL_HOST_PASSWORD = 'oitudobem?'
+def str_to_bool(s):
+    if s == 'True':
+         return True
+    return False
+
+EMAIL_HOST = configuration['SECRET_KEY']
+EMAIL_PORT = int(configuration['EMAIL_PORT'])
+EMAIL_USE_TLS = str_to_bool(configuration['EMAIL_USE_TLS'])
+EMAIL_HOST_USER = configuration['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = configuration['EMAIL_HOST_PASSWORD']
