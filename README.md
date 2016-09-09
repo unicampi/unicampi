@@ -37,11 +37,26 @@ python3 manage.py runserver
 
 Para criar um usuário administrador execute `python3 manage.py createsuperuser`.
 
+### config.json
+Algumas configurações são ocultadas do código e ficam no arquivo config.json no diretório raiz do repositorio.
+Ele deve seguir o seguinte padrão:
+```
+{
+    "SECRET_KEY": "uma_senha_muito_secreta",
+    "EMAIL_HOST": "smtp.gmail.com",
+    "EMAIL_PORT": "587",
+    "EMAIL_USE_TLS": "True",
+    "EMAIL_HOST_USER": "seuemail@gmail.com",
+    "EMAIL_HOST_PASSWORD": "suasenha"
+}
+```
+o passo de criar o arquivo e configurá-lo pode ser facilitado utilizando o script
+
 ### Script
 Um simples script pra rodar o django foi inserido no proejto. Para executá-lo torne-o em um executável com o comando `chmod +x run_script.sh` e o execute com:
 
 ```
-./run_script
+./run_script.sh
 ```
 
 ### Banco de dados
