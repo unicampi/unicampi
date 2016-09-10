@@ -3,3 +3,4 @@ env
 # For now, i don't thing we should commit our migrations and bd
 db.sqlite3
 **migrations
+config.json

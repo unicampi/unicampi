@@ -1,14 +1,16 @@
 #!/bin/bash
 echo -e "#####################################"
 echo -e "# Running only run_script will only #"
-echo -e "# install dependencie and runserver #"
+echo -e "# install dependencies and runserver#"
 echo -e "# --------------------------------- #"
 echo -e "# If this is the first time running #"
 echo -e "#     ./run_script.sh first         #"
 echo -e "# To run with a clean migration:    #"
 echo -e "#     ./run_script.sh clean         #"
 echo -e "# To run with a clean db :          #"
-echo -e "#     ./run_script.sh totalclean    #"
+echo -e "#     ./run_script.sh reset         #"
+echo -e "# To create a new config.json       #"
+echo -e "#     ./run_script.sh config        #"
 echo -e "#####################################\n\n\n"
 
 # we check requirements
@@ -41,8 +43,47 @@ fi
 # install dependencies
 pip3 install -r dependencies.txt
 
+if [[ "$@" == "first" ]]; then
+  echo -e 'This is the first time\n will make migrations and create user'
 
-if [[ "$@" == "clean" ]]; then
+  python3 manage.py makemigrations dacParser
+  python3 manage.py makemigrations gda
+  python3 manage.py makemigrations
+  python3 manage.py migrate
+  python3 manage.py createsuperuser
+
+  echo -e '\nNow, will configure mail and security\n'
+  echo '                                      Until here |'
+  echo '"Randonly" type on the keyboard about 35 digits  V'
+  read secret_key
+  echo 'EMAIL_HOST (for gmail use smtp.gmail.com): '
+  read email_host
+  echo 'EMAIL_PORT (for gmail use 587): '
+  read email_port
+  echo 'Use TLS? [Y/n]: '
+  read email_tls
+  echo 'EMAIL_USERNAME (for gmail is the email): '
+  read email_username
+  echo 'PASSWORD: '
+  read password
+  echo 'Saving configuration on config.json'
+
+  if [[ $email_tls == 'n' ]];then
+    email_tls='False'
+  else
+    email_tls='True'
+  fi
+
+  echo "{
+    \"SECRET_KEY\": "\"$secret_key\"",
+    \"EMAIL_HOST\": "\"$email_host\"",
+    \"EMAIL_PORT\": "\"$email_port\"",
+    \"EMAIL_USE_TLS\": "\"$email_tls\"",
+    \"EMAIL_HOST_USER\": "\"$email_username\"",
+    \"EMAIL_HOST_PASSWORD\": "\"$password\""
+}" > config.json
+
+elif [[ "$@" == "clean" ]]; then
   echo 'clean'
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
@@ -50,15 +91,9 @@ if [[ "$@" == "clean" ]]; then
   python3 manage.py makemigrations gda
   python3 manage.py makemigrations
   python3 manage.py migrate
-elif [[ "$@" == "first" ]]; then
-  echo -e 'This is the first time\n will make migrations and create user'
-  python3 manage.py makemigrations dacParser
-  python3 manage.py makemigrations gda
-  python3 manage.py makemigrations
-  python3 manage.py migrate
-  python3 manage.py createsuperuser
-elif [[ "$@" == "totalclean" ]]; then
-  echo 'totalclean'
+
+elif [[ "$@" == "reset" ]]; then
+  echo 'reset'
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
   rm -rf db.sqlite3
@@ -67,6 +102,37 @@ elif [[ "$@" == "totalclean" ]]; then
   python3 manage.py makemigrations
   python3 manage.py migrate
   python3 manage.py createsuperuser
+elif [[ "$@" == "config" ]]; then
+  echo -e '\nNow, will configure mail and security\n'
+  echo '                                      Until here |'
+  echo '"Randonly" type on the keyboard about 35 digits  V'
+  read secret_key
+  echo 'EMAIL_HOST (for gmail use smtp.gmail.com): '
+  read email_host
+  echo 'EMAIL_PORT (for gmail use 587): '
+  read email_port
+  echo 'Use TLS? [Y/n]: '
+  read email_tls
+  echo 'EMAIL_USERNAME (for gmail is the email): '
+  read email_username
+  echo 'PASSWORD: '
+  read password
+  echo 'Saving configuration on config.json'
+
+  if [[ $email_tls == 'n' ]];then
+    email_tls='False'
+  else
+    email_tls='True'
+  fi
+
+  echo "{
+    \"SECRET_KEY\": "\"$secret_key\"",
+    \"EMAIL_HOST\": "\"$email_host\"",
+    \"EMAIL_PORT\": "\"$email_port\"",
+    \"EMAIL_USE_TLS\": "\"$email_tls\"",
+    \"EMAIL_HOST_USER\": "\"$email_username\"",
+    \"EMAIL_HOST_PASSWORD\": "\"$password\""
+  }" > config.json
 fi
 
 python3 manage.py runserver
