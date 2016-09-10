@@ -1,6 +1,8 @@
 # Models
 
 Deixaremos em bold o primarykey do Modelo. Caso não esteja marcado, será o id
+Em parênteses, ao lado dos dos colchetes, será mostrado a relação de cardinalidade
+entre o modelo que esta sendo descrito e seu relacionado(dentro do parenteses).
 
 ## **Subject** [Disciplina]
 *dacParser/models.py*
@@ -12,7 +14,7 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 | ------------- | ------------ | ------------------------------  |
 | ***code***    | ***String*** | ***Código da disciplina. Ex: MC102*** |
 | type  	| String       | Graducação: **U** Pós: **G**    |
-| offering      | Ofering [1:n]| Oferecimentos da disciplina     |
+| offering      | Ofering [1:n] (oferecimento,disciplina)| Oferecimentos da disciplina     |
 | descryption   | String       | Ementa da matéria               |
 
 
@@ -29,7 +31,7 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 | semester    | String        | Semestre do oferecimento           |
 | year        | String        | Ano do oferecimento                |
 | time        | ??            | Colocar o horário e dia da seman   |
-| teacher     | Teacher [n:1] | Semestre do oferecimento           |
+| teacher     | Teacher [1:n] (professor,oferecimento) | Professordo oferecimento           |
 | vacancies   | int           | Capacidade de uma turma            |
 | registered  | int           | Número de alunos matriculados      |
 | student     | Student [n:n] | Alunos registrados no oferecimento |
@@ -47,7 +49,7 @@ O modelo que armazena informações sobre um estudante
 | name        | String        | Nome                    |
 | course      | String        | Curso de graduação [pós]|
 | course_type | String        | Modalidade do Curso     |
-| oferings    | Ofering [n:n] | Oferecimentos cursados pelo aluno|
+| oferings    | Ofering [n:n] (aluno,disciplina)| Oferecimentos cursados pelo aluno|
 
 
 ## **Institute** [Instituto]
@@ -79,7 +81,7 @@ Modelo que armazena os tokens gerados para cada aluno
 ### Atributos
 |nome atributo| tipo          | descrição                           |
 | ----------- | ------------- | ----------------------------------- |
-|   student   | Student [1:1] | Nome do professor                   |
+|   student   | Student [1:1] (aluno,token)| Nome do professor                   |
 | ***token*** | ***String***  | ***Código do token***               |
-|  discipline |Discipline[1:n]| Disciplina a que pertence o token   |
+|  discipline |Discipline[1:n] (token, disciplina) | Disciplina a que pertence o token   |
 |     used    | Boolean       | afirma se já foi usada ou não       |
