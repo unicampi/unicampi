@@ -14,7 +14,7 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 | ------------- | ------------ | ------------------------------  |
 | ***code***    | ***String*** | ***Código da disciplina. Ex: MC102*** |
 | type  	| String       | Graducação: **U** Pós: **G**    |
-| offering      | Ofering [1:n] (oferecimento,disciplina)| Oferecimentos da disciplina     |
+| offering      | Ofering [1:n] \(oferecimento,disciplina\)| Oferecimentos da disciplina     |
 | descryption   | String       | Ementa da matéria               |
 
 
