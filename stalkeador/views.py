@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q
-from dacParser.models import Student, Class, Course, Teacher
+from dacParser.models import Student, Offering, Subject, Teacher
 
 
 # This is the index page (homepage).
@@ -21,22 +21,24 @@ def index(request):
                     final_query = query & final_query
                 students = Student.objects.all().filter(final_query).order_by('ra')
 
-                # Searchs classes
+                # Searchs offering
                 final_query = Q()
                 words = s_id.split()
                 for word in words:
                     query = (Q(code__contains=str(s_id)) |
                              Q(name__contains=str(s_id)))
                     final_query = query & final_query
-                disciplines = Course.objects.all().filter(final_query).order_by('code')
-                
+                subjects = Subject.objects.all().filter(final_query).order_by('code')
+
                 # Searches Teacher
                 query = Q(name__contains=str(s_id))
                 teachers = Teacher.objects.all().filter(query).order_by('name')
+
+
                 results = {
                     'students': students,
-                    'disciplines': disciplines,
-                    'teachers': teachers 
+                    'subjects': subjects,
+                    'teachers': teachers
                     }
 
                 return render(request, 'stalkeador/home-searcher.html', results)
@@ -59,8 +61,8 @@ def student(request, studentRA):
 
 #view for requests on /t/teacherID
 #needs to be improved with some kind of id
-def teacher(request, teacherID): 
-    try:         
+def teacher(request, teacherID):
+    try:
         teacher = Teacher.objects.get(name=teacherID)
 
         output = {
@@ -73,50 +75,50 @@ def teacher(request, teacherID):
 
 
 # This is for a Discipline page (/s/CODE)
-# returns a list containing all the disciplines with the code
-def discipline(request, code, year, semester, classes):
+# returns a list containing all the offerings with the code
+def subject(request, code, year, semester, offe_id):
     if request.POST:
         print(request.POST)
 
     try:
-        # Always will be about a course:
-        course = Course.objects.all().get(
+        # Always will be about a subject:
+        subject = Subject.objects.all().get(
             code = code.upper()
         )
-        if classes:
-            discipline = Class.objects.all().get(
+        if offe_id:
+            offering = Offering.objects.all().get(
                 code = code.upper(),
                 year = year,
                 semester = semester,
-                class_id = classes
+                offering_id = offe_id
             )
             out = {
-                'course': course,
-                'discipline': discipline,
+                'subject': subject,
+                'offering': offering,
             }
             # How its the most especif query, it renders the page of the
-            # discipline
-            return render(request, 'stalkeador/discipline.html', out)
+            # offering
+            return render(request, 'stalkeador/offering.html', out)
         elif semester:
-            disciplines = Class.objects.all().filter(
+            offerings = Offering.objects.all().filter(
                 code = code.upper(),
                 year = year,
                 semester = semester,
             )
-        elif classes:
-            disciplines = Class.objects.all().filter(
+        elif offe_id:
+            offerings = Offering.objects.all().filter(
                 code = code.upper(),
                 year = year,
             )
         else:
-            disciplines = Class.objects.all().filter(
+            offerings = Offering.objects.all().filter(
                 code = code.upper(),
             )
 
         out = {
-            'course': course,
-            'disciplines': disciplines,
+            'subject': subject,
+            'offerings': offerings,
         }
-        return render(request, 'stalkeador/disciplines.html', out)
+        return render(request, 'stalkeador/subject.html', out)
     except:
-        return render(request, 'stalkeador/disciplines.html')
+        return render(request, 'stalkeador/subject.html')

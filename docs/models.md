@@ -13,12 +13,13 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 | nome atributo | tipo         | descrição                       |
 | ------------- | ------------ | ------------------------------  |
 | ***code***    | ***String*** | ***Código da disciplina. Ex: MC102*** |
-| type  	| String       | Graducação: **U** Pós: **G**    |
-| offering      | Ofering [1:n] \(oferecimento,disciplina\)| Oferecimentos da disciplina     |
+| name          | String       | Nome da matéria                 |
+| type  	    | String       | Graducação: **U** Pós: **G**    |
+| offerings      | Offering [1:n] \(oferecimento,disciplina\)| Oferecimentos da disciplina     |
 | descryption   | String       | Ementa da matéria               |
 
 
-## **Ofering** [Oferecimento]
+## **Offering** [Oferecimento]
 *dacParser/models.py*
 
 O modelo que armazena informações sobre um oferecimento de uma disciplina
@@ -27,14 +28,14 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 |nome atributo| tipo          | descrição                          |
 | ----------- | ------------- | ---------------------------------- |
 | code        | String        | Código da disciplina. Ex: MC102    |
-| ofering_id  | String        | Determinada turma do modelo. Ex: A |
+| offering_id  | String        | Determinada turma do modelo. Ex: A |
 | semester    | String        | Semestre do oferecimento           |
 | year        | String        | Ano do oferecimento                |
-| time        | ??            | Colocar o horário e dia da seman   |
+| time        | ??            | Colocar o horário e dia da semana  |
 | teacher     | Teacher [1:n] \(professor,oferecimento\) | Professordo oferecimento           |
 | vacancies   | int           | Capacidade de uma turma            |
 | registered  | int           | Número de alunos matriculados      |
-| student     | Student [n:n] | Alunos registrados no oferecimento |
+| students     | Student [n:n] | Alunos registrados no oferecimento |
 
 
 ## **Student** [Aluno]
@@ -49,7 +50,7 @@ O modelo que armazena informações sobre um estudante
 | name        | String        | Nome                    |
 | course      | String        | Curso de graduação [pós]|
 | course_type | String        | Modalidade do Curso     |
-| oferings    | Ofering [n:n] \(aluno,disciplina\)| Oferecimentos cursados pelo aluno|
+|stu_offerings| Ofering [n:n] \(aluno,disciplina\)| Oferecimentos cursados pelo aluno|
 
 
 ## **Institute** [Instituto]
@@ -71,6 +72,7 @@ O modelo que armazena informações sobre um estudante
 |nome atributo| tipo          | descrição           |
 | ----------- | ------------- | ------------------- |
 |   ***name***| ***String***  | ***Nome do professor***   |
+| email       | String        | Email academico do prof.|
 
 
 ## **Token**

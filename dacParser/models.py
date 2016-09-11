@@ -8,14 +8,14 @@ from unidecode import unidecode
 class Student(models.Model):
     """
     Modelo de um aluno da unicamp
-    school é o número do curso da unicamp
+    course é o número do curso da unicamp
     course_type é p tipo do curso - nao se aplica a todos
     """
     ra = models.CharField(max_length=7, unique=True)
     name = models.CharField(max_length=150)
-    school = models.CharField(max_length=15)
+    course = models.CharField(max_length=15)
     course_type = models.CharField(max_length=4)
-    disciplines = models.ManyToManyField('Class')
+    stu_offerings = models.ManyToManyField('Offering')
 
     def __str__(self):
         return (str(self.ra) + ' - ' + self.name)
@@ -34,10 +34,10 @@ class Student(models.Model):
     # This is to avoid having two or more equal students, they are the same if
     # the name RA and School is the same
     class Meta:
-        unique_together = ["name", "ra", "school"]
+        unique_together = ["name", "ra", "course"]
 
 
-class Course(models.Model):
+class Subject(models.Model):
     """
     Detalhes sobre uma disciplina. Cada disciplina possui um questionário
     associado.
@@ -50,7 +50,7 @@ class Course(models.Model):
     code = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=128)
     type = models.CharField(max_length=1, choices=COURSE_TYPE)
-    classes = models.ManyToManyField('Class')
+    offerings = models.ManyToManyField('Offering')
     descryption = models.CharField(max_length=1024)
 
     class Meta:
@@ -64,14 +64,14 @@ class Course(models.Model):
         return '/d/'+self.code
 
 
-class Class(models.Model):
+class Offering(models.Model):
     """
     Detalhes sobre cada turma de uma disciplina, as respostas aos questionários
     ficam associadas à turma.
     """
 
     code = models.CharField(max_length=6)   #duplicated but im logically inbcpb
-    class_id = models.CharField(max_length=2)
+    offering_id = models.CharField(max_length=2)
     semester = models.CharField(max_length=2)
     year = models.CharField(max_length=5)
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
@@ -80,14 +80,14 @@ class Class(models.Model):
     students = models.ManyToManyField(Student)
 
     class Meta:
-        unique_together = (("code","class_id", "year", "semester"),)
+        unique_together = (("code","offering_id", "year", "semester"),)
 
     def __str__(self):
-        return self.code+'-'+self.class_id+' '+self.semester+'s'+self.year
+        return self.code+'-'+self.offering_id+' '+self.semester+'s'+self.year
 
     # This method returns a string containing the path to the object
     def url(self):
-        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.class_id
+        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.offering_id
 
 
 # This object stores the teacher
@@ -97,7 +97,7 @@ class Teacher(models.Model):
 
     """
     name = models.CharField(max_length=150)
-    mail = models.CharField(max_length=150)
+    email = models.CharField(max_length=150)
 
     def __str__(self):
         return self.name
@@ -108,7 +108,7 @@ class Teacher(models.Model):
 
 # This is an object for a course
 # eache course has an year and each year has a curriculun
-#class Course(models.Model):
+#class Subject(models.Model):
 #    name = models.CharField(max_length=150)
 #    code = models.IntegerField()
 #    year = models.CharField(max_length=10)

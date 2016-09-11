@@ -40,8 +40,8 @@ def getAllInstitutes():
 
 # This function returns the information about an especific discipline class ins
 # ide a class object
-# This returns a tuple, (course, discipline)
-def getClass(discipline, classes, year, semester):
+# This returns a tuple, (subject, discipline)
+def getOffering(discipline, offerings, year, semester):
     # Getting a token to check dac page
     # For that, we must keep a session open because expiration
     session = requests.Session()
@@ -53,28 +53,28 @@ def getClass(discipline, classes, year, semester):
     # Now, we get the page which contains each of the students in the subject
     # and get Teacher's name, discipline name, and (RA, Students'name)
     page = session.get(URLSUBJECT % (token, semester, year, discipline,
-                                     classes))
+                                     offerings))
 
-    # Gets discipline code, classes, and name
-    course_parse = re.findall(DISCIPLINE_PATTERN, page.text)
+    # Gets discipline code, offerings, and name
+    subject_parse = re.findall(DISCIPLINE_PATTERN, page.text)
 
-    if not course_parse:
+    if not subject_parse:
         sys.stderr.write("getDiscipline: Turma %s inválida.\n" % (discipline +
-                         classes))
+                         offerings))
     else:
-        # Gets the discipline list = [subject_code, classes, subject_name']
-        course_parse = course_parse[0]
-        subject_code = course_parse[0]
-        class_id = course_parse[1]
-        subject_name = ' '.join(course_parse[2].split())
-        # Creates the object Course
-        course = CourseP(subject_name, subject_code, "U", [])
+        # Gets the discipline list = [subject_code, offerings, subject_name']
+        subject_parse = subject_parse[0]
+        subject_code = subject_parse[0]
+        offering_id = subject_parse[1]
+        subject_name = ' '.join(subject_parse[2].split())
+        # Creates the object Subject
+        subject = SubjectP(subject_name, subject_code, "U", [])
 
     # Gets registered/vacancies
     discipline_parse = re.findall(VACANCIES_PATTERN, page.text)
     if not discipline_parse:
         sys.stderr.write("getDiscipline: Turma %s 0 vagas.\n" % (discipline +
-                         classes))
+                         offerings))
     else:
         discipline_parse = discipline_parse[0]
         vacancies = discipline_parse[0]
@@ -82,10 +82,7 @@ def getClass(discipline, classes, year, semester):
 
     # Gets teacher's name removing any escess white space
     teacher = re.findall(PROFESSOR_PATTERN, page.text)
-    if not teacher:
-        sys.stderr.write("getDiscipline: Turma %s sem professor.\n" %
-                         (discipline + classes))
-    else:
+    if teacher:
         teacher = ' '.join(teacher[0].split())
 
     # Gets all the RA and names and join then together, creating a list of
@@ -93,7 +90,7 @@ def getClass(discipline, classes, year, semester):
     soup = BeautifulSoup(page.text, 'lxml')
 
     students = []
-    print(discipline+classes)
+    print(discipline+offerings)
 
     if int(registered) != 0:
         # Get the 8th table on the page as it contains the students
@@ -108,18 +105,18 @@ def getClass(discipline, classes, year, semester):
         print('Sem alunos')
 
 
-    discipline = ClassP(course, class_id, year, semester, teacher, vacancies,
+    discipline = OfferingP(subject, offering_id, year, semester, teacher, vacancies,
                         registered, students)
-    course.classes.append(discipline)
+    subject.offerings.append(discipline)
 
-    return course, discipline
+    return subject, discipline
 
 
 # This function should look on dac webpage and get all the subjects that are
 # being offered from institute passade as argument in this semester with it
-# classes as:
+# offerings as:
 # [( MC458 , (A,B,C,D) ), (MC040 , (A) ), ... ]
-def getAllCourses(institute):
+def getAllSubjects(institute):
     # Start a webbrowsin session
     session = requests.Session()
 
@@ -128,34 +125,34 @@ def getAllCourses(institute):
     disciplines_in_page = re.findall(DISCIPLINE_NAME_PATTERN, page.text)
 
     offered_disciplines = []
-    # Now we go in each subject page and get every classes
+    # Now we go in each subject page and get every offerings
     for offered_discipline in disciplines_in_page:
         page = session.get(URL_DISCIPLINE % offered_discipline)
 
-        offered_classes = re.findall(CLASSES_NAME_PATTERN, page.text)
-        offered_disciplines.append((offered_discipline, offered_classes))
+        offered_offerings = re.findall(CLASSES_NAME_PATTERN, page.text)
+        offered_disciplines.append((offered_discipline, offered_offerings))
 
     return offered_disciplines
 
 
-# This function gets all the information about all the courses from institute
-# and return it as an array of course
-def generateAllCoursesFrom(institute, year, sem):
+# This function gets all the information about all the subjects from institute
+# and return it as an array of subject
+def generateAllSubjectsFrom(institute, year, sem):
     subjects = []
     # Get all the offered disciplines
-    offered_disciplines = getAllCourses(institute)
+    offered_disciplines = getAllSubjects(institute)
 
     # get each of the disciplines offered
     for offered_discipline in offered_disciplines:
 
-        # get each of the classes offered
-        classes = []
+        # get each of the offerings offered
+        offerings = []
         for classe in offered_discipline[1]:
-            course, dis = getClass(offered_discipline[0], classe, year, sem)
-            classes.append(dis)
-        course.classes = classes
-        print(course)
-        subjects.append(course)
+            subject, dis = getOffering(offered_discipline[0], classe, year, sem)
+            offerings.append(dis)
+        subject.offerings = offerings
+        print(subject)
+        subjects.append(subject)
 
     return subjects
 
@@ -175,8 +172,8 @@ def generateAllDisciplinesUnicamp():
 
 
 def tests():
-    course, discipline = getClass('MC001', 'A', '2016', '2')
-    print(course)
+    subject, discipline = getOffering('MC001', 'A', '2016', '2')
+    print(subject)
     print(discipline)
     for student in discipline.students:
         print(student)
