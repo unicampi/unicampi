@@ -44,16 +44,7 @@ fi
 pip3 install -r dependencies.txt
 
 if [[ "$@" == "first" ]]; then
-  echo -e 'This is the first time\n will make migrations and create user'
   
-  python3 manage.py makemigrations
-  python3 manage.py migrate
-  python3 manage.py makemigrations dacParser
-  python3 manage.py makemigrations gda
-  python3 manage.py makemigrations
-  python3 manage.py migrate
-  python3 manage.py createsuperuser
-
   echo -e '\nNow, will configure mail and security\n'
   echo '                                      Until here |'
   echo '"Randonly" type on the keyboard about 35 digits  V'
@@ -83,7 +74,18 @@ if [[ "$@" == "first" ]]; then
     \"EMAIL_USE_TLS\": "\"$email_tls\"",
     \"EMAIL_HOST_USER\": "\"$email_username\"",
     \"EMAIL_HOST_PASSWORD\": "\"$password\""
-}" > config.json
+  }" > config.json
+  
+  echo -e 'This is the first time\n will make migrations and create user'
+  
+  python3 manage.py makemigrations
+  python3 manage.py migrate
+  python3 manage.py makemigrations dacParser
+  python3 manage.py makemigrations gda
+  python3 manage.py makemigrations
+  python3 manage.py migrate
+  python3 manage.py createsuperuser
+
 
 elif [[ "$@" == "clean" ]]; then
   echo 'clean'
