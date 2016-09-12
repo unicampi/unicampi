@@ -102,7 +102,7 @@ def updateDisciplines(request, institute):
                 # Insere o estudante na Disciplina
                 OfferingModel.students.add(StudentModel)
 
-            SubjectModel.offering.add(OfferingModel)
+            SubjectModel.offerings.add(OfferingModel)
     print("Terminamos de gerar informações")
 
     return HttpResponse("Everything must be ok")
