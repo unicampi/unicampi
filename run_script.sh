@@ -45,7 +45,9 @@ pip3 install -r dependencies.txt
 
 if [[ "$@" == "first" ]]; then
   echo -e 'This is the first time\n will make migrations and create user'
-
+  
+  python3 manage.py makemigrations
+  python3 manage.py migrate
   python3 manage.py makemigrations dacParser
   python3 manage.py makemigrations gda
   python3 manage.py makemigrations
