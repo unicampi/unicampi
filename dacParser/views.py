@@ -78,7 +78,7 @@ def updateDisciplines(request, institute):
                     name = 'Sem Professor'
                 )
             # Creates discipline Model
-            OfferingeModel, created = Offering.objects.get_or_create(
+            OfferingModel, created = Offering.objects.get_or_create(
                 code = subject.code,
                 offering_id = off.offering_id,
                 year = off.year,
@@ -98,9 +98,11 @@ def updateDisciplines(request, institute):
                     course_type = student.course_modality,
                 )
                 # Insere a disciplina no aluno
-                StudentModel.stu_offerings.add(OfferingeModel)
+                StudentModel.stu_offerings.add(OfferingModel)
                 # Insere o estudante na Disciplina
-                OfferingeModel.students.add(StudentModel)
+                OfferingModel.students.add(StudentModel)
+
+            SubjectModel.offering.add(OfferingModel)
     print("Terminamos de gerar informações")
 
     return HttpResponse("Everything must be ok")
