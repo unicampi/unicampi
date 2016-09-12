@@ -5,10 +5,10 @@
         {% if disciplines %}
         <h3 class="text-center"> Disciplinas </h3>
         {% endif %}
-        {% for discipline in disciplines %}
-            <a href="{{ discipline.url }}">
+        {% for subject in subjects %}
+            <a href="{{ subject.url }}">
                 <div class="callout small">
-                    {{ discipline }}
+                    {{ subject }}
                 </div>
             </a>
         {% endfor %}

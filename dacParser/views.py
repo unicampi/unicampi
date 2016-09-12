@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 
-from dacParser.tools.dacParser import generateAllCoursesFrom, getAllInstitutes
+from dacParser.tools.dacParser import generateAllSubjectsFrom, getAllInstitutes
 from dacParser.tools.dacParserHelper import *
-from dacParser.models import Student, Class, Course, Teacher, Institute
+from dacParser.models import Student, Offering, Subject, Teacher, Institute
 
 @login_required
 def updatePage(request):
@@ -48,59 +48,61 @@ def updateInstitutes(request):
 
 @login_required
 def updateDisciplines(request, institute):
-    # First parses all the classes in this semester
+    # First parses all the subjects in this semester
     try:
         print("Parseando disciplinas de "+institute.upper())
-        courses = generateAllCoursesFrom(institute.upper(), 2016, 2)
+        subjects = generateAllSubjectsFrom(institute.upper(), 2016, 2)
         print("Terminou de Parsear disciplinas")
     except:
         print("Erro ao parsear disciplinas")
 
-    # If everything is alright, we hava an array of Courses
-    for course in courses:
-        # Creats Course Model
-        CouseModel, created = Course.objects.all().get_or_create(
-            code = course.code,
-            name = course.name,
-            type = course.type,
+    # If everything is alright, we hava an array of Subjects
+    for subject in subjects:
+        # Creats Subject Model
+        SubjectModel, created = Subject.objects.all().get_or_create(
+            code = subject.code,
+            name = subject.name,
+            type = subject.type,
         )
-        print(course)
+        print(subject)
 
-        # Runs the array of classes in course
-        for clas in course.classes:
+        # Runs the array of offerings in subject
+        for off in subject.offerings:
             # Creates Teacher Model
-            if clas.teacher:
+            if off.teacher:
                 TeacherModel, created = Teacher.objects.get_or_create(
-                    name = clas.teacher
+                    name = off.teacher
                 )
             else:
                 TeacherModel, created = Teacher.objects.get_or_create(
                     name = 'Sem Professor'
                 )
             # Creates discipline Model
-            ClasseModel, created = Class.objects.get_or_create(
-                code = course.code,
-                class_id = clas.class_id,
-                year = clas.year,
-                semester = clas.semester,
+            OfferingModel, created = Offering.objects.get_or_create(
+                code = subject.code,
+                offering_id = off.offering_id,
+                year = off.year,
+                semester = off.semester,
                 teacher = TeacherModel,
-                vacancies = clas.vacancies,
-                registered = clas.registered,
+                vacancies = off.vacancies,
+                registered = off.registered,
             )
             # Now were going to create a Student model and add it to discipline
             # as we add the discipline to the student
-            studentsInClass = clas.students
-            for student in studentsInClass:
+            studentsInOffering = off.students
+            for student in studentsInOffering:
                 StudentModel, created = Student.objects.get_or_create(
                     ra = student.ra,
                     name = html.unescape(student.name),
-                    school = student.school,
+                    course = student.course,
                     course_type = student.course_modality,
                 )
                 # Insere a disciplina no aluno
-                StudentModel.disciplines.add(ClasseModel)
+                StudentModel.stu_offerings.add(OfferingModel)
                 # Insere o estudante na Disciplina
-                ClasseModel.students.add(StudentModel)
+                OfferingModel.students.add(StudentModel)
+
+            SubjectModel.offering.add(OfferingModel)
     print("Terminamos de gerar informações")
 
     return HttpResponse("Everything must be ok")

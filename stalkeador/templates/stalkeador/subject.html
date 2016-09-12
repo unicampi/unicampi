@@ -2,8 +2,8 @@
 
 {% block content %}
     <div class="row column">
-        {% if course %}
-        <h3 class="text-center"> {{ course }} </h3>
+        {% if subject %}
+        <h3 class="text-center"> {{ subject }} </h3>
         <table>
             <caption>Informações da Disciplina</caption>
             <thead>
@@ -18,7 +18,7 @@
                         Nome
                     </td>
                     <td>
-                        {{ course.name }}
+                        {{ subject.name }}
                     </td>
                 </tr>
                 <tr>
@@ -26,7 +26,7 @@
                         Sigla
                     </td>
                     <td>
-                        {{ course.code }}
+                        {{ subject.code }}
                     </td>
                 </tr>
                 <tr>
@@ -34,7 +34,7 @@
                         Nivel
                     </td>
                     <td>
-                        {{ course.type }}
+                        {{ subject.type }}
                     </td>
                 </tr>
                 <tr>
@@ -42,22 +42,22 @@
                         Descrição
                     </td>
                     <td>
-                        {{ course.descryption }}
+                        {{ subject.descryption }}
                     </td>
                 </tr>
             </tbody>
         </table>
         {% endif %}
-        {% if disciplines %}
-        {% for discipline in disciplines %}
-            <a href="{{ discipline.url }}">
+        {% if offerings %}
+        {% for offering in offerings %}
+            <a href="{{ offering.url }}">
             <div class="callout small">
-                {{discipline}}
+                {{offering}}
             </div>
             </a>
         {% endfor %}
         {% else %}
-            <h2> This is a discipline page, but no discipline was found</h2>
+            <h2> This is a subject page, but no offering was found</h2>
         {% endif %}
     </div>
 {% endblock %}

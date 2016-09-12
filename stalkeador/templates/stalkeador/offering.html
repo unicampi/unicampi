@@ -1,18 +1,18 @@
 {% extends "stalkeador/header.html" %}
 
 {% block stylesheets %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
 {% endblock %}
 
 {% block content %}
 <div class='row column'>
-    <h3 class="text-center"> {{ discipline }} </h3>
+    <h3 class="text-center"> {{ offering }} </h3>
     {% if user.is_authenticated %}
     <div class="row text-center">
         <form method="post">
             {% csrf_token %}
-            <a href="/manage{{ discipline.url }}/generate"><button type="button" id="generate" class="success button">Generate All Tokens</button></a>
-            <a href="/manage{{ discipline.url }}/send"><button type="button" id="send" class="alert button">Generate and Send Tokens Mail</button></a>
+            <a href="/manage{{ offering.url }}/generate"><button type="button" id="generate" class="success button">Generate All Tokens</button></a>
+            <a href="/manage{{ offering.url }}/send"><button type="button" id="send" class="alert button">Generate and Send Tokens Mail</button></a>
         </form>
     </div>
     {% endif %}
@@ -30,7 +30,7 @@
                     Nome
                 </td>
                 <td>
-                    {{ course.name }}
+                    {{ subject.name }}
                 </td>
             </tr>
             <tr>
@@ -38,7 +38,7 @@
                     Código - Turma
                 </td>
                 <td>
-                    {{ discipline.code }} - {{ discipline.class_id }}
+                    {{ offering.code }} - {{ offering.offering_id }}
                 </td>
             </tr>
             <tr>
@@ -46,7 +46,7 @@
                     Professor
                 </td>
                 <td>
-                    {{ discipline.teacher }}
+                    {{ offering.teacher }}
                 </td>
             </tr>
             <tr>
@@ -54,7 +54,7 @@
                     Alunos de Vagas
                 </td>
                 <td>
-                    {{ discipline.registered }} de {{ discipline.vacancies }}
+                    {{ offering.registered }} de {{ offering.vacancies }}
                 </td>
             </tr>
             <tr>
@@ -63,7 +63,7 @@
                 </td>
                 <td>
                     <ul class="vertical menu">
-                        {% for student in discipline.students.all %}
+                        {% for student in offering.students.all %}
                             <a href="{{student.url}}"><li>{{ student }}</li></a>
                         {% endfor %}
                     </ul>

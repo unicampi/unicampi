@@ -19,10 +19,10 @@ urlpatterns = [
         # d/(?P<code>[A-Za-z][A-Za-z ][0-9]{3}) - This matches the code
         # \/?(?P<year>\d{4})?                   - Optional year
         # \/?(?P<semester>\d)?                  - Optional semester
-        # \/?(?P<classes>[A-Za-z])?\/?          - Optional classes
-        r'^d/(?P<code>[A-Za-z][A-Za-z ][0-9]{3})\/?(?P<year>\d{4})?\/?(?P<semester>\d)?\/?(?P<classes>[A-Za-z])?\/?',
-        views.discipline,
-        name='discipline'
+        # \/?(?P<offe_id>[A-Za-z])?\/?          - Optional offe_id
+        r'^d/(?P<code>[A-Za-z][A-Za-z ][0-9]{3})\/?(?P<year>\d{4})?\/?(?P<semester>\d)?\/?(?P<offe_id>[A-Za-z])?\/?',
+        views.subject,
+        name='subject'
     ),
     # URL for index
     url(
