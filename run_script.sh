@@ -84,6 +84,8 @@ if [[ "$@" == "first" ]]; then
   python3 manage.py makemigrations gda
   python3 manage.py makemigrations
   python3 manage.py migrate
+  
+  echo -e 'Now, you ll create a username and password for django"
   python3 manage.py createsuperuser
 
 
