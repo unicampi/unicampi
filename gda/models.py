@@ -1,5 +1,5 @@
 from django.db import models
-from dacParser.models import Student, Class
+from dacParser.models import Student, Offering
 from gda.tools.tokenGenerator import generateToken
 
 
@@ -8,7 +8,7 @@ class Token(models.Model):
     token = models.CharField(max_length = 37,
                              default=generateToken(student.name),
                              primary_key=True)
-    discipline = models.ForeignKey(Class)
+    discipline = models.ForeignKey(Offering)
     used = models.BooleanField(default = False)
 
     class Meta:

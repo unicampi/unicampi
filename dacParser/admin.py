@@ -1,5 +1,5 @@
 from django.contrib import admin
-from dacParser.models import Student, Class, Course, Teacher, Institute
+from dacParser.models import Student, Offering, Subject, Teacher, Institute
 
 
 # This is the layout for students on admin page - this generates the search
@@ -10,18 +10,18 @@ class StudentAdmin(admin.ModelAdmin):
 admin.site.register(Student, StudentAdmin)
 
 
-class CourseAdmin(admin.ModelAdmin):
+class SubjectAdmin(admin.ModelAdmin):
     search_fields = ('code', 'name', "type")
     ordering = ['code']
 
-admin.site.register(Course, CourseAdmin)
+admin.site.register(Subject, SubjectAdmin)
 
 
-class ClassAdmin(admin.ModelAdmin):
+class OfferingAdmin(admin.ModelAdmin):
     search_fields = ('code', 'year', "semester")
     ordering = ['code']
 
-admin.site.register(Class, ClassAdmin)
+admin.site.register(Offering, OfferingAdmin)
 
 
 class TeacherAdmin(admin.ModelAdmin):

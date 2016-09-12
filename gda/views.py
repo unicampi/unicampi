@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 
 from gda.tools.tokenGenerator import generateToken
-from dacParser.models import Class, Student
+from dacParser.models import Offering, Student
 from gda.models import Token
 
 URL = 'http://127.0.0.1:8000/'
@@ -14,16 +14,16 @@ FROM_EMAIL = 'GDA TESTER <gdatester@gmail.com>'
 # Generates tokens for all the students from a discipline
 # /manage/d/MM000/YYYY/S/C/generate
 @login_required
-def generateTokens(request, code, year, semester, classes):
+def generateTokens(request, code, year, semester, offerings):
     try:
         # First, gets detials about discipline
-        discipline = Class.objects.all().get(
+        discipline = Offering.objects.all().get(
             code = code.upper(),
             year = year,
             semester = semester,
-            class_id = classes
+            offering_id = offerings
         )
-    except Class.DoesNotExist:
+    except Offering.DoesNotExist:
         raise Http404("Não encontrou a materia desejada")
 
     # Generate a token per student
@@ -51,20 +51,20 @@ def generateTokens(request, code, year, semester, classes):
 # Send email for all the students in a class
 # /manage/d/MM000/YYYY/S/C/send
 @login_required
-def sendMail(request, code, year, semester, classes):
+def sendMail(request, code, year, semester, offerings):
     try:
-        generateTokens(request, code, year, semester, classes)
+        generateTokens(request, code, year, semester, offerings)
     except:
         raise Http404("Não foi possivel gerar token")
     try:
         # First, gets class
-        discipline = Class.objects.all().get(
+        discipline = Offering.objects.all().get(
             code = code.upper(),
             year = year,
             semester = semester,
-            class_id = classes
+            offering_id = offerings
         )
-    except Class.DoesNotExist:
+    except Offering.DoesNotExist:
         raise Http404("Não encontrou a materia desejada")
     # Find's all the tokens that is from this class
     try:
@@ -108,14 +108,14 @@ def sendMail(request, code, year, semester, classes):
 
 # This is the function to create the view from the token page
 # /vote/d/MM000/YYYY/S/C/TOKEN
-def dealToken(request, code, year, semester, classes, token):
+def dealToken(request, code, year, semester, offerings, token):
     try:
         # First we dicover wich is the discipline
-        discipline = Class.objects.all().get(
+        discipline = Offering.objects.all().get(
             code = code.upper(),
             year = year,
             semester = semester,
-            class_id = classes
+            offering_id = offerings
         )
         print(discipline)
         # Search for token

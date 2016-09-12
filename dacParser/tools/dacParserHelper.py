@@ -39,17 +39,17 @@ STUDENT_TYPE = ('<td height="18" bgcolor="white" width="60" align="center" class
         '									<td height="18" bgcolor="white" width="140" align="center" class="corpo">(.+)?<\/td>')
 
 # This is the object thar stores a subjcect information
-class CourseP(object):
+class SubjectP(object):
     name = ""
     code = ""
     type = ""   # undergrad or grad
-    classes = object    # an array of Class
+    offerings = []    # an array of Class
 
-    def __init__(self, name, code, type, classes):
+    def __init__(self, name, code, type, offerings):
         self.name = name
         self.code = code
         self.type = type
-        self.classes = classes
+        self.offerings = offerings
 
     # TO help on debug and kind of pretty
     def __str__(self):
@@ -57,18 +57,18 @@ class CourseP(object):
         Name        : %s
         Code        : %s
         Type        : %s
-        # Classes   : %s
+        # Offerings : %s
         '''
         return (beautiprint %
-                (self.name, self.code, self.type,str(len(self.classes))))
+                (self.name, self.code, self.type,str(len(self.offerings))))
 
     def __eq__(self, other):
         return self.code == other.code
 
 
-class ClassP(object):
-    course = object
-    class_id = ""
+class OfferingP(object):
+    subject = object
+    offering_id = ""
     semester = ""
     year = ""
     teacher = ""
@@ -77,12 +77,12 @@ class ClassP(object):
     students = object
 
 
-    def __init__(self, course, class_id, year, semester, teacher, vacancies,
+    def __init__(self, subject, offering_id, year, semester, teacher, vacancies,
                  registered, students):
-        self.course = course
+        self.subject = subject
         self.year = year
         self.semester = semester
-        self.class_id = class_id
+        self.offering_id = offering_id
         self.teacher = teacher
         self.vacancies = vacancies
         self.registered = registered
@@ -90,31 +90,31 @@ class ClassP(object):
 
     def __str__(self):
         beautiprint = '''
-        Class ID    : %s
+        Offering ID : %s
         Year        : %s
         Semester    : %s
         Teacher     : %s
         Regis/Vacan : %s/%s
         '''
         return (beautiprint %
-                (self.class_id, self.year, self.semester, self.teacher,
+                (self.offering_id, self.year, self.semester, self.teacher,
                  self.registered, self.vacancies))
 
 
 class StudentP(object):
     ra = ""
     name = ""
-    school = ""
     type = ""
+    course = ""
     course_modality = ""
 
-    def __init__(self, ra, name, school, type, course_modality):
+    def __init__(self, ra, name, course, type, course_modality):
         self.ra = ra
         self.name = name
-        self.school = school
+        self.course = course
         self.type = type
         self.course_modality = course_modality
 
     def __str__(self):
-        return (self.ra + ' ' + self.name + ' - ' + self.school + ' ' +
+        return (self.ra + ' ' + self.name + ' - ' + self.course + ' ' +
                 self.course_modality)
