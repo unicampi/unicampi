@@ -1,4 +1,5 @@
 from django.db import models
+from gda.models import Questionnaire
 import uuid                   # To generate tokens
 from unidecode import unidecode
 
@@ -52,6 +53,7 @@ class Subject(models.Model):
     type = models.CharField(max_length=1, choices=COURSE_TYPE)
     offerings = models.ManyToManyField('Offering')
     descryption = models.CharField(max_length=1024)
+    Questionnaire = models.ForeignKey(Questionnaire)
 
     class Meta:
         unique_together = ('code', 'name', 'type')
