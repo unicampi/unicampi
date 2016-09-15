@@ -5,8 +5,8 @@ db.sqlite3
 config.json
 dacParser/migrations/*
 !dacParser/migrations/__init__.py
-!dacParser/migrations/0001_initial.py
-!dacParser/migrations/0002_subject_questionnaire.py
+#!dacParser/migrations/0001_initial.py
+#!dacParser/migrations/0002_subject_questionnaire.py
 gda/migrations/*
 !gda/migrations/__init__.py
-!gda/migrations/0001_initial.py
+#!gda/migrations/0001_initial.py
