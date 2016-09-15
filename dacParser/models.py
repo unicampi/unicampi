@@ -55,9 +55,9 @@ class Subject(models.Model):
     # If youre gonna remake all the migrations comments the questionnaire fielld
     # make the migrations, and then uncomment it and make the migration again
     # Begin from here
-    questionnaire = models.ForeignKey('gda.Questionnaire',
-                                       default=1,
-                                      )
+    #questionnaire = models.ForeignKey('gda.Questionnaire',
+    #                                   default=1,
+    #                                  )
     # comment until here
 
     class Meta:
@@ -104,7 +104,7 @@ class Teacher(models.Model):
 
     """
     name = models.CharField(max_length=150)
-    email = models.CharField(max_length=150)
+    email = models.EmailField(max_length=150)
 
     def __str__(self):
         return self.name
