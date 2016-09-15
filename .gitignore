@@ -2,5 +2,11 @@ env
 **__pycache__
 # For now, i don't thing we should commit our migrations and bd
 db.sqlite3
-**migrations
 config.json
+dacParser/migrations/*
+!dacParser/migrations/__init__.py
+!dacParser/migrations/0001_initial.py
+!dacParser/migrations/0002_subject_questionnaire.py
+gda/migrations/*
+!gda/migrations/__init__.py
+!gda/migrations/0001_initial.py

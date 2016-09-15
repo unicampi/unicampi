@@ -80,10 +80,6 @@ if [[ "$@" == "first" ]]; then
 
   python3 manage.py makemigrations
   python3 manage.py migrate
-  python3 manage.py makemigrations dacParser
-  python3 manage.py makemigrations gda
-  python3 manage.py makemigrations
-  python3 manage.py migrate
 
   echo -e 'Now, you ll create a username and password for django'
   python3 manage.py createsuperuser
@@ -91,6 +87,7 @@ if [[ "$@" == "first" ]]; then
 
 elif [[ "$@" == "clean" ]]; then
   echo 'clean'
+  read -n1 -r -p " You're gonna clean the migrations - CTRL+C to quit " key
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
   python3 manage.py makemigrations dacParser
@@ -100,6 +97,7 @@ elif [[ "$@" == "clean" ]]; then
 
 elif [[ "$@" == "reset" ]]; then
   echo 'reset'
+  read -n1 -r -p " You're gonna reset all the db - CTRL+C to quit " key
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
   rm -rf db.sqlite3
