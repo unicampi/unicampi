@@ -15,7 +15,6 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 | ***code***    | ***String*** | ***Código da disciplina. Ex: MC102*** |
 | name          | String       | Nome da matéria                 |
 | type  	    | String       | Graducação: **U** Pós: **G**    |
-| offerings      | Offering [1:n] \(oferecimento,disciplina\)| Oferecimentos da disciplina     |
 | descryption   | String       | Ementa da matéria               |
 
 
@@ -27,7 +26,7 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 ### Atributos
 |nome atributo| tipo          | descrição                          |
 | ----------- | ------------- | ---------------------------------- |
-| code        | String        | Código da disciplina. Ex: MC102    |
+| subject     | Subject [n:1] \(Oferecimentos: Matéria\)   | Código da disciplina. Ex: MC102    |
 | offering_id  | String        | Determinada turma do modelo. Ex: A |
 | semester    | String        | Semestre do oferecimento           |
 | year        | String        | Ano do oferecimento                |
@@ -35,7 +34,7 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 | teacher     | Teacher [1:n] \(professor,oferecimento\) | Professordo oferecimento           |
 | vacancies   | int           | Capacidade de uma turma            |
 | registered  | int           | Número de alunos matriculados      |
-| students     | Student [n:n] | Alunos registrados no oferecimento |
+| students    | Student [n:n] | Alunos registrados no oferecimento |
 
 
 ## **Student** [Aluno]
