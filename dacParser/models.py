@@ -1,5 +1,4 @@
 from django.db import models
-from gda.models import Questionnaire
 import uuid                   # To generate tokens
 from unidecode import unidecode
 
@@ -51,9 +50,15 @@ class Subject(models.Model):
     code = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=128)
     type = models.CharField(max_length=1, choices=COURSE_TYPE)
-    offerings = models.ManyToManyField('Offering')
     descryption = models.CharField(max_length=1024)
-    Questionnaire = models.ForeignKey(Questionnaire)
+    # Makes the default questionaire the one with id = 1
+    # If youre gonna remake all the migrations comments the questionnaire fielld
+    # make the migrations, and then uncomment it and make the migration again
+    # Begin from here
+    questionnaire = models.ForeignKey('gda.Questionnaire',
+                                       default=1,
+                                      )
+    # comment until here
 
     class Meta:
         unique_together = ('code', 'name', 'type')
@@ -72,7 +77,7 @@ class Offering(models.Model):
     ficam associadas à turma.
     """
 
-    code = models.CharField(max_length=6)   #duplicated but im logically inbcpb
+    subject = models.ForeignKey('Subject')
     offering_id = models.CharField(max_length=2)
     semester = models.CharField(max_length=2)
     year = models.CharField(max_length=5)
@@ -82,14 +87,14 @@ class Offering(models.Model):
     students = models.ManyToManyField(Student)
 
     class Meta:
-        unique_together = (("code","offering_id", "year", "semester"),)
+        unique_together = (("subject","offering_id", "year", "semester"),)
 
     def __str__(self):
-        return self.code+'-'+self.offering_id+' '+self.semester+'s'+self.year
+        return self.subject.code+'-'+self.offering_id+' '+self.semester+'s'+self.year
 
     # This method returns a string containing the path to the object
     def url(self):
-        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.offering_id
+        return '/d/'+self.subject.code+'/'+self.year+'/'+self.semester+'/'+self.offering_id
 
 
 # This object stores the teacher

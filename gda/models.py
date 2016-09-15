@@ -1,14 +1,15 @@
 from django.db import models
-from dacParser.models import Student, Offering
 from gda.tools.tokenGenerator import generateToken
 
 
 class Token(models.Model):
-    student = models.ForeignKey(Student)
-    token = models.CharField(max_length = 37,
+    student = models.ForeignKey('dacParser.Student')
+    token = models.CharField(primary_key=True,
+                             max_length = 37,
                              default=generateToken(student.name),
-                             primary_key=True)
-    discipline = models.ForeignKey(Offering)
+                             editable=False,
+                             )
+    discipline = models.ForeignKey('dacParser.Offering')
     used = models.BooleanField(default = False)
 
     class Meta:
@@ -22,23 +23,29 @@ class Token(models.Model):
 
 class Questionnaire(models.Model):
     name = models.CharField(max_length = 50)
+    questions = models.ManyToManyField('Question', blank=True)
 
     def __str__(self):
-        # return self.token
-        return str(self.name)
+        return str(self.pk) + ' - ' + self.name
 
 
 
 class Question(models.Model):
+    QUESTION_TYPES = (
+        ('T','Text'),
+        ('O', 'Option'),
+        ('N','Numeric'),
+    )
+
     text = models.TextField()
-
-    type = models.CharField(
-             choices = (("text","text"),
-                        ("option","option"),
-                        ("numeric","numeric")),
-             max_length = 15)
-
-    choices = models.ManyToManyField(Choice)
+    type = models.CharField(choices = QUESTION_TYPES,
+                            max_length = 2,
+                            )
+    choices = models.ManyToManyField('Choice',
+                                      blank=True
+                                     )
+    def __str__(self):
+        return str(self.pk) + ' - ' + self.text[:50]
 
 
 class Choice(models.Model):
@@ -46,9 +53,5 @@ class Choice(models.Model):
 
 class Answer(models.Model):
     text = models.TextField()
-    offering = models.ManyToManyField(Offering)
-    Question = models.ForeignKey(Question)
-
-
-
-
+    offering = models.ForeignKey('dacParser.Offering')
+    question = models.ForeignKey(Question)

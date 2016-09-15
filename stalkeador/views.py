@@ -87,7 +87,7 @@ def subject(request, code, year, semester, offe_id):
         )
         if offe_id:
             offering = Offering.objects.all().get(
-                code = code.upper(),
+                subject = subject,
                 year = year,
                 semester = semester,
                 offering_id = offe_id
@@ -101,18 +101,18 @@ def subject(request, code, year, semester, offe_id):
             return render(request, 'stalkeador/offering.html', out)
         elif semester:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
                 year = year,
                 semester = semester,
             )
         elif offe_id:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
                 year = year,
             )
         else:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
             )
 
         out = {

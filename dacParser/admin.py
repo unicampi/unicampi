@@ -18,8 +18,8 @@ admin.site.register(Subject, SubjectAdmin)
 
 
 class OfferingAdmin(admin.ModelAdmin):
-    search_fields = ('code', 'year', "semester")
-    ordering = ['code']
+    search_fields = ('subject', 'year', "semester")
+    ordering = ['subject']
 
 admin.site.register(Offering, OfferingAdmin)
 
