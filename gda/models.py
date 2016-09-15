@@ -3,31 +3,40 @@ from gda.tools.tokenGenerator import generateToken
 
 
 class Token(models.Model):
+    '''
+        This is a model for a token to guarantee the anonymity of the Student
+    '''
     student = models.ForeignKey('dacParser.Student')
     token = models.CharField(primary_key=True,
+                             unique=True,
                              max_length = 37,
-                             default=generateToken(student.name),
                              editable=False,
                              )
-    discipline = models.ForeignKey('dacParser.Offering')
+    offering = models.ForeignKey('dacParser.Offering')
     used = models.BooleanField(default = False)
 
     class Meta:
-        unique_together = ["student", "discipline", "token"]
+        unique_together = ["student", "offering"]
 
     def __str__(self):
-        # return self.token
-        return (str(self.student)+' - '+str(self.discipline.code)+' - ' +
-                str(self.token))
+        return (str(self.offering.subject.code) +' - '+
+                 str(self.student))
+
+    # This function is to autogenerate the token when saving the model to de db
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.token = generateToken(self.student.name + str(self.offering))
+        super().save(*args, **kwargs)
 
 
 class Questionnaire(models.Model):
     name = models.CharField(max_length = 50)
-    questions = models.ManyToManyField('Question', blank=True)
+    questions = models.ManyToManyField('Question',
+                                        blank=True
+                                    )
 
     def __str__(self):
         return str(self.pk) + ' - ' + self.name
-
 
 
 class Question(models.Model):
@@ -43,7 +52,8 @@ class Question(models.Model):
                             )
     choices = models.ManyToManyField('Choice',
                                       blank=True
-                                     )
+                                      )
+
     def __str__(self):
         return str(self.pk) + ' - ' + self.text[:50]
 

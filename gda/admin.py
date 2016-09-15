@@ -3,14 +3,19 @@ from gda.models import Token, Questionnaire, Question, Choice, Answer
 
 
 class TokenAdmin(admin.ModelAdmin):
-    search_fields = ('student', 'discipline')
+    # To make it easy to order
+    list_display = ("offering", "student")
+    fields = ('offering', 'student', 'used')
+    search_fields = ('student__name','student__ra', 'offering__subject__code')
     ordering = ['student']
-    readonly_fields = ('token', 'used', 'discipline', 'student')
+    readonly_fields = ('token', 'used', 'offering', 'student')
+
 
 admin.site.register(Token, TokenAdmin)
 
 
 class QuestionnaireAdmin(admin.ModelAdmin):
+    list_display = ("pk", "name")
     search_fields = ('id','name')
     ordering = ['id']
 
@@ -32,7 +37,9 @@ admin.site.register(Choice, ChoiceAdmin)
 
 
 class AnswerAdmin(admin.ModelAdmin):
-    search_fields = ('offering','question')
+    list_display = ("question", "offering")
+    search_fields = ('offering__subject__code',
+                     'question__id')
     ordering = ['question']
 
 admin.site.register(Answer, AnswerAdmin)
