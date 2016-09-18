@@ -84,16 +84,16 @@ def updateDisciplines(request, institute):
                 year = off.year,
                 semester = off.semester,
                 teacher = TeacherModel,
-                vacancies = off.vacancies,
-                registered = off.registered,
+                vacancies = int(off.vacancies),
+                registered = int(off.registered),
             )
             # Now were going to create a Student model and add it to discipline
             # as we add the discipline to the student
             studentsInOffering = off.students
             for student in studentsInOffering:
                 StudentModel, created = Student.objects.get_or_create(
-                    ra = student.ra,
-                    name = html.unescape(student.name),
+                    ra = student.ra.strip(),
+                    name = html.unescape(student.name.strip()),
                     course = student.course,
                     course_type = student.course_modality,
                 )

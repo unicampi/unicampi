@@ -18,6 +18,7 @@ admin.site.register(Subject, SubjectAdmin)
 
 
 class OfferingAdmin(admin.ModelAdmin):
+    readonly_fields = ('answers',)
     search_fields = ('subject', 'year', "semester")
     ordering = ['subject']
 

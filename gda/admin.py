@@ -1,17 +1,5 @@
 from django.contrib import admin
-from gda.models import Token, Questionnaire, Question, Choice, Answer
-
-
-class TokenAdmin(admin.ModelAdmin):
-    # To make it easy to order
-    list_display = ("offering", "student")
-    fields = ('offering', 'student', 'used')
-    search_fields = ('student__name','student__ra', 'offering__subject__code')
-    ordering = ['student']
-    readonly_fields = ('token', 'used', 'offering', 'student')
-
-
-admin.site.register(Token, TokenAdmin)
+from gda.models import Questionnaire, Question, Choice, Answer
 
 
 class QuestionnaireAdmin(admin.ModelAdmin):
@@ -37,7 +25,7 @@ admin.site.register(Choice, ChoiceAdmin)
 
 
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ("question", "offering")
+    list_display = ("question",)
     search_fields = ('offering__subject__code',
                      'question__id')
     ordering = ['question']

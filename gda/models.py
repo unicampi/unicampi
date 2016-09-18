@@ -1,32 +1,4 @@
 from django.db import models
-from gda.tools.tokenGenerator import generateToken
-
-
-class Token(models.Model):
-    '''
-        This is a model for a token to guarantee the anonymity of the Student
-    '''
-    student = models.ForeignKey('dacParser.Student')
-    token = models.CharField(primary_key=True,
-                             unique=True,
-                             max_length = 37,
-                             editable=False,
-                             )
-    offering = models.ForeignKey('dacParser.Offering')
-    used = models.BooleanField(default = False)
-
-    class Meta:
-        unique_together = ["student", "offering"]
-
-    def __str__(self):
-        return (str(self.offering.subject.code) +' - '+
-                 str(self.student))
-
-    # This function is to autogenerate the token when saving the model to de db
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.token = generateToken(self.student.name + str(self.offering))
-        super().save(*args, **kwargs)
 
 
 class Questionnaire(models.Model):
@@ -61,7 +33,13 @@ class Question(models.Model):
 class Choice(models.Model):
     text = models.TextField()
 
+    def __str__(self):
+        return str(self.text)
+
 class Answer(models.Model):
     text = models.TextField()
-    offering = models.ForeignKey('dacParser.Offering')
-    question = models.ForeignKey(Question)
+    choice = models.ForeignKey('Choice',
+                                null=True,
+                                blank=True
+                                )
+    question = models.ForeignKey('Question')

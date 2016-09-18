@@ -14,7 +14,7 @@ class Student(models.Model):
     ra = models.CharField(max_length=7, unique=True)
     name = models.CharField(max_length=150)
     course = models.CharField(max_length=15)
-    course_type = models.CharField(max_length=4)
+    course_type = models.CharField(max_length=4, blank=True, null=True)
     stu_offerings = models.ManyToManyField('Offering')
 
     def __str__(self):
@@ -52,13 +52,9 @@ class Subject(models.Model):
     type = models.CharField(max_length=1, choices=COURSE_TYPE)
     descryption = models.CharField(max_length=1024)
     # Makes the default questionaire the one with id = 1
-    # If youre gonna remake all the migrations comments the questionnaire fielld
-    # make the migrations, and then uncomment it and make the migration again
-    # Begin from here
-    #questionnaire = models.ForeignKey('gda.Questionnaire',
-    #                                   default=1,
-    #                                  )
-    # comment until here
+    questionnaire = models.ForeignKey('gda.Questionnaire',
+                                       default=1,
+                                      )
 
     class Meta:
         unique_together = ('code', 'name', 'type')
@@ -78,13 +74,17 @@ class Offering(models.Model):
     """
 
     subject = models.ForeignKey('Subject')
-    offering_id = models.CharField(max_length=2)
+    offering_id = models.CharField(max_length=3)
     semester = models.CharField(max_length=2)
     year = models.CharField(max_length=5)
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     vacancies = models.IntegerField()
     registered = models.IntegerField()
     students = models.ManyToManyField(Student)
+    answers = models.ManyToManyField('gda.Answer',
+                                     blank=True,
+                                     )
+
 
     class Meta:
         unique_together = (("subject","offering_id", "year", "semester"),)
@@ -111,15 +111,6 @@ class Teacher(models.Model):
 
     def url(self):
         return('/t/' + str(self.name))
-
-
-# This is an object for a course
-# eache course has an year and each year has a curriculun
-#class Subject(models.Model):
-#    name = models.CharField(max_length=150)
-#    code = models.IntegerField()
-#    year = models.CharField(max_length=10)
-#    # Podemos colocar catalogos
 
 
 class Institute(models.Model):

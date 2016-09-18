@@ -5,12 +5,12 @@ urlpatterns = [
     # URL for student
     url(
         r'^s/(?P<studentRA>\d{5,6})$',
-        views.student,
+        views.deal_student,
         name='student'
     ),
     #url for teachers, need to be improved
     url(r'^t/(?P<teacherID>.*)',
-        views.teacher,
+        views.deal_teacher,
         name='teacher'
     ),
     # URL for degrees of discipline
@@ -21,7 +21,7 @@ urlpatterns = [
         # \/?(?P<semester>\d)?                  - Optional semester
         # \/?(?P<offe_id>[A-Za-z])?\/?          - Optional offe_id
         r'^d/(?P<code>[A-Za-z][A-Za-z ][0-9]{3})\/?(?P<year>\d{4})?\/?(?P<semester>\d)?\/?(?P<offe_id>[A-Za-z])?\/?',
-        views.subject,
+        views.deal_subject,
         name='subject'
     ),
     # URL for index

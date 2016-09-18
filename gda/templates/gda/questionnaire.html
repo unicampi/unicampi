@@ -1,0 +1,58 @@
+{% extends "stalkeador/header.html" %}
+
+{% block content %}
+
+    {% if token %}
+        {% if not token.used %}
+            <h3 class='text-center'> {{ offering.subject.code }} -  {{ offering.offering_id }}</h3>
+            <h5 class='align-center'><b>Professor:</b> {{ offering.teacher }}</h5>
+            <h5 class='align-center'><b>Você:</b> {{ token.student }}</h5>
+        {% else %}
+            <h4 class='text-center'>
+                Token já utilizado
+            </h4>
+        {% endif %}
+    {% else %}
+        <h4 class='text-center'>
+            Não é uma página valida
+        </h4>
+        <h5 class='align-left'>
+            Se você acredita que está vendo essa página sem motivos, por favor entre em contato com o CACo
+        </h5>
+    {% endif %}
+
+    <br>
+    <h2 class='text-center'>Questionário</h2>
+
+    {% if questions %}
+    <form method='POST' class="post-form">
+        {% csrf_token %}
+
+        {% for question in questions %}
+        <label>
+            <h4>{{ question.text }}</h4>
+            {% if question.type == 'T' %}
+                <input name="{{ question.pk }}" type="text">
+            {% elif question.type == 'N' %}
+                <input name="{{ question.pk }}" type="number">
+            {% elif question.type == 'O' %}
+                <label>
+                    <select name="{{ question.pk }}">
+                        {% for choice in question.choices.all %}
+                            <option value="{{ choice.id }}">
+                                {{ choice }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                 </label>
+            {% endif %}
+        </label>
+        {% endfor %}
+
+        <div class="input-group-button">
+            <input type="submit" class="button" value="Submit">
+        </div>
+    </form>
+    {% endif %}
+
+{% endblock %}
