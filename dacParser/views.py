@@ -79,21 +79,21 @@ def updateDisciplines(request, institute):
                 )
             # Creates discipline Model
             OfferingModel, created = Offering.objects.get_or_create(
-                code = subject.code,
+                subject = SubjectModel,
                 offering_id = off.offering_id,
                 year = off.year,
                 semester = off.semester,
                 teacher = TeacherModel,
-                vacancies = off.vacancies,
-                registered = off.registered,
+                vacancies = int(off.vacancies),
+                registered = int(off.registered),
             )
             # Now were going to create a Student model and add it to discipline
             # as we add the discipline to the student
             studentsInOffering = off.students
             for student in studentsInOffering:
                 StudentModel, created = Student.objects.get_or_create(
-                    ra = student.ra,
-                    name = html.unescape(student.name),
+                    ra = student.ra.strip(),
+                    name = html.unescape(student.name.strip()),
                     course = student.course,
                     course_type = student.course_modality,
                 )
@@ -102,7 +102,6 @@ def updateDisciplines(request, institute):
                 # Insere o estudante na Disciplina
                 OfferingModel.students.add(StudentModel)
 
-            SubjectModel.offerings.add(OfferingModel)
     print("Terminamos de gerar informações")
 
     return HttpResponse("Everything must be ok")

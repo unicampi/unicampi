@@ -49,7 +49,7 @@ def index(request):
 
 # This is for a student page (/s/RA)
 # it returns the object student
-def student(request, studentRA):
+def deal_student(request, studentRA):
     try:
         student = Student.objects.get(ra=studentRA)
         output = {
@@ -61,7 +61,7 @@ def student(request, studentRA):
 
 #view for requests on /t/teacherID
 #needs to be improved with some kind of id
-def teacher(request, teacherID):
+def deal_teacher(request, teacherID):
     try:
         teacher = Teacher.objects.get(name=teacherID)
 
@@ -76,7 +76,7 @@ def teacher(request, teacherID):
 
 # This is for a Discipline page (/s/CODE)
 # returns a list containing all the offerings with the code
-def subject(request, code, year, semester, offe_id):
+def deal_subject(request, code, year, semester, offe_id):
     if request.POST:
         print(request.POST)
 
@@ -87,7 +87,7 @@ def subject(request, code, year, semester, offe_id):
         )
         if offe_id:
             offering = Offering.objects.all().get(
-                code = code.upper(),
+                subject = subject,
                 year = year,
                 semester = semester,
                 offering_id = offe_id
@@ -101,18 +101,18 @@ def subject(request, code, year, semester, offe_id):
             return render(request, 'stalkeador/offering.html', out)
         elif semester:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
                 year = year,
                 semester = semester,
             )
         elif offe_id:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
                 year = year,
             )
         else:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
             )
 
         out = {
