@@ -122,15 +122,20 @@ def getAllSubjects(institute):
 
     # Get the page with all the subjects
     page = session.get(URL_SUBJECTS % institute)
+
     disciplines_in_page = re.findall(DISCIPLINE_NAME_PATTERN, page.text)
 
     offered_disciplines = []
-    # Now we go in each subject page and get every offerings
+    # Now we go in each subject page and get e8very offerings
     for offered_discipline in disciplines_in_page:
         page = session.get(URL_DISCIPLINE % offered_discipline)
 
+        soup = BeautifulSoup(page.text, 'lxml')
+        tds = soup.find_all('table')
+        # This is emment text
+        emment = tds[2].find_all('td')[1].text
         offered_offerings = re.findall(CLASSES_NAME_PATTERN, page.text)
-        offered_disciplines.append((offered_discipline, offered_offerings))
+        offered_disciplines.append([offered_discipline, offered_offerings, emment])
 
     return offered_disciplines
 
@@ -151,6 +156,7 @@ def generateAllSubjectsFrom(institute, year, sem):
             subject, dis = getOffering(offered_discipline[0], classe, year, sem)
             offerings.append(dis)
         subject.offerings = offerings
+        subject.emment = offered_discipline[2]
         print(subject)
         subjects.append(subject)
 

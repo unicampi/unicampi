@@ -40,7 +40,7 @@
                     <select name="{{ question.pk }}">
                         {% for choice in question.choices.all %}
                             <option value="{{ choice.id }}">
-                                {{ choice }}
+                                {{ choice.text }}
                             </option>
                         {% endfor %}
                     </select>
