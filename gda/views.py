@@ -39,60 +39,66 @@ def dealToken(request, code, year, semester, offerings, token):
             token = token,
         )
     except:
-        raise Http404("Não foi possível encontrar o token")
+        raise Http404("Erro ao procurar informações da url - dealToken")
 
     if TokenQuery.used:
-        return render(request, 'gda/questionnaire.html',{'token': TokenQuery})
+        return render(request, 'gda/questionnaire.html', {'token': TokenQuery})
 
     # If this was a submission form, we need to check its accuracy
     if request.method == "POST":
-        try:
-            # Update de database
-            with transaction.atomic():
-                # Runs through all the questions id
-                for question in SubjectQuery.questionnaire.questions.all():
-                    if str(question.id) not in request.POST:
-                        raise ValueError('Not all questions were in POST')
-                    else:
-                        value = request.POST[str(question.id)]
-                        # Now we should make the security check for the inftion
-                        if question.type == 'T':
-                            # turns the text into a safe text for html
-                            value = mark_safe(value.strip())
+        # Update de database
+        with transaction.atomic():
+            # Runs through all the questions id
+            for question in SubjectQuery.questionnaire.questions.all():
+                if str(question.id) not in request.POST:
+                    raise ValueError('Not all questions were in POST')
+                else:
+                    value = request.POST[str(question.id)]
+
+                    # Now we should make the security check for the inftion
+                    if question.type == 'T':
+                        # turns the text into a safe text for html
+                        value = mark_safe(value.strip())
+                        answer = Answer.objects.create(text=value,
+                                                        question=question
+                                                        )
+                    # Check if the answer is a number
+                    elif question.type == 'N':
+                        # Checks if the answer is a number
+                        if value.isdigit():
+                            value = value
                             answer = Answer.objects.create(text=value,
-                                                            question=question
+                                                        question=question
+                                                        )
+                        else:
+                            raise ValueError('Not valid in Number')
+                    # Check if if a valid option
+                    elif question.type == 'O':
+                        # Check if its a valid choice
+                        choiceQuery = Choice.objects.all().get(
+                                                            id = int(value)
                                                             )
-                        elif question.type == 'N':
-                            # Checks if the answer is a number
-                            if value.isdigit():
-                                value = value
-                                answer = Answer.objects.create(text=value,
-                                                            question=question
-                                                            )
-                            else:
-                                raise ValueError('Not valid in Number')
-                        elif question.type == 'O':
-                            # Check if its a valid choice
-                            choiceQuery = Choice.objects.all().get(
-                                                                id = int(value)
+                        # Checks if this question has this choice
+                        if choiceQuery:
+                            if choiceQuery in question.choices.all():
+                                answer = Answer.objects.create(text="value",
+                                                        choice=choiceQuery,
+                                                        question=question
                                                                 )
-                            # Checks if this question has this choice
-                            if choiceQuery:
-                                if choiceQuery in question.choices.all():
-                                    answer = Answer.objects.create(text="value",
-                                                            choice=choiceQuery,
-                                                            question=question
-                                                                    )
-                                else:
-                                    raise ValueError('Not valid in Options')
-                    # Save the answer
-                    answer.save()
-                # After looping through all the questions, we mark token used
-                TokenQuery.used = True
-                TokenQuery.save()
-            return render(request, 'gda/questionnaire.html',{'token': TokenQuery})
-        except:
-            raise Http404("Parametros das respostas errados")
+                            else:
+                                raise ValueError('Not valid in Options')
+                # Save the answer
+                answer.save()
+                OfferingQuery.answers.add(answer)
+            # After looping through all the questions, we mark token used
+            TokenQuery.used = True
+            TokenQuery.save()
+            OfferingQuery.save()
+        return render(request, 'gda/questionnaire.html',{'token': TokenQuery})
+        #try:
+        #
+        #except:
+        #    raise Http404("Erro ao adicionar no bd")
 
 
     if TokenQuery:
