@@ -16,6 +16,7 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 | name          | String       | Nome da matéria                 |
 | type  	    | String       | Graducação: **U** Pós: **G**    |
 | descryption   | String       | Ementa da matéria               |
+| requeriments  | Subject      | Disciplinas necessárias para se cursar |
 
 
 ## **Offering** [Oferecimento]
