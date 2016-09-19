@@ -49,6 +49,7 @@ def updateInstitutes(request):
 @login_required
 def updateDisciplines(request, institute):
     # First parses all the subjects in this semester
+    subjects = generateAllSubjectsFrom(institute.upper(), 2016, 2)
     try:
         print("Parseando disciplinas de "+institute.upper())
         subjects = generateAllSubjectsFrom(institute.upper(), 2016, 2)
@@ -63,6 +64,7 @@ def updateDisciplines(request, institute):
             code = subject.code,
             name = subject.name,
             type = subject.type,
+            descryption = subject.emment
         )
         print(subject)
 
