@@ -35,6 +35,7 @@ class Student(models.Model):
     # the name RA and School is the same
     class Meta:
         unique_together = ["name", "ra", "course"]
+        ordering = ["name"]
 
 
 class Subject(models.Model):
@@ -88,6 +89,7 @@ class Offering(models.Model):
 
     class Meta:
         unique_together = (("subject","offering_id", "year", "semester"),)
+        ordering = ['subject', 'offering_id']
 
     def __str__(self):
         return self.subject.code+'-'+self.offering_id+' '+self.semester+'s'+self.year
