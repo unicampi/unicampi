@@ -1,7 +1,7 @@
 import html
 
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 
 from dacParser.tools.dacParser import generateAllSubjectsFrom, getAllInstitutes
@@ -89,6 +89,14 @@ def updateDisciplines(request, institute):
                 vacancies = int(off.vacancies),
                 registered = int(off.registered),
             )
+
+
+            # First we check if the offering had studnts:
+            oldStudents = Student.objects.all().filter(
+                stu_offerings = OfferingModel
+            )
+
+            newStudents = []
             # Now were going to create a Student model and add it to discipline
             # as we add the discipline to the student
             studentsInOffering = off.students
@@ -99,11 +107,18 @@ def updateDisciplines(request, institute):
                     course = student.course,
                     course_type = student.course_modality,
                 )
-                # Insere a disciplina no aluno
+                newStudents.append(StudentModel)
+                # Insert the offering in the student
                 StudentModel.stu_offerings.add(OfferingModel)
-                # Insere o estudante na Disciplina
+                # Insert the student in the offering
                 OfferingModel.students.add(StudentModel)
+
+            for oldstudent in oldStudents:
+                if oldstudent not in newStudents:
+                    StudentModel.stu_offerings.remove(OfferingModel)
+                    Offering.students.remove(oldstudent)
+                    OfferingModel.giveups.add(StudentModel)
 
     print("Terminamos de gerar informações")
 
-    return HttpResponse("Everything must be ok")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
