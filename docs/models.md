@@ -33,9 +33,10 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 | year        | String        | Ano do oferecimento                |
 | time        | ??            | Colocar o horário e dia da semana  |
 | teacher     | Teacher [1:n] \(professor,oferecimento\) | Professordo oferecimento           |
-| vacancies   | int           | Capacidade de uma turma            |
-| registered  | int           | Número de alunos matriculados      |
-| students    | Student [n:n] | Alunos registrados no oferecimento |
+| vacancies   | int           | Capacidade de uma turma              |
+| registered  | int           | Número de alunos matriculados        |
+| students    | Student [n:n] | Alunos registrados no oferecimento   |
+| giveups     | Student [n:n] | Alunos que desistiram do oferecimento|
 
 
 ## **Student** [Aluno]

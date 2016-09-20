@@ -81,7 +81,14 @@ class Offering(models.Model):
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     vacancies = models.IntegerField()
     registered = models.IntegerField()
-    students = models.ManyToManyField(Student)
+    students = models.ManyToManyField('Student',
+                                       blank=True,
+                                       related_name='students'
+                                      )
+    giveups = models.ManyToManyField('Student',
+                                       blank=True,
+                                       related_name='giveups'
+                                      )
     answers = models.ManyToManyField('gda.Answer',
                                      blank=True,
                                      )
