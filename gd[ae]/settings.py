@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # External django apps
+    'import_export',
+
+    #Internal django apps
     'dacParser',
     'stalkeador',
     'gda',
