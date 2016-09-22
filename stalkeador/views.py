@@ -64,8 +64,11 @@ def deal_student(request, studentRA):
 #view for requests on /t/teacherID
 #needs to be improved with some kind of id
 def deal_teacher(request, teacherID):
+    # Turns the web request into a readable name
+    teacher_name = str(' '.join(teacherID.split('-')))
+    print(teacher_name)
     try:
-        teacher = Teacher.objects.get(name=teacherID)
+        teacher = Teacher.objects.get(name=teacher_name)
 
         output = {
                 'teacher': teacher
@@ -79,9 +82,6 @@ def deal_teacher(request, teacherID):
 # This is for a Discipline page (/s/CODE)
 # returns a list containing all the offerings with the code
 def deal_subject(request, code, year, semester, offe_id):
-    if request.POST:
-        print(request.POST)
-
     try:
         # Always will be about a subject:
         subject = Subject.objects.all().get(

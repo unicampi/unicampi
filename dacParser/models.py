@@ -119,7 +119,7 @@ class Teacher(models.Model):
         return self.name
 
     def url(self):
-        return('/t/' + str(self.name))
+        return('/t/' + str('-'.join(self.name.split()) ))
 
 
 class Institute(models.Model):
