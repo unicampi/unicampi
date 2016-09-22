@@ -43,11 +43,12 @@ def index(request):
 
                 return render(request, 'stalkeador/home-searcher.html', results)
             except:
-                print("ERRO: Problema ao realizar busca")
-        return render(request, 'stalkeador/home-searcher.html')
+                print("stalkedor.views : Problema ao realizar busca")
+    # Just de home page
+    return render(request, 'stalkeador/home-searcher.html')
 
 
-# This is for a student page (/s/RA)
+# This is for a student page u/s/RA)
 # it returns the object student
 def deal_student(request, studentRA):
     try:
@@ -58,6 +59,7 @@ def deal_student(request, studentRA):
         return render(request, 'stalkeador/student.html', output)
     except:
         return render(request, 'stalkeador/student.html')
+
 
 #view for requests on /t/teacherID
 #needs to be improved with some kind of id
