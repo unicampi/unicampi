@@ -38,7 +38,7 @@
                     Código - Turma
                 </td>
                 <td>
-                    {{ offering.code }} - {{ offering.offering_id }}
+                    {{ subject.code }} - {{ offering.offering_id }}
                 </td>
             </tr>
             <tr>
@@ -46,7 +46,9 @@
                     Professor
                 </td>
                 <td>
+                    <a href="{{ offering.teacher.url }}">
                     {{ offering.teacher }}
+                    </a>
                 </td>
             </tr>
             <tr>

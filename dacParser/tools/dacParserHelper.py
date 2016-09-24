@@ -11,7 +11,6 @@ INSTITUTES_NAMES_PATTERN = 'htm\s*?\">(.+?)\s*?<\/a>'
 
 URL_SUBJECTS = dacws + 'sistemas/horarios/grad/G2S0/%s.htm'
 URL_DISCIPLINE = dacws + 'sistemas/horarios/grad/G2S0/%s.htm'
-EMMENT = '<font face="Arial,Helvetica"><font size=-1>(?P<emenda>.+)</font></font></td>'
 DISCIPLINE_NAME_PATTERN = '[A-Za-z][A-Za-z ][0-9]{3}(?= )'
 CLASSES_NAME_PATTERN = '([A-Z])\s+\n'
 
@@ -44,6 +43,7 @@ class SubjectP(object):
     code = ""
     type = ""   # undergrad or grad
     offerings = []    # an array of Class
+    emment = ""
 
     def __init__(self, name, code, type, offerings):
         self.name = name

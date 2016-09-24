@@ -5,6 +5,8 @@ echo -e "# install dependencies and runserver#"
 echo -e "# --------------------------------- #"
 echo -e "# If this is the first time running #"
 echo -e "#     ./run_script.sh first         #"
+echo -e "# If you want to import a database: #"
+echo -e "#     ./run_script.sh unicamp       #"
 echo -e "# To run with a clean migration:    #"
 echo -e "#     ./run_script.sh clean         #"
 echo -e "# To run with a clean db :          #"
@@ -80,34 +82,57 @@ if [[ "$@" == "first" ]]; then
 
   python3 manage.py makemigrations
   python3 manage.py migrate
-  python3 manage.py makemigrations dacParser
-  python3 manage.py makemigrations gda
-  python3 manage.py makemigrations
-  python3 manage.py migrate
+
+  echo -e "Would you like to import the dev database?  [N/y]:"
+  read import_db
+  if [[ $import_db == 'y' ]];then
+    python3 manage.py loaddata docs/dev.json
+  fi
 
   echo -e 'Now, you ll create a username and password for django'
   python3 manage.py createsuperuser
 
+elif [[ "$@" == "unicamp" ]]; then
+  echo 'load data'
+  read -n1 -r -p " You're gonna reset all the db - CTRL+C to quit " key
+  rm -rf gda/migrations/*
+  rm -rf dacParser/migrations/*
+  rm -rf stalkeador/migrations/*
+  rm -rf db.sqlite3
+  python3 manage.py makemigrations dacParser
+  python3 manage.py makemigrations gda
+  python3 manage.py makemigrations stalkeador
+  python3 manage.py makemigrations
+  python3 manage.py migrate
+  python3 manage.py loaddata docs/dev.json
+  python3 manage.py createsuperuser
 
 elif [[ "$@" == "clean" ]]; then
   echo 'clean'
+  read -n1 -r -p " You're gonna clean the migrations - CTRL+C to quit " key
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
+  rm -rf stalkeador/migrations/*
   python3 manage.py makemigrations dacParser
   python3 manage.py makemigrations gda
+  python3 manage.py makemigrations stalkeador
   python3 manage.py makemigrations
   python3 manage.py migrate
 
 elif [[ "$@" == "reset" ]]; then
   echo 'reset'
+  read -n1 -r -p " You're gonna reset all the db - CTRL+C to quit " key
   rm -rf gda/migrations/*
   rm -rf dacParser/migrations/*
+  rm -rf stalkeador/migrations/*
   rm -rf db.sqlite3
   python3 manage.py makemigrations dacParser
   python3 manage.py makemigrations gda
+  python3 manage.py makemigrations stalkeador
   python3 manage.py makemigrations
   python3 manage.py migrate
   python3 manage.py createsuperuser
+
 elif [[ "$@" == "config" ]]; then
   echo -e '\nNow, will configure mail and security\n'
   echo '                                      Until here |'

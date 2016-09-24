@@ -43,13 +43,14 @@ def index(request):
 
                 return render(request, 'stalkeador/home-searcher.html', results)
             except:
-                print("ERRO: Problema ao realizar busca")
-        return render(request, 'stalkeador/home-searcher.html')
+                print("stalkedor.views : Problema ao realizar busca")
+    # Just de home page
+    return render(request, 'stalkeador/home-searcher.html')
 
 
-# This is for a student page (/s/RA)
+# This is for a student page u/s/RA)
 # it returns the object student
-def student(request, studentRA):
+def deal_student(request, studentRA):
     try:
         student = Student.objects.get(ra=studentRA)
         output = {
@@ -59,11 +60,15 @@ def student(request, studentRA):
     except:
         return render(request, 'stalkeador/student.html')
 
+
 #view for requests on /t/teacherID
 #needs to be improved with some kind of id
-def teacher(request, teacherID):
+def deal_teacher(request, teacherID):
+    # Turns the web request into a readable name
+    teacher_name = str(' '.join(teacherID.split('-')))
+    print(teacher_name)
     try:
-        teacher = Teacher.objects.get(name=teacherID)
+        teacher = Teacher.objects.get(name=teacher_name)
 
         output = {
                 'teacher': teacher
@@ -76,10 +81,7 @@ def teacher(request, teacherID):
 
 # This is for a Discipline page (/s/CODE)
 # returns a list containing all the offerings with the code
-def subject(request, code, year, semester, offe_id):
-    if request.POST:
-        print(request.POST)
-
+def deal_subject(request, code, year, semester, offe_id):
     try:
         # Always will be about a subject:
         subject = Subject.objects.all().get(
@@ -87,7 +89,7 @@ def subject(request, code, year, semester, offe_id):
         )
         if offe_id:
             offering = Offering.objects.all().get(
-                code = code.upper(),
+                subject = subject,
                 year = year,
                 semester = semester,
                 offering_id = offe_id
@@ -101,18 +103,18 @@ def subject(request, code, year, semester, offe_id):
             return render(request, 'stalkeador/offering.html', out)
         elif semester:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
                 year = year,
                 semester = semester,
             )
         elif offe_id:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
                 year = year,
             )
         else:
             offerings = Offering.objects.all().filter(
-                code = code.upper(),
+                subject = subject,
             )
 
         out = {

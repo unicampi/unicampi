@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="pt-br">
+<html lang="pt-br">
 
 <head>
 	<meta charset="utf-8"/>
@@ -17,15 +17,13 @@
 		<div class="top-bar-left">
 			<ul class="menu">
 				<li><a href="/">Home</a></li>
-				{% if user.is_authenticated %}
-				<li><a href="update">Update Page</a></li>
-				{% endif %}
 			</ul>
 		</div>
 		<div class="top-bar-right">
 			{% if user.is_authenticated %}
 			<ul class="menu">
 				<li><a href="/admin">{{user}}</a></li>
+				<li><a href="/moderator">Moderação</a></li>
 				<li><a href="/admin/logout">Logout</a></li>
 			</ul>
 			{% else %}
@@ -39,7 +37,7 @@
 
 	<div class="callout large primary">
 	    <div class="row column text-center">
-	        <h1>UNISTALKER ou GDA</h1>
+	        <h1>GD[AE]</h1>
 	        <h2 class="subheader">Vamos ver se o projeto vai para frente</h2>
 			<h6 class="subheader">Tem que fazer um design legal - nao essa bosta</h6>
 	    </div>

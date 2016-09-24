@@ -18,8 +18,10 @@ admin.site.register(Subject, SubjectAdmin)
 
 
 class OfferingAdmin(admin.ModelAdmin):
-    search_fields = ('code', 'year', "semester")
-    ordering = ['code']
+    # list_display = ("subject__code", "offering_id")
+    readonly_fields = ('answers',)
+    search_fields = ('subject__code', 'year', "semester")
+    ordering = ['subject', 'offering_id', 'year', 'semester']
 
 admin.site.register(Offering, OfferingAdmin)
 

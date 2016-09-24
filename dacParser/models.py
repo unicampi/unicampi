@@ -14,7 +14,7 @@ class Student(models.Model):
     ra = models.CharField(max_length=7, unique=True)
     name = models.CharField(max_length=150)
     course = models.CharField(max_length=15)
-    course_type = models.CharField(max_length=4)
+    course_type = models.CharField(max_length=4, blank=True, null=True)
     stu_offerings = models.ManyToManyField('Offering')
 
     def __str__(self):
@@ -35,6 +35,7 @@ class Student(models.Model):
     # the name RA and School is the same
     class Meta:
         unique_together = ["name", "ra", "course"]
+        ordering = ["name"]
 
 
 class Subject(models.Model):
@@ -50,8 +51,11 @@ class Subject(models.Model):
     code = models.CharField(max_length=6, primary_key=True)
     name = models.CharField(max_length=128)
     type = models.CharField(max_length=1, choices=COURSE_TYPE)
-    offerings = models.ManyToManyField('Offering')
     descryption = models.CharField(max_length=1024)
+    # Makes the default questionaire the one with id = 1
+    questionnaire = models.ForeignKey('gda.Questionnaire',
+                                       default=1,
+                                      )
 
     class Meta:
         unique_together = ('code', 'name', 'type')
@@ -70,24 +74,36 @@ class Offering(models.Model):
     ficam associadas à turma.
     """
 
-    code = models.CharField(max_length=6)   #duplicated but im logically inbcpb
-    offering_id = models.CharField(max_length=2)
+    subject = models.ForeignKey('Subject')
+    offering_id = models.CharField(max_length=3)
     semester = models.CharField(max_length=2)
     year = models.CharField(max_length=5)
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     vacancies = models.IntegerField()
     registered = models.IntegerField()
-    students = models.ManyToManyField(Student)
+    students = models.ManyToManyField('Student',
+                                       blank=True,
+                                       related_name='students'
+                                      )
+    giveups = models.ManyToManyField('Student',
+                                       blank=True,
+                                       related_name='giveups'
+                                      )
+    answers = models.ManyToManyField('gda.Answer',
+                                     blank=True,
+                                     )
+
 
     class Meta:
-        unique_together = (("code","offering_id", "year", "semester"),)
+        unique_together = (("subject","offering_id", "year", "semester"),)
+        ordering = ['subject', 'offering_id']
 
     def __str__(self):
-        return self.code+'-'+self.offering_id+' '+self.semester+'s'+self.year
+        return self.subject.code+'-'+self.offering_id+' '+self.semester+'s'+self.year
 
     # This method returns a string containing the path to the object
     def url(self):
-        return '/d/'+self.code+'/'+self.year+'/'+self.semester+'/'+self.offering_id
+        return '/d/'+self.subject.code+'/'+self.year+'/'+self.semester+'/'+self.offering_id
 
 
 # This object stores the teacher
@@ -97,22 +113,13 @@ class Teacher(models.Model):
 
     """
     name = models.CharField(max_length=150)
-    email = models.CharField(max_length=150)
+    email = models.EmailField(max_length=150)
 
     def __str__(self):
         return self.name
 
     def url(self):
-        return('/t/' + str(self.name))
-
-
-# This is an object for a course
-# eache course has an year and each year has a curriculun
-#class Subject(models.Model):
-#    name = models.CharField(max_length=150)
-#    code = models.IntegerField()
-#    year = models.CharField(max_length=10)
-#    # Podemos colocar catalogos
+        return('/t/' + str('-'.join(self.name.split()) ))
 
 
 class Institute(models.Model):

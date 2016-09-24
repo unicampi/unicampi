@@ -15,8 +15,8 @@ O Modelo que armazena informações sobre um disciplina da faculdade
 | ***code***    | ***String*** | ***Código da disciplina. Ex: MC102*** |
 | name          | String       | Nome da matéria                 |
 | type  	    | String       | Graducação: **U** Pós: **G**    |
-| offerings      | Offering [1:n] \(oferecimento,disciplina\)| Oferecimentos da disciplina     |
 | descryption   | String       | Ementa da matéria               |
+| requeriments  | Subject      | Disciplinas necessárias para se cursar |
 
 
 ## **Offering** [Oferecimento]
@@ -27,15 +27,16 @@ O modelo que armazena informações sobre um oferecimento de uma disciplina
 ### Atributos
 |nome atributo| tipo          | descrição                          |
 | ----------- | ------------- | ---------------------------------- |
-| code        | String        | Código da disciplina. Ex: MC102    |
+| subject     | Subject [n:1] \(Oferecimentos: Matéria\)   | Código da disciplina. Ex: MC102    |
 | offering_id  | String        | Determinada turma do modelo. Ex: A |
 | semester    | String        | Semestre do oferecimento           |
 | year        | String        | Ano do oferecimento                |
 | time        | ??            | Colocar o horário e dia da semana  |
 | teacher     | Teacher [1:n] \(professor,oferecimento\) | Professordo oferecimento           |
-| vacancies   | int           | Capacidade de uma turma            |
-| registered  | int           | Número de alunos matriculados      |
-| students     | Student [n:n] | Alunos registrados no oferecimento |
+| vacancies   | int           | Capacidade de uma turma              |
+| registered  | int           | Número de alunos matriculados        |
+| students    | Student [n:n] | Alunos registrados no oferecimento   |
+| giveups     | Student [n:n] | Alunos que desistiram do oferecimento|
 
 
 ## **Student** [Aluno]
@@ -76,7 +77,7 @@ O modelo que armazena informações sobre um estudante
 
 
 ## **Token**
-*gda/models.py*
+*stalkeador/models.py*
 
 Modelo que armazena os tokens gerados para cada aluno
 
@@ -87,3 +88,47 @@ Modelo que armazena os tokens gerados para cada aluno
 | ***token*** | ***String***  | ***Código do token***               |
 |  discipline |Discipline[1:n] \(token, disciplina\) | Disciplina a que pertence o token   |
 |     used    | Boolean       | afirma se já foi usada ou não       |
+
+
+## **Answer**
+*gda/models.py*
+
+Modelo que armazena uma resposta de uma questão com as perguntas
+
+### Atributos
+|nome atributo| tipo          | descrição                           |
+| ----------- | ------------- | ----------------------------------- |
+|             |               |                                     |
+
+
+## **Questionnaire**
+*gda/models.py*
+
+Modelo que armazena um questionário com as perguntas
+
+### Atributos
+|nome atributo| tipo          | descrição                           |
+| ----------- | ------------- | ----------------------------------- |
+|             |               |                                     |
+
+
+## **Question**
+*gda/models.py*
+
+Modelo que armazena uma pergunta
+
+### Atributos
+|nome atributo| tipo          | descrição                           |
+| ----------- | ------------- | ----------------------------------- |
+|             |               |                                     |
+
+
+## **Choice**
+*gda/models.py*
+
+Modelo que armazena uma opção de resposta para uma pergunta
+
+### Atributos
+|nome atributo| tipo          | descrição                           |
+| ----------- | ------------- | ----------------------------------- |
+|             |               |                                     |

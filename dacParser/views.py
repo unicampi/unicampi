@@ -1,7 +1,7 @@
 import html
 
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 
 from dacParser.tools.dacParser import generateAllSubjectsFrom, getAllInstitutes
@@ -49,6 +49,7 @@ def updateInstitutes(request):
 @login_required
 def updateDisciplines(request, institute):
     # First parses all the subjects in this semester
+    subjects = generateAllSubjectsFrom(institute.upper(), 2016, 2)
     try:
         print("Parseando disciplinas de "+institute.upper())
         subjects = generateAllSubjectsFrom(institute.upper(), 2016, 2)
@@ -63,6 +64,7 @@ def updateDisciplines(request, institute):
             code = subject.code,
             name = subject.name,
             type = subject.type,
+            descryption = subject.emment
         )
         print(subject)
 
@@ -79,30 +81,44 @@ def updateDisciplines(request, institute):
                 )
             # Creates discipline Model
             OfferingModel, created = Offering.objects.get_or_create(
-                code = subject.code,
+                subject = SubjectModel,
                 offering_id = off.offering_id,
                 year = off.year,
                 semester = off.semester,
                 teacher = TeacherModel,
-                vacancies = off.vacancies,
-                registered = off.registered,
+                vacancies = int(off.vacancies),
+                registered = int(off.registered),
             )
+
+
+            # First we check if the offering had studnts:
+            oldStudents = Student.objects.all().filter(
+                stu_offerings = OfferingModel
+            )
+
+            newStudents = []
             # Now were going to create a Student model and add it to discipline
             # as we add the discipline to the student
             studentsInOffering = off.students
             for student in studentsInOffering:
                 StudentModel, created = Student.objects.get_or_create(
-                    ra = student.ra,
-                    name = html.unescape(student.name),
+                    ra = student.ra.strip(),
+                    name = html.unescape(student.name.strip()),
                     course = student.course,
                     course_type = student.course_modality,
                 )
-                # Insere a disciplina no aluno
+                newStudents.append(StudentModel)
+                # Insert the offering in the student
                 StudentModel.stu_offerings.add(OfferingModel)
-                # Insere o estudante na Disciplina
+                # Insert the student in the offering
                 OfferingModel.students.add(StudentModel)
 
-            SubjectModel.offerings.add(OfferingModel)
+            for oldstudent in oldStudents:
+                if oldstudent not in newStudents:
+                    StudentModel.stu_offerings.remove(OfferingModel)
+                    Offering.students.remove(oldstudent)
+                    OfferingModel.giveups.add(StudentModel)
+
     print("Terminamos de gerar informações")
 
-    return HttpResponse("Everything must be ok")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
