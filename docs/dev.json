@@ -1,13 +1,5 @@
 [
 {
-  "model": "sessions.session",
-  "pk": "p5rumonyci4g5voc8c2tz0m4ujo2xpei",
-  "fields": {
-    "session_data": "MGJmMWRkY2Y1ZjNlOWNlMmM0NzdkMGI0N2RhNTExZDMwZjgwNzRhZjp7Il9hdXRoX3VzZXJfaGFzaCI6IjRmMTdiNjQ5ZWEyODZmOWZhNDhmZDAwMGJmYzg3MDlmZmFmMmJlMzkiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
-    "expire_date": "2016-10-06T20:37:05.549Z"
-  }
-},
-{
   "model": "dacParser.student",
   "pk": 1,
   "fields": {
