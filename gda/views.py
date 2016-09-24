@@ -38,6 +38,8 @@ def dealToken(request, code, year, semester, offerings, token):
             offering = OfferingQuery,
             token = token,
         )
+    except TokenQuery.DoesNotExist:
+        raise Http404("Não foi possível localizar token")
     except:
         raise Http404("Erro ao procurar informações da url - dealToken")
 
@@ -46,26 +48,31 @@ def dealToken(request, code, year, semester, offerings, token):
 
     # If this was a submission form, we need to check its accuracy
     if request.method == "POST":
-        # Update de database
+        # Update de database in atomic mode to guarantee its veracity
         with transaction.atomic():
-            # Runs through all the questions id
+            # Runs through all the questions id and check if its valid
             for question in SubjectQuery.questionnaire.questions.all():
+                # If not all the questions were answered
                 if str(question.id) not in request.POST:
                     raise ValueError('Not all questions were in POST')
                 else:
                     value = request.POST[str(question.id)]
 
                     # Now we should make the security check for the inftion
-                    if question.type == 'T':
+                    if question.typ == 'T':
                         # turns the text into a safe text for html
                         value = mark_safe(value.strip())
                         answer = Answer.objects.create(text=value,
                                                         question=question
                                                         )
                     # Check if the answer is a number
-                    elif question.type == 'N':
+                    elif question.typ == 'N':
                         # Checks if the answer is a number
                         if value.isdigit():
+                            if int(value) < question.min_v:
+                                raise ValueError('Value under expected')
+                            elif int(value) > question.max_v:
+                                raise ValueError('Value over expected')
                             value = value
                             answer = Answer.objects.create(text=value,
                                                         question=question
@@ -73,7 +80,7 @@ def dealToken(request, code, year, semester, offerings, token):
                         else:
                             raise ValueError('Not valid in Number')
                     # Check if if a valid option
-                    elif question.type == 'O':
+                    elif question.typ == 'O':
                         # Check if its a valid choice
                         choiceQuery = Choice.objects.all().get(
                                                             id = int(value)
@@ -81,12 +88,13 @@ def dealToken(request, code, year, semester, offerings, token):
                         # Checks if this question has this choice
                         if choiceQuery:
                             if choiceQuery in question.choices.all():
-                                answer = Answer.objects.create(text="value",
+                                answer = Answer.objects.create(
+                                                        text=choiceQuery.text,
                                                         choice=choiceQuery,
                                                         question=question
-                                                                )
+                                                        )
                             else:
-                                raise ValueError('Not valid in Options')
+                                raise ValueError('Not valid in option')
                 # Save the answer
                 answer.save()
                 OfferingQuery.answers.add(answer)
@@ -95,12 +103,8 @@ def dealToken(request, code, year, semester, offerings, token):
             TokenQuery.save()
             OfferingQuery.save()
         return render(request, 'gda/questionnaire.html',{'token': TokenQuery})
-        #try:
-        #
-        #except:
-        #    raise Http404("Erro ao adicionar no bd")
 
-
+    # If it wasnt post method, then we try generating the page with questions
     if TokenQuery:
         out = {
             'offering': OfferingQuery,
@@ -117,10 +121,10 @@ def dealToken(request, code, year, semester, offerings, token):
 # /manage/d/MM000/YYYY/S/C/generate
 @login_required
 def generateTokens(request, code, year, semester, offerings):
-    SubjectQuery = Subject.objects.all().get(
-        code = code.upper()
-    )
     try:
+        SubjectQuery = Subject.objects.all().get(
+            code = code.upper()
+        )
         # First, gets detials about discipline
         OfferingQuery = Offering.objects.all().get(
             subject = SubjectQuery,
@@ -160,10 +164,11 @@ def sendMail(request, code, year, semester, offerings):
     except:
         raise Http404("Não foi possivel gerar token")
 
-    SubjectQuery = Subject.objects.all().get(
-        code = code.upper()
-    )
+
     try:
+        SubjectQuery = Subject.objects.all().get(
+            code = code.upper()
+        )
         # First, gets detials about discipline
         OfferingQuery = Offering.objects.all().get(
             subject = SubjectQuery,

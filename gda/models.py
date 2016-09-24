@@ -17,21 +17,37 @@ class Question(models.Model):
         ('O', 'Option'),
         ('N','Numeric'),
     )
+    REFERENCE_TYPES = (
+        ('T', 'Teacher'),
+        ('O', 'Offering'),
+        ('S', 'Subject'),
+    )
 
     text = models.TextField()
-    type = models.CharField(choices = QUESTION_TYPES,
+    helper = models.TextField(blank=True,
+                              help_text="Texto auxiliar para questão. Ex: 'Valores entre 10 e 20'"
+                              )
+    ref = models.CharField(choices = REFERENCE_TYPES,
                             max_length = 2,
+                            help_text="Essa questão referencia a quem?"
+                            )
+    typ = models.CharField(choices = QUESTION_TYPES,
+                            max_length = 2,
+                            help_text="O tipo da questão?"
                             )
     choices = models.ManyToManyField('Choice',
-                                      blank=True
+                                      blank=True,
+                                      help_text="Possiveis alternativas para questões Option"
                                       )
+    min_v = models.IntegerField(default=0,blank=True,help_text="Menor valor possivel")
+    max_v = models.IntegerField(default=0,blank=True,help_text="Maior valor possivel")
 
     def __str__(self):
         return str(self.pk) + ' - ' + self.text[:50]
 
 
 class Choice(models.Model):
-    text = models.TextField()
+    text = models.TextField(help_text="Texto da alternativa")
 
     def __str__(self):
         return str(self.text)
