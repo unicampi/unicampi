@@ -51091,6 +51091,25 @@
     "typ": "O",
     "min_v": 0,
     "max_v": 0,
+    "choices": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  }
+},
+{
+  "model": "gda.question",
+  "pk": 5,
+  "fields": {
+    "text": "Alguma dica para quem vai cursar a disciplina?",
+    "helper": "- N\u00e3o deixe para estudar depois\r\n- \u00c9 bastante f\u00e1cil passar na disciplina\r\n- O professor costuma a demorar para corrigir as provas\r\n- etc etc etc",
+    "ref": "O",
+    "typ": "T",
+    "min_v": 0,
+    "max_v": 0,
     "choices": []
   }
 },
