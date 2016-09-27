@@ -2,23 +2,20 @@
 
 {% block content %}
     {% if teacher%}
-        <div class='row column'>
-            <h3 class="text-center"> {{ teacher.name }} </h3>
-            <table>
-                <caption>Informações do Professor</caption>
-                <thead>
-                    <tr>
-                        <th width="150"></th>
-                        <th width="150"></th>
-                    </tr>
-                </thead>
+    <h3 class="text-center">{{ teacher.name }}</h3>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="text-center">Informações do Professor</h4>
+                <caption></caption>
+            </div>
+            <table class="table">
                 <tbody>
                     <tr>
                         <td>
-                           Nome 
+                           Nome
                         </td>
                         <td>
-                            {{ teacher.name}}
+                            {{ teacher.name }}
                         </td>
                     </tr>
                 </tbody>

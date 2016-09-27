@@ -1,17 +1,13 @@
 {% extends "stalkeador/header.html" %}
 
 {% block content %}
-    <div class="row column">
-        {% if subject %}
-        <h3 class="text-center"> {{ subject }} </h3>
-        <table>
+    {% if subject %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="text-center"> {{ subject }} </h3>
             <caption>Informações da Disciplina</caption>
-            <thead>
-                <tr>
-                    <th width="150"></th>
-                    <th width="150"></th>
-                </tr>
-            </thead>
+        </div>
+        <table class="table">
             <tbody>
                 <tr>
                     <td>
@@ -47,15 +43,23 @@
                 </tr>
             </tbody>
         </table>
-        {% endif %}
+    </div>
+    {% endif %}
+
         {% if offerings %}
-        {% for offering in offerings %}
-            <a href="{{ offering.url }}">
-            <div class="callout small">
-                {{offering}}
-            </div>
-            </a>
-        {% endfor %}
+        <div>
+            {% for offering in offerings %}
+                <div class="col-md-6">
+                    <div class="thumbnail">
+                        <h4>
+                            <a href="{{ offering.url }}">
+                                {{offering}}
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
         {% else %}
             <h2> This is a subject page, but no offering was found</h2>
         {% endif %}

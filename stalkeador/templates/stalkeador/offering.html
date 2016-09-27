@@ -5,25 +5,29 @@
 {% endblock %}
 
 {% block content %}
-<div class='row column'>
-    <h3 class="text-center"> {{ offering }} </h3>
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     <div class="row text-center">
-        <form method="post">
-            {% csrf_token %}
-            <a href="/manage{{ offering.url }}/generate"><button type="button" id="generate" class="success button">Generate All Tokens</button></a>
-            <a href="/manage{{ offering.url }}/send"><button type="button" id="send" class="alert button">Generate and Send Tokens Mail</button></a>
-        </form>
+        <a href="/manage{{ offering.url }}/generate">
+            <button type="button" class="btn btn-default">
+                Generate All Tokens
+            </button>
+        </a>
+        <a href="/manage{{ offering.url }}/send">
+            <button  type="button" class="btn btn-default">
+                Generate and Send Tokens Mail
+            </button>
+        </a>
     </div>
-    {% endif %}
-    <table>
+{% endif %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="text-center"> {{ offering }} </h3>
+    </div>
+
+
+    <table class="table">
         <caption>Informações da Disciplina</caption>
-        <thead>
-            <tr>
-                <th width="150"></th>
-                <th width="150"></th>
-            </tr>
-        </thead>
         <tbody>
             <tr>
                 <td>
@@ -59,19 +63,22 @@
                     {{ offering.registered }} de {{ offering.vacancies }}
                 </td>
             </tr>
-            <tr>
-                <td>
-                    Alunos
-                </td>
-                <td>
-                    <ul class="vertical menu">
-                        {% for student in offering.students.all %}
-                            <a href="{{student.url}}"><li>{{ student }}</li></a>
-                        {% endfor %}
-                    </ul>
-                </td>
-            </tr>
         </tbody>
     </table>
+</div>
+
+<div>
+    <h3>Alunos</h3>
+    {% for student in offering.students.all %}
+        <div class="col-md-6">
+            <a href="{{ student.url }}">
+                <div class="thumbnail">
+                    <h4>
+                        {{ student }}
+                    </h4>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}

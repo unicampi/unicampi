@@ -5,8 +5,8 @@
     {% if token %}
         {% if not token.used %}
             <h3 class='text-center'> {{ offering.subject.code }} -  {{ offering.offering_id }}</h3>
-            <h5 class='align-center'><b>Professor:</b> {{ offering.teacher }}</h5>
-            <h5 class='align-center'><b>Você:</b> {{ token.student }}</h5>
+            <h4 class='align-center'><b>Professor:</b> {{ offering.teacher }}</h4>
+            <h4 class='align-center'><b>Você:</b> {{ token.student }}</h4>
         {% else %}
             <h4 class='text-center'>
                 Token já utilizado
@@ -25,38 +25,36 @@
     <h2 class='text-center'>Questionário</h2>
 
     {% if questions %}
-    <form method='POST' class="post-form">
+    <form method='POST'>
         {% csrf_token %}
 
         {% for question in questions %}
-        <label>
-            <h4>{{ question.text }}</h4>
-            {% if question.typ == 'T' %}
-                <textarea name="{{ question.pk }}" placeholder="{{ question.helper }}" ></textarea>
-            {% elif question.typ == 'N' %}
-                {% if question.helper %}
-                    <legend>
-                        {{question.helper}}
-                    </legend>
-                {% endif %}
-                <input name="{{ question.pk }}" type="number">
-            {% elif question.typ == 'O' %}
-                {% if question.helper %}
-                    <legend>
-                        {{question.helper}}
-                    </legend>
-                {% endif %}
-                <label>
-                    <select name="{{ question.pk }}">
+        <div class="form-group">
+            <label for="question.pk">{{ question.text }}</label>
+                {% if question.typ == 'T' %}
+                    <textarea class="form-control" rows="4" name="{{ question.pk }}" placeholder="{{ question.helper }}" ></textarea>
+                {% elif question.typ == 'N' %}
+                    <input class="form-control" name="{{ question.pk }}" type="number">
+                    {% if question.helper %}
+                        <small id="emailHelp" class="form-text text-muted">
+                            {{question.helper}}
+                        </small>
+                    {% endif %}
+                {% elif question.typ == 'O' %}
+                    <select class="form-control" name="{{ question.pk }}">
                         {% for choice in question.choices.all %}
                             <option value="{{ choice.id }}">
                                 {{ choice.text }}
                             </option>
                         {% endfor %}
                     </select>
-                 </label>
-            {% endif %}
-        </label>
+                    {% if question.helper %}
+                        <small id="emailHelp" class="form-text text-muted">
+                            {{question.helper}}
+                        </small>
+                    {% endif %}
+                {% endif %}
+        </div>
         {% endfor %}
 
         <div class="input-group-button">
