@@ -28,4 +28,4 @@ before_script:
   - psql -c "CREATE DATABASE mydb;" -U postgres
 
 script:
-  - "sh run_server.sh travis"
+  - "sh run_script.sh travis"
