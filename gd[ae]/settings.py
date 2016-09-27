@@ -141,3 +141,17 @@ EMAIL_PORT = int(configuration['EMAIL_PORT'])
 EMAIL_USE_TLS = str_to_bool(configuration['EMAIL_USE_TLS'])
 EMAIL_HOST_USER = configuration['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = configuration['EMAIL_HOST_PASSWORD']
+
+
+## For TRAVIS CI testing
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+            'NAME':     'travisci',
+            'USER':     'postgres',
+            'PASSWORD': '',
+            'HOST':     'localhost',
+            'PORT':     '',
+        }
+    }
