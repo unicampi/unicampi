@@ -164,6 +164,23 @@ elif [[ "$@" == "config" ]]; then
     \"EMAIL_HOST_USER\": "\"$email_username\"",
     \"EMAIL_HOST_PASSWORD\": "\"$password\""
   }" > config.json
+elif [[ "$@" == "travis" ]]; then
+  echo "{
+    \"SECRET_KEY\": \"abracadabratravis\",
+    \"EMAIL_HOST\": \"smtp.gmail.com\",
+    \"EMAIL_PORT\": \"587\",
+    \"EMAIL_USE_TLS\": \"True\",
+    \"EMAIL_HOST_USER\": \"oaoa@gmail.com\",
+    \"EMAIL_HOST_PASSWORD\": \"ahshasdad\"
+  }" > config.json
+
+  python3 manage.py makemigrations dacParser
+  python3 manage.py makemigrations gda
+  python3 manage.py makemigrations stalkeador
+  python3 manage.py makemigrations
+  python3 manage.py migrate
+  python3 manage.py loaddata docs/dev.json
+
 fi
 
 python3 manage.py runserver
