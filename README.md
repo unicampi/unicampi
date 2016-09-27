@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/henriquefacioli/gd-ae-.svg?branch=master)](https://travis-ci.org/henriquefacioli/gd-ae-)
 # [ GD[AE] ](https://github.com/henriquefacioli/gd-ae-/wiki)
 Esse é um projeto para criação do GDA + GDE, um Sistema de Avaliação de professores da Unicamp e auxilio de alunos
 
