@@ -18,7 +18,7 @@ class DefaultParserService(object):
         raise NotImplemented
 
 
-class DacService(DefaultParserSetup):
+class DacService(DefaultParserService):
   
     COLLECTIONS = [
         'institutos',
