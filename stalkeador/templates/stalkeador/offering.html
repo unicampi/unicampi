@@ -1,0 +1,84 @@
+{% extends "stalkeador/header.html" %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="row text-center">
+        <a href="/manage{{ offering.url }}/generate">
+            <button type="button" class="btn btn-default">
+                Generate All Tokens
+            </button>
+        </a>
+        <a href="/manage{{ offering.url }}/send">
+            <button  type="button" class="btn btn-default">
+                Generate and Send Tokens Mail
+            </button>
+        </a>
+    </div>
+{% endif %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="text-center"> {{ offering }} </h3>
+    </div>
+
+
+    <table class="table">
+        <caption>Informações da Disciplina</caption>
+        <tbody>
+            <tr>
+                <td>
+                    Nome
+                </td>
+                <td>
+                    {{ subject.name }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Código - Turma
+                </td>
+                <td>
+                    {{ subject.code }} - {{ offering.offering_id }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Professor
+                </td>
+                <td>
+                    <a href="{{ offering.teacher.url }}">
+                    {{ offering.teacher }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Alunos de Vagas
+                </td>
+                <td>
+                    {{ offering.registered }} de {{ offering.vacancies }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3>Alunos</h3>
+    {% for student in offering.students.all %}
+        <div class="col-md-6">
+            <a href="{{ student.url }}">
+                <div class="thumbnail">
+                    <h4>
+                        {{ student }}
+                    </h4>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

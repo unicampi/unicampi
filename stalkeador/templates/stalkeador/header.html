@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css"/>
+	<link rel="stylesheet" href="{% static 'css/stalker.css' %}" type="text/css"/>
+
+	<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+	{% block stylesheets %}
+	{% endblock %}
+
+	<title>Stalkeador Unicamp</title>
+
+</head>
+
+<body class="body">
+	<div>
+		<nav class="navbar navbar-default">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	            		<span class="sr-only">Toggle navigation</span>
+	            		<span class="icon-bar"></span>
+	            		<span class="icon-bar"></span>
+	            		<span class="icon-bar"></span>
+	          		</button>
+	          		<a class="navbar-brand" href="/">Home</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						{% if user.is_authenticated %}
+						<li>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" aria-controls="navbar">
+								{{user}}
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="/moderator">Moderação</a></li>
+								<li><a href="/admin">Admin</a></li>
+								<li><a href="/admin/logout">Logout</a></li>
+							</ul>
+						</li>
+						{% else %}
+						<li><a href="/admin">Login</a></li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+
+	<div class="container">
+		<div class="jumbotron">
+			<div class="container">
+				<h1 class="text-center">GD[AE]</h1>
+				<h2 class="text-center">Vamos ver se o projeto vai para frente</h2>
+				<h4 class="text-center">Tem que fazer um design legal - nao essa bosta</h4>
+			</div>
+			<form action="/" method="get">
+				<div class="input-group">
+					<span class="input-group-btn">
+					<button class="btn btn-default" type="button">Buscar</button>
+					</span>
+      				<input class="form-control text-left" type="search" name="search" placeholder="Nome, RA, Professor, Matéria...">
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+			{% block content %}
+			{% endblock %}
+			</div>
+		</div>
+	</div>
+</body>
+</html>
