@@ -20,18 +20,18 @@ class Tox(TestCommand):
 
 
 setup(
-	name='example-project',
-	version='1.0',
-	description='Insert description here',
-	author='Chris Mark',
-	platforms='any',
-	tests_require=['tox'],
+    name='example-project',
+    version='1.0',
+    description='Insert description here',
+    author='Chris Mark',
+    platforms='any',
+    tests_require=['tox'],
     cmdclass = {'test': Tox},
     author_email='chris@robinpowered.com',
 
-	# install_requires=['pyserial==2.7',],
-	# packages=[''],
-	# tests_require=['pytest'],
+    # install_requires=['pyserial==2.7',],
+    # packages=[''],
+    # tests_require=['pytest'],
     # long_description=long_description,
     # packages=[''],
     # include_package_data=True,
