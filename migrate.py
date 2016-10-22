@@ -5,7 +5,7 @@ client = Client(server_url="http://localhost:8888/v1",
                 auth=('aaa', 'aaa'))
  
 
-class DefaultParserSetup(object):
+class DefaultParserService(object):
 
     def __init__(self):
         self.client = Client(server_url="http://localhost:8888/v1",
@@ -30,7 +30,7 @@ class DacService(DefaultParserSetup):
     ]
 
     def __init__(self):
-        super(DacSetup, self).__init__()
+        super(DacService, self).__init__()
 
     def create(self):
         
@@ -73,8 +73,8 @@ class DacService(DefaultParserSetup):
     
     def _disciplinas(self):
 
-        institutes = self._institutos()[2:5]
-        
+        institutes = self._institutos()
+
         data = []
         for inst in institutes:
             subs = dacParser.getAllSubjects(inst['sigla'])
