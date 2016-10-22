@@ -1,1 +1,8 @@
-#example: pyserial==2.7
+Django==1.10
+requests==2.10.0
+pep8
+Unidecode==0.04.19
+beautifulsoup4
+lxml
+django-graphos==0.3.2
+django-import-export
