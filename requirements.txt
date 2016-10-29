@@ -3,6 +3,5 @@ cornice
 lxml
 pep8
 pyramid
-re
 requests
 tox
