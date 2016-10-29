@@ -1,7 +1,9 @@
 import unittest
+import sys, os
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
 
-from api import dacParser
-
+from unicampi import dacParser
 
 class ParserTest(unittest.TestCase):
 
@@ -9,13 +11,17 @@ class ParserTest(unittest.TestCase):
         pass
 
     def test_get_institutes(self):
-        inst = dacParser.getAllInstitutes()
+        inst = dacParser.getInstitutes()
         self.assertTrue(len(inst) >  0)
 
-    def test_get_disciplines(self):
-        inst = dacParser.getAllSubjects('FEEC')
+    def test_get_subjects(self):
+        inst = dacParser.getSubjects('FEEC')
+        self.assertTrue(len(inst) > 0)
+    
+    def test_get_offerings(self):
+        inst = dacParser.getOfferings('MC202', '2016', '1')
         self.assertTrue(len(inst) > 0)
 
-    def test_get_offerings(self):
+    def test_get_offering(self):
         inst = dacParser.getOffering('MC202', 'A', '2016', '1')
         self.assertTrue(len(inst) > 0)

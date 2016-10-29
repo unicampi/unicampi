@@ -1,7 +1,8 @@
 bs4
+cornice
 lxml
-kinto
-kinto-http
 pep8
+pyramid
+re
 requests
 tox

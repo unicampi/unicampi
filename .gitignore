@@ -1,11 +1,13 @@
+# Swap files
+.*.swp
+.*.swo
+
 # Default things to ignore
-env
+.cache
+.venv
 .tox
 htmlcov
 *.pyc
 *.egg-info
 *.coverage
 
-# Project-specific ignores
-flasher_config.ini
-*.csv
