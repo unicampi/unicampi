@@ -8,6 +8,6 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.include("cornice")
     #config.include("pyramid_swagger")
-    config.scan("views")
+    config.scan("unicampi.views")
     return config.make_wsgi_app()
 
