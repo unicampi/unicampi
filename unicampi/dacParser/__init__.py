@@ -3,7 +3,8 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-from unicampi.dacParser.patterns import *
+
+from .patterns import *
 
 
 def getInstitutes():
@@ -39,7 +40,7 @@ def getOfferings(subject, year, semester):
     subject_parse = re.findall(CLASS_PATTERN, page.text)[3:]
 
     offs = []
-    for i in range(len(subject_parse)/3):
+    for i in range(int(len(subject_parse)/3)):
         offs.append({
             'turma': subject_parse[3*i].split('<')[0].strip(),
             'vagas': subject_parse[3*i+1].split('<')[0].strip(),
