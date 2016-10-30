@@ -4,7 +4,12 @@ import sys
 from setuptools import setup, find_packages
 
 REQUIREMENTS = [
-
+    'bs4',
+    'cornice',
+    'lxml',
+    'pep8',
+    'pyramid',
+    'requests',
 ]
 
 TEST_REQUIREMENTS = [
@@ -15,9 +20,9 @@ TEST_REQUIREMENTS = [
 
 setup(
     name='unicampi',
-    license='GNU Public License v3.0',
+    license='GNU Public License (3.0)',
     version='0.1',
-    description='API to fetch Unicamp public data.',
+    description="API to fetch Unicamp's public data.",
     long_description=open('README.rst').read(),
     author='Gabriela Surita',
     author_email='gabsurita@gmail.com',
