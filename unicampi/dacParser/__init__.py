@@ -3,7 +3,7 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-from .patterns import *
+from unicampi.dacParser.patterns import *
 
 
 def getInstitutes():
