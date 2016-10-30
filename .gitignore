@@ -6,7 +6,8 @@
 .cache
 .venv
 .tox
-htmlcov
+build
+dist
 *.pyc
 *.egg-info
 *.coverage
