@@ -37,7 +37,7 @@ class ApiResource(object):
 
     def __init__(self, request):
         self.request = request
-        self.periodo = request.matchdict['periodo']
+        self.periodo = request.matchdict['periodo'].lower()
         self.ano, self.sem = self.periodo.split('s', 1)
 
 
