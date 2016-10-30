@@ -1,6 +1,6 @@
 import unittest
 
-from unicampi.unicampi import dacParser
+from unicampi import dacParser
 
 class ParserTest(unittest.TestCase):
 
