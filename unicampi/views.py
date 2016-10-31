@@ -46,15 +46,15 @@ class Institute(ApiResource):
 
     def __init__(self, request):
         super(Institute, self).__init__(request)
-        self.institute_list = dacParser.getInstitutes() 
-    
-    def collection_get(self):    
+        self.institute_list = dacParser.getInstitutes()
+
+    def collection_get(self):
         return self.institute_list
 
     def get(self):
         institute = [inst for inst in self.institute_list
                      if inst['sigla'].upper() == self.request.matchdict['sigla'].upper()]
-    
+
         if institute:
             return institute[0]
         else:
@@ -65,28 +65,19 @@ class Institute(ApiResource):
 class Subject(ApiResource):
     def __init__(self, request):
         super(Subject, self).__init__(request)
-
-        institute = request.matchdict['instituto'].upper()
-        self.subjects = dacParser.getSubjects(institute)
-        for sub in self.subjects:
-            sub.pop('turmas', {})
+        self.institute = request.matchdict['instituto'].upper()
 
     def collection_get(self):
-        return self.subjects
-    
+        return  dacParser.getSubjects(self.institute)
+
     def get(self):
-        subject = [inst for inst in self.subjects
-                   if inst['sigla'] == self.request.matchdict['sigla'].upper()]
-    
-        if subject:
-            return subject[0]
-        else:
-            raise KeyError
+        name = self.request.matchdict['sigla'].upper()
+        return dacParser.getSubject(self.institute, name)
 
 
 @resource(**ENDPOINTS['Oferecimentos'])
 class Offering(ApiResource):
-   
+
     def collection_get(self):
         data = self.request.matchdict
         return dacParser.getOfferings(data['sigla'].upper(),
@@ -95,12 +86,12 @@ class Offering(ApiResource):
 
 
     def get(self):
-        
+
         data = self.request.matchdict
         self.offering = dacParser.getOffering(data['sigla'].upper(),
                                               data['turma'].upper(),
                                               self.ano, self.sem)
-        
+
         self.enrollments = self.offering.pop('alunos', {})
 
         return self.offering

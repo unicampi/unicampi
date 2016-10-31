@@ -117,43 +117,53 @@ def getOffering(subject, cls, year, semester):
         'matriculados': registered,
         'alunos': students
     }
-    
+
     return offering
 
 
 def getSubjects(institute):
-    # Start a webbrowsin session
+
     session = requests.Session()
 
-    # Get the page with all the subjects
     page = session.get(URL_SUBJECTS % institute)
 
     subjects_in_page = re.findall(DISCIPLINE_NAME_PATTERN, page.text)
     subjects_in_page = [sub for sub in subjects_in_page if not sub.endswith('.htm"')]
 
-    offered_subjects = []
-    
-    # Now we go in each subject page and get e8very offerings
+    subjects = []
     for offered_subject in subjects_in_page:
 
         code = offered_subject.strip()[:5]
         name = offered_subject.strip()[5:]
-        page = session.get(URL_DISCIPLINE % code)
 
-        soup = BeautifulSoup(page.text, 'lxml')
-        tds = soup.find_all('table')
-        # This is emment text
-        try:
-            emment = tds[2].find_all('td')[1].text
-        except IndexError:
-            emment = ''
-
-        offered_subjects.append({
+        subjects.append({
             'nome' : name.strip(),
-            'sigla': code.replace(' ', '-'), 
-            'ementa': emment.strip()
+            'sigla': code.replace(' ', '_'),
         })
 
-    return offered_subjects
+    return subjects
 
 
+def getSubject(institute, code):
+
+    session = requests.Session()
+
+    page = session.get(URL_DISCIPLINE % code)
+
+    soup = BeautifulSoup(page.text, 'lxml')
+    tds = soup.find_all('table')
+
+    data = tds[1].find_all('td')[1].text.split('\n')
+
+    main_info = data[0]
+
+    code = main_info[:5]
+    name = main_info[5:].strip()
+
+    content = data[7].strip()
+
+    return {
+        'nome' : name,
+        'sigla': code.replace(' ', '_'),
+        'ementa': content,
+    }
