@@ -3,8 +3,8 @@ Unicamp API
 
 |travis| |master-coverage|
 
-.. |travis| image:: https://travis-ci.org/gabisurita/UnicAmPI.svg?branch=master
-    :target: https://travis-ci.org/gabisurita/UnicAmPI
+.. |travis| image:: https://travis-ci.org/gabisurita/unicampi.svg?branch=master
+    :target: https://travis-ci.org/gabisurita/unicampi
 
 .. |master-coverage| image::
     https://coveralls.io/repos/gabisurita/UnicAmPI/badge.svg?branch=master
@@ -33,5 +33,4 @@ Para listar os endpoints disponíveis, utilize a URL base.
 * No servidor padrão em <http://gabsurita.pythonanywhere.com>
 
 
-.. note: 
-   Foco primario nos dados da Diretoria Acadêmica (DAC).
+Obs: Foco primario nos dados da Diretoria Acadêmica (DAC).
