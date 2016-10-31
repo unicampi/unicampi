@@ -2,7 +2,7 @@
 
 from cornice.resource import resource, view
 from cornice import Service
-import dacParser
+from unicampi import dacParser
 
 ENDPOINTS = {
     'Institutos': {

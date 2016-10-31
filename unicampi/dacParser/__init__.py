@@ -136,7 +136,8 @@ def getSubjects(institute):
     # Now we go in each subject page and get e8very offerings
     for offered_subject in subjects_in_page:
 
-        code, name = offered_subject.split(' ', 1)
+        code = offered_subject.strip()[:5]
+        name = offered_subject.strip()[5:]
         page = session.get(URL_DISCIPLINE % code)
 
         soup = BeautifulSoup(page.text, 'lxml')
@@ -149,7 +150,7 @@ def getSubjects(institute):
 
         offered_subjects.append({
             'nome' : name.strip(),
-            'sigla': code, 
+            'sigla': code.replace(' ', '-'), 
             'ementa': emment.strip()
         })
 
