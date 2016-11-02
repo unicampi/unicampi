@@ -32,4 +32,5 @@ Para listar os endpoints disponíveis, utilize a URL base.
 * Localmente em http://localhost:8080
 * No servidor provisório em http://gabsurita.pythonanywhere.com
 
-Alguns exemplos de endpoins estão (listados na wiki)[https://github.com/gabisurita/unicampi/wiki/Exemplos-de-endpoints]
+Alguns exemplos de endpoins estão listados na wiki:
+https://github.com/gabisurita/unicampi/wiki/Exemplos-de-endpoints
