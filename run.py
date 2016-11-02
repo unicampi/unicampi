@@ -1,6 +1,13 @@
+"""Run"""
+
+# Author: gabisurita -- <gabsurita@gmail.com>
+# License: GPL 3.0
+
+
 from wsgiref.simple_server import make_server
+
 from pyramid.config import Configurator
-from pyramid.response import Response
+
 from unicampi import main
 
 SERVER = '0.0.0.0'

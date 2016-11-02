@@ -1,16 +1,24 @@
 # coding: utf-8
+
+"""DacParser Base Module"""
+
+# Author: gabisurita -- <gabsurita@gmail.com>
+# License: GPL 3.0
+
+
 from __future__ import unicode_literals, absolute_import
 
 import requests
 from bs4 import BeautifulSoup
 
+from .urls import (PUBLIC_MENU_URL, INSTITUTES_URL, SUBJECTS_URL,
+                   OFFERING_URL, OFFERINGS_URL)
 from .utils import ContentFinder
-from .urls import *
 
-def getInstitutes():
 
+def get_institutes():
     session = requests.Session()
-    page = session.get(institutes_url)
+    page = session.get(INSTITUTES_URL)
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -27,14 +35,13 @@ def getInstitutes():
     return institutes
 
 
-def getOfferings(subject, year, semester):
-
+def get_offerings(subject, year, semester):
     session = requests.Session()
 
-    token_page = session.get(public_menu_url)
+    token_page = session.get(PUBLIC_MENU_URL)
     token = token_page.content[1839:1871].decode('ascii')
 
-    page = session.get(offerings_url % (token, semester, year, subject, 'a'))
+    page = session.get(OFFERINGS_URL % (token, semester, year, subject, 'a'))
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -53,14 +60,13 @@ def getOfferings(subject, year, semester):
     return offs
 
 
-def getOffering(subject, cls, year, semester):
-
+def get_offering(subject, cls, year, semester):
     session = requests.Session()
 
-    token_page = session.get(public_menu_url)
+    token_page = session.get(PUBLIC_MENU_URL)
     token = token_page.content[1839:1871].decode('ascii')
 
-    page = session.get(offering_url % (token, semester, year, subject, cls))
+    page = session.get(OFFERING_URL % (token, semester, year, subject, cls))
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -88,11 +94,11 @@ def getOffering(subject, cls, year, semester):
     students = []
     for i in range(0, len(students_data), 6):
         students.append({
-            'ra': students_data[i+1],
-            'nome': students_data[i+2].strip(),
-            'curso': students_data[i+3],
-            'tipo': students_data[i+4],
-            'modalidade': students_data[i+5],
+            'ra': students_data[i + 1],
+            'nome': students_data[i + 2].strip(),
+            'curso': students_data[i + 3],
+            'tipo': students_data[i + 4],
+            'modalidade': students_data[i + 5],
         })
 
     offering = {
@@ -109,11 +115,10 @@ def getOffering(subject, cls, year, semester):
     return offering
 
 
-def getSubjects(institute):
-
+def get_subjects(institute):
     session = requests.Session()
 
-    page = session.get(subjects_url % institute)
+    page = session.get(SUBJECTS_URL % institute)
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -124,23 +129,21 @@ def getSubjects(institute):
 
     subjects = []
     for sub in data:
-
         code = sub[:5]
         name = sub[5:]
 
         subjects.append({
-            'nome' : name.strip(),
+            'nome': name.strip(),
             'sigla': code.replace(' ', '_'),
         })
 
     return subjects
 
 
-def getSubject(code):
-
+def get_subject(code):
     session = requests.Session()
 
-    page = session.get(subjects_url % code)
+    page = session.get(SUBJECTS_URL % code)
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -171,7 +174,7 @@ def getSubject(code):
     requires = dict(zip(req_dates, req_values))
 
     return {
-        'nome' : name,
+        'nome': name,
         'sigla': code.replace(' ', '_'),
         'ementa': content,
         'pré-requisitos': requires,
