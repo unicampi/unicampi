@@ -1,8 +1,9 @@
-# encoding: utf8
+from __future__ import unicode_literals, absolute_import
 
 import unittest
 
 from unicampi import dac_parser
+
 
 class ParserTest(unittest.TestCase):
 
@@ -11,7 +12,7 @@ class ParserTest(unittest.TestCase):
 
     def test_get_institutes(self):
         inst = dac_parser.get_institutes()
-        self.assertTrue(len(inst) >  0)
+        self.assertTrue(len(inst) > 0)
 
     def test_get_subjects(self):
         inst = dac_parser.get_subjects('FEEC')
@@ -27,7 +28,7 @@ class ParserTest(unittest.TestCase):
         inst = dac_parser.get_subject('EA611')
         self.assertEquals(inst['nome'], 'Circuitos II')
 
-    def test_get_subjects_ifgw(self):
+    def test_get_subject_ifgw(self):
         inst = dac_parser.get_subject('F_502')
         self.assertEquals(inst['nome'], 'Eletromagnetismo I')
 
@@ -48,7 +49,7 @@ class ParserTest(unittest.TestCase):
             "ano": "2016",
             "sigla": "MC202"
         }
-        
+
         self.assertEquals(len(students), 27)
         self.assertIn('nome', students[17])
         self.assertIn('ra', students[17])

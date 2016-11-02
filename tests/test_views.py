@@ -1,6 +1,5 @@
 import unittest
 
-import requests
 
 class ParserTest(unittest.TestCase):
 
