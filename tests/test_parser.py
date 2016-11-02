@@ -38,7 +38,7 @@ class ParserTest(unittest.TestCase):
     def test_get_offering(self):
         inst = dacParser.getOffering('MC202', 'A', '2016', '2')
         students = inst.pop('alunos')
-        
+
         inst_info = {
             "semestre": "2",
             "matriculados": "27",

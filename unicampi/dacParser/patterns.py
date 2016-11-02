@@ -24,16 +24,4 @@ URLTXT = 'http://www.daconline.unicamp.br/altmatr/fileDownloadPublico.do'
 
 # These are Patterns to extract information from
 # www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do
-PROFESSOR_PATTERN = 'Docente:</span>&nbsp;&nbsp;(?P<professor>.+)</td>'
-DISCIPLINE_PATTERN = 'Disciplina:</span>&nbsp;&nbsp;(?P<disciplina>[A-Za-z][A-Za-z ][0-9]{3}) (?P<turma>[A-Za-z0-9]) &nbsp;&nbsp; -&nbsp;&nbsp; (?P<materia>.+)</td>'
 CLASS_PATTERN = '[A-Za-z0-9 ]+</td>'
-TYPE_DISCIPLINE_PA = '<tr height="18">											<td bgcolor="#f2f2f2" class="corpo" height="18">&nbsp;&nbsp; <span class="itemtabela">N&iacute;vel:<\/span>&nbsp;&nbsp;(\w+)<\/td>										<\/tr>'
-VACANCIES_PATTERN = '&nbsp;(\d+) vagas&nbsp;&nbsp;-&nbsp;&nbsp;(\d+) matriculados&nbsp;&nbsp;'
-RA_PATTERN = '<td height="18" bgcolor="white" align="center" class="corpo" width="80">([0-9]+)</td>'
-NAME_PATTERN = '<td height="18" bgcolor="white" width="270" align="left" class="corpo">&nbsp;&nbsp;&nbsp;&nbsp;(.+)</td>'
-SCHOOL_PATTERN = '<td height="18" bgcolor="white" width="60" align="center" class="corpo">(\d{1,})</td>'
-C_TYPE_PATTERN = '<td height="18" bgcolor="white" width="140" align="center" class="corpo">([A-Za-z][A-Za-z ])<\/td>'
-STUDENT_PATTERN = '<td height="18" bgcolor="white" align="center" class="corpo" width="30">36</td>\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" align="center" class="corpo" width="80">(?P<ra>[0-9]+)</td>\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" width="270" align="left" class="corpo">&nbsp;&nbsp;&nbsp;&nbsp;(?P<nome>.+)</td>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t   <td height="18" bgcolor="white" width="60" align="center" class="corpo">(?P<school>\d{1,})</td>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" width="60" align="center" class="corpo">G</td>\n\t\t\t\t\t\t\t\t\t<td height="18" bgcolor="white" width="140" align="center" class="corpo">(?P<coursetype>[A-Za-z][A-Za-z ])</td>\n\t\t\t\t\t\t\t\t</tr>'
-STUDENT_TYPE = ('<td height="18" bgcolor="white" width="60" align="center" class="corpo">(.+)<\/td>\n'+
-        '									<td height="18" bgcolor="white" width="140" align="center" class="corpo">(.+)?<\/td>')
-

@@ -8,25 +8,25 @@ from bs4 import BeautifulSoup
 from .patterns import *
 from .utils import ContentFinder
 
+
 def getInstitutes():
 
     session = requests.Session()
     page = session.get(URL_ALL_INSTITUTES)
 
-    # Get codes and names
-    institutes_code = re.findall(INSTITUTES_CODES_PATTERN, page.text)
-    institutes_name = re.findall(INSTITUTES_NAMES_PATTERN, page.text)
+    soup = BeautifulSoup(page.text, 'lxml')
+    tds = soup.find_all('table')
 
-    allInstitutes = []
+    # Get 3rd table
+    data = tds[3].find_all('td')
+    data = [el.text.strip() for el in data]
 
-    # Creates the list
-    for i in range(len(institutes_code)):
-        allInstitutes.append({
-            "sigla": institutes_code[i],
-            "nome": institutes_name[i],
-        })
+    codes = data[::2]
+    names = data[1::2]
 
-    return allInstitutes
+    institutes = [{'sigla': c, 'nome': n} for c, n in zip(codes, names)]
+
+    return institutes
 
 
 def getOfferings(subject, year, semester):
