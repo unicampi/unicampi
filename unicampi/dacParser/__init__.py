@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import requests
-import re
 from bs4 import BeautifulSoup
 
 from .patterns import *
@@ -38,14 +37,19 @@ def getOfferings(subject, year, semester):
 
     page = session.get(URL_CLASSES % (token, semester, year, subject, 'a'))
 
-    subject_parse = re.findall(CLASS_PATTERN, page.text)[3:]
+    soup = BeautifulSoup(page.text, 'lxml')
+    tds = soup.find_all('table')
+
+    # Get table 8
+    data = tds[8]
+    data = [lin.find_all('td') for lin in data.find_all('tr')[2:]]
 
     offs = []
-    for i in range(int(len(subject_parse)/3)):
+    for line in data:
         offs.append({
-            'turma': subject_parse[3*i].split('<')[0].strip(),
-            'vagas': subject_parse[3*i+1].split('<')[0].strip(),
-            'matriculados': subject_parse[3*i+2].split('<')[0].strip(),
+            'turma': line[0].text,
+            'vagas': line[1].text,
+            'matriculados': line[2].text,
         })
     return offs
 
