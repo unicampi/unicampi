@@ -2,11 +2,11 @@ from __future__ import unicode_literals
 
 class ContentFinder(object):
 
-    def __init__(self, data):
+    def __init__(self, data, separator='\n'):
         self.data = data
-        self.splited = [s.strip() for s in data.split('\n') if s.strip()]
+        self.splited = [s.strip() for s in data.split(separator) if s.strip()]
 
-    def find_by_content(self, pattern, offset=1, count=None, end_pattern=None):
+    def find_by_content(self, pattern, offset=0, count=None, end_pattern=None):
 
         for piece, i in zip(self.splited, range(len(self.splited))):
             if pattern in piece:

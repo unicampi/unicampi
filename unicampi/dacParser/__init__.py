@@ -33,7 +33,6 @@ def getOfferings(subject, year, semester):
 
     session = requests.Session()
 
-    # Open token page
     token_page = session.get(DACURL)
     token = token_page.content[1839:1871].decode('ascii')
 
@@ -55,63 +54,48 @@ def getOffering(subject, cls, year, semester):
 
     session = requests.Session()
 
-    # Open token page
     token_page = session.get(DACURL)
     token = token_page.content[1839:1871].decode('ascii')
 
     page = session.get(URLSUBJECT % (token, semester, year, subject, cls))
 
-    # Gets subject code, offerings, and name
-    subject_parse = re.findall(DISCIPLINE_PATTERN, page.text)
-
-    if not subject_parse:
-        raise ValueError
-    else:
-        # Gets the subject list = [subject_code, offerings, subject_name']
-        subject_parse = subject_parse[0]
-        subject_code = subject_parse[0]
-        offering_id = subject_parse[1]
-        subject_name = ' '.join(subject_parse[2].split())
-
-    # Gets registered/vacancies
-    subject_parse = re.findall(VACANCIES_PATTERN, page.text)
-    if not subject_parse:
-        pass
-    else:
-        subject_parse = subject_parse[0]
-        vacancies = subject_parse[0]
-        registered = subject_parse[1]
-
-    # Gets teacher's name removing any escess white space
-    teacher = re.findall(PROFESSOR_PATTERN, page.text)
-    if teacher:
-        teacher = ' '.join(teacher[0].split())
-
-    # Gets all the RA and names and join then together, creating a list of
-    # objects students
     soup = BeautifulSoup(page.text, 'lxml')
+    tds = soup.find_all('table')
+
+    # Get table 6 (general info)
+    data = tds[6]
+
+    finder = ContentFinder(data.text)
+
+    teacher = finder.find_by_content('Docente:').split(':', 1)[1].strip()
+    situation = finder.find_by_content('Situação:').split(':', 1)[1].strip()
+
+    # Data is type "Situação:  25 vagas  -  12 matriculados" 
+    vacancy, registered = situation.split('-')
+
+    vacancies = vacancy.strip().split(' ', 1)[0]
+    registered = registered.strip().split(' ', 1)[0]
+
+    # Get table 8 (students)
+    students_data = tds[8].find_all('td')
+
+    # Remove heder
+    students_data = [s.text for s in students_data[7:]]
 
     students = []
+    for i in range(0, len(students_data), 6):
+        students.append({
+            'ra': students_data[i+1],
+            'nome': students_data[i+2].strip(),
+            'curso': students_data[i+3],
+            'tipo': students_data[i+4],
+            'modalidade': students_data[i+5],
+        })
 
-    if int(registered) != 0:
-        # Get the 8th table on the page as it contains the students
-        table = soup.find_all('table')[8]
-            # Runs all the trs (lines on the table)
-        for trs in table.find_all('tr')[2:]:
-            tds = trs.find_all('td')
-            student = {
-                'ra': tds[1].text, 
-                'nome': tds[2].text.strip(),
-                'curso': tds[3].text.strip(),
-                'tipo': tds[4].text,
-                'modalidade': tds[5].text.strip()
-            }
-
-            students.append(student)
-
+    print students
     offering = {
         'sigla': subject,
-        'turma': offering_id,
+        'turma': cls,
         'ano': year,
         'semestre': semester,
         'professor': teacher,
@@ -167,9 +151,9 @@ def getSubject(institute, code):
     code = main_info[:5]
     name = main_info[5:].strip()
 
-    content = finder.find_by_content('Ementa:')
+    content = finder.find_by_content('Ementa:', offset=1)
     credits = finder.find_by_content('Créditos:', offset=0)[-3:]
-    requires_list = finder.find_by_content('Pré-Requisitos:',
+    requires_list = finder.find_by_content('Pré-Requisitos:', offset=1,
                                            end_pattern='Turma:')
 
     req_dates = requires_list[::2]
