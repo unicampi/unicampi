@@ -6,39 +6,37 @@ from unicampi import dacParser
 
 ENDPOINTS = {
     'Institutos': {
-        'collection_path':'/{periodo}/institutos',
-        'path': '/{periodo}/institutos/{sigla}',
+        'collection_path': '/institutos',
+        'path': '/institutos/{sigla}',
      }, 
     'Disciplinas': {
-        'collection_path':'/{periodo}/instituto/{instituto}/disciplinas',
-        'path': '/{periodo}/disciplinas/{sigla}',
+        'collection_path': '/institutos/{instituto}/disciplinas',
+        'path': '/disciplinas/{sigla}',
      },
     'Oferecimentos': {
-        'collection_path': '/{periodo}/oferecimentos/{sigla}',
-        'path': '/{periodo}/oferecimentos/{sigla}/{turma}',
+        'collection_path': '/periodos/{periodo}/oferecimentos/{sigla}',
+        'path': '/periodos/{periodo}/oferecimentos/{sigla}/{turma}',
      },
     'Matriculados': {
-        'path': '/{periodo}/oferecimentos/{sigla}/{turma}/matriculados',
+        'path': '/periodos/{periodo}/oferecimentos/{sigla}/{turma}/matriculados',
      },
 }
-
-
-@resource(path='/')
-class Hello(object):
-    
-    def __init__(self, request):
-        self.request = request
-    
-    def get(self):
-        return {'path': ENDPOINTS}
 
 
 class ApiResource(object):
 
     def __init__(self, request):
         self.request = request
-        self.periodo = request.matchdict['periodo'].lower()
-        self.ano, self.sem = self.periodo.split('s', 1)
+
+
+@resource(path='/')
+class Hello(ApiResource):
+    
+    def __init__(self, request):
+        self.request = request
+    
+    def get(self):
+        return {'path': ENDPOINTS}
 
 
 @resource(**ENDPOINTS['Institutos'])
@@ -76,15 +74,18 @@ class Subject(ApiResource):
 @resource(**ENDPOINTS['Oferecimentos'])
 class Offering(ApiResource):
 
+    def __init__(self, request):
+        self.request = request
+        self.periodo = request.matchdict['periodo'].lower()
+        self.ano, self.sem = self.periodo.split('s', 1)
+
     def collection_get(self):
         data = self.request.matchdict
         return dacParser.getOfferings(data['sigla'].upper(),
                                       self.ano,
                                       self.sem)
 
-
     def get(self):
-
         data = self.request.matchdict
         self.offering = dacParser.getOffering(data['sigla'].upper(),
                                               data['turma'].upper(),
@@ -97,6 +98,11 @@ class Offering(ApiResource):
 
 @resource(**ENDPOINTS['Matriculados'])
 class Enrollments(Offering):
+
+    def __init__(self, request):
+        self.request = request
+        self.periodo = request.matchdict['periodo'].lower()
+        self.ano, self.sem = self.periodo.split('s', 1)
 
     def get(self):
         super(Enrollments, self).get()
