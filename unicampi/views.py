@@ -10,8 +10,8 @@ ENDPOINTS = {
         'path': '/{periodo}/institutos/{sigla}',
      }, 
     'Disciplinas': {
-        'collection_path':'/{periodo}/disciplinas/{instituto}',
-        'path': '/{periodo}/disciplinas/{instituto}/{sigla}',
+        'collection_path':'/{periodo}/instituto/disciplinas/{instituto}',
+        'path': '/{periodo}/disciplinas/{sigla}',
      },
     'Oferecimentos': {
         'collection_path': '/{periodo}/oferecimentos/{sigla}',
@@ -63,16 +63,14 @@ class Institute(ApiResource):
 
 @resource(**ENDPOINTS['Disciplinas'])
 class Subject(ApiResource):
-    def __init__(self, request):
-        super(Subject, self).__init__(request)
-        self.institute = request.matchdict['instituto'].upper()
 
     def collection_get(self):
-        return  dacParser.getSubjects(self.institute)
+        institute = self.request.matchdict['instituto'].upper()
+        return  dacParser.getSubjects(institute)
 
     def get(self):
         name = self.request.matchdict['sigla'].upper()
-        return dacParser.getSubject(self.institute, name)
+        return dacParser.getSubject(name)
 
 
 @resource(**ENDPOINTS['Oferecimentos'])

@@ -1,17 +1,16 @@
 # coding: utf-8
-from __future__ import unicode_literals
+from __future__ import unicode_literals, absolute_import
 
 import requests
 from bs4 import BeautifulSoup
 
-from .patterns import *
 from .utils import ContentFinder
-
+from .urls import *
 
 def getInstitutes():
 
     session = requests.Session()
-    page = session.get(URL_ALL_INSTITUTES)
+    page = session.get(institutes_url)
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -32,10 +31,10 @@ def getOfferings(subject, year, semester):
 
     session = requests.Session()
 
-    token_page = session.get(DACURL)
+    token_page = session.get(public_menu_url)
     token = token_page.content[1839:1871].decode('ascii')
 
-    page = session.get(URL_CLASSES % (token, semester, year, subject, 'a'))
+    page = session.get(offerings_url % (token, semester, year, subject, 'a'))
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -58,10 +57,10 @@ def getOffering(subject, cls, year, semester):
 
     session = requests.Session()
 
-    token_page = session.get(DACURL)
+    token_page = session.get(public_menu_url)
     token = token_page.content[1839:1871].decode('ascii')
 
-    page = session.get(URLSUBJECT % (token, semester, year, subject, cls))
+    page = session.get(offering_url % (token, semester, year, subject, cls))
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -114,7 +113,7 @@ def getSubjects(institute):
 
     session = requests.Session()
 
-    page = session.get(URL_SUBJECTS % institute)
+    page = session.get(subjects_url % institute)
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
@@ -137,11 +136,11 @@ def getSubjects(institute):
     return subjects
 
 
-def getSubject(institute, code):
+def getSubject(code):
 
     session = requests.Session()
 
-    page = session.get(URL_DISCIPLINE % code)
+    page = session.get(subjects_url % code)
 
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')

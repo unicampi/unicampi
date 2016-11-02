@@ -24,11 +24,11 @@ class ParserTest(unittest.TestCase):
         self.assertIn('F_128', codes)
 
     def test_get_subject(self):
-        inst = dacParser.getSubject('FEEC', 'EA611')
+        inst = dacParser.getSubject('EA611')
         self.assertEquals(inst['nome'], 'Circuitos II')
 
     def test_get_subjects_ifgw(self):
-        inst = dacParser.getSubject('IFGW', 'F_502')
+        inst = dacParser.getSubject('F_502')
         self.assertEquals(inst['nome'], 'Eletromagnetismo I')
 
     def test_get_offerings(self):

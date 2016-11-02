@@ -2,7 +2,7 @@
 """
 from pyramid.config import Configurator
 
-API_VERSION = '0.02'
+API_VERSION = '0.03'
 
 def main(global_config, **settings):
     config = Configurator(settings=settings)
