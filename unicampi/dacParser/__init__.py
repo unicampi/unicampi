@@ -1,14 +1,15 @@
 # coding: utf-8
+from __future__ import unicode_literals
 
 import requests
 import re
 from bs4 import BeautifulSoup
 
 from .patterns import *
-
+from .utils import ContentFinder
 
 def getInstitutes():
-    
+
     session = requests.Session()
     page = session.get(URL_ALL_INSTITUTES)
 
@@ -27,6 +28,7 @@ def getInstitutes():
 
     return allInstitutes
 
+
 def getOfferings(subject, year, semester):
 
     session = requests.Session()
@@ -36,7 +38,7 @@ def getOfferings(subject, year, semester):
     token = token_page.content[1839:1871].decode('ascii')
 
     page = session.get(URL_CLASSES % (token, semester, year, subject, 'a'))
-    
+
     subject_parse = re.findall(CLASS_PATTERN, page.text)[3:]
 
     offs = []
@@ -50,7 +52,7 @@ def getOfferings(subject, year, semester):
 
 
 def getOffering(subject, cls, year, semester):
-    
+
     session = requests.Session()
 
     # Open token page
@@ -153,17 +155,35 @@ def getSubject(institute, code):
     soup = BeautifulSoup(page.text, 'lxml')
     tds = soup.find_all('table')
 
-    data = tds[1].find_all('td')[1].text.split('\n')
+    data = tds[1].find_all('td')[1]
 
-    main_info = data[0]
+    finder = ContentFinder(data.text)
 
+    main_info = finder.splited[0]
     code = main_info[:5]
     name = main_info[5:].strip()
 
-    content = data[7].strip()
+    content = finder.find_by_content('Ementa:')
+    credits = finder.find_by_content('Créditos:', offset=0)[-3:]
+    requires_list = finder.find_by_content('Pré-Requisitos:',
+                                           end_pattern='Turma:')
+
+    req_dates = requires_list[::2]
+    req_values = requires_list[1::2]
+
+    # split 'or' requirements
+    req_values = [v.strip().split(' / ') for v in req_values]
+
+    # split 'and' requirements
+    for i in range(len(req_values)):
+        req_values[i] = [v.strip().split('  ') for v in req_values[i]]
+
+    requires = dict(zip(req_dates, req_values))
 
     return {
         'nome' : name,
         'sigla': code.replace(' ', '_'),
         'ementa': content,
+        'pré-requisitos': requires,
+        'créditos': int(credits),
     }
