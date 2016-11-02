@@ -1,6 +1,5 @@
 # This is the main testing file which can be run as `python setup.py test`
 
-import sys
 from setuptools import setup, find_packages
 
 REQUIREMENTS = [
@@ -34,4 +33,3 @@ setup(
     include_package_data=True,
     test_suite='tests',
     )
-

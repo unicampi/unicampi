@@ -2,7 +2,7 @@
 
 import unittest
 
-from unicampi import dacParser
+from unicampi import dac_parser
 
 class ParserTest(unittest.TestCase):
 
@@ -10,33 +10,33 @@ class ParserTest(unittest.TestCase):
         pass
 
     def test_get_institutes(self):
-        inst = dacParser.getInstitutes()
+        inst = dac_parser.get_institutes()
         self.assertTrue(len(inst) >  0)
 
     def test_get_subjects(self):
-        inst = dacParser.getSubjects('FEEC')
+        inst = dac_parser.get_subjects('FEEC')
         self.assertTrue(len(inst) > 0)
 
     def test_get_subjects_ifgw(self):
-        inst = dacParser.getSubjects('IFGW')
+        inst = dac_parser.get_subjects('IFGW')
         self.assertTrue(len(inst) > 0)
         codes = [f['sigla'] for f in inst]
         self.assertIn('F_128', codes)
 
     def test_get_subject(self):
-        inst = dacParser.getSubject('EA611')
+        inst = dac_parser.get_subject('EA611')
         self.assertEquals(inst['nome'], 'Circuitos II')
 
     def test_get_subjects_ifgw(self):
-        inst = dacParser.getSubject('F_502')
+        inst = dac_parser.get_subject('F_502')
         self.assertEquals(inst['nome'], 'Eletromagnetismo I')
 
     def test_get_offerings(self):
-        inst = dacParser.getOfferings('MC202', '2016', '1')
+        inst = dac_parser.get_offerings('MC202', '2016', '1')
         self.assertTrue(len(inst) > 0)
 
     def test_get_offering(self):
-        inst = dacParser.getOffering('MC202', 'A', '2016', '2')
+        inst = dac_parser.get_offering('MC202', 'A', '2016', '2')
         students = inst.pop('alunos')
 
         inst_info = {
