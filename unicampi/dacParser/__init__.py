@@ -92,7 +92,6 @@ def getOffering(subject, cls, year, semester):
             'modalidade': students_data[i+5],
         })
 
-    print students
     offering = {
         'sigla': subject,
         'turma': cls,

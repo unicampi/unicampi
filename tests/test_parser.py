@@ -36,5 +36,20 @@ class ParserTest(unittest.TestCase):
         self.assertTrue(len(inst) > 0)
 
     def test_get_offering(self):
-        inst = dacParser.getOffering('MC202', 'A', '2016', '1')
-        self.assertTrue(len(inst) > 0)
+        inst = dacParser.getOffering('MC202', 'A', '2016', '2')
+        students = inst.pop('alunos')
+        
+        inst_info = {
+            "semestre": "2",
+            "matriculados": "27",
+            "turma": "A",
+            "vagas": "25",
+            "professor": "Guilherme Pimentel Telles",
+            "ano": "2016",
+            "sigla": "MC202"
+        }
+        
+        self.assertEquals(len(students), 27)
+        self.assertIn('nome', students[17])
+        self.assertIn('ra', students[17])
+        self.assertDictContainsSubset(inst, inst_info)
