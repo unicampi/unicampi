@@ -10,7 +10,7 @@ ENDPOINTS = {
         'path': '/{periodo}/institutos/{sigla}',
      }, 
     'Disciplinas': {
-        'collection_path':'/{periodo}/instituto/disciplinas/{instituto}',
+        'collection_path':'/{periodo}/instituto/{instituto}/disciplinas',
         'path': '/{periodo}/disciplinas/{sigla}',
      },
     'Oferecimentos': {
@@ -101,6 +101,3 @@ class Enrollments(Offering):
     def get(self):
         super(Enrollments, self).get()
         return self.enrollments
-
-
-
