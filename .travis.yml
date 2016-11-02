@@ -7,11 +7,8 @@ env:
   - TOX_ENV=py33
   - TOX_ENV=py34
   - TOX_ENV=py35
+  - TOX_ENV=flake8
   # add environments for every test in tox.ini
-
-matrix:
-  allow_failures:
-    - TOX_ENV=flake8
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: 
