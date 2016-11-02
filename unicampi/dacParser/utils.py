@@ -5,7 +5,6 @@ class ContentFinder(object):
     def __init__(self, data):
         self.data = data
         self.splited = [s.strip() for s in data.split('\n') if s.strip()]
-        print self.splited
 
     def find_by_content(self, pattern, offset=1, count=None, end_pattern=None):
 
