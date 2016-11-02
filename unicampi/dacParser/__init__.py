@@ -129,14 +129,18 @@ def getSubjects(institute):
 
     page = session.get(URL_SUBJECTS % institute)
 
-    subjects_in_page = re.findall(DISCIPLINE_NAME_PATTERN, page.text)
-    subjects_in_page = [sub for sub in subjects_in_page if not sub.endswith('.htm"')]
+    soup = BeautifulSoup(page.text, 'lxml')
+    tds = soup.find_all('table')
+
+    data = tds[1].find_all('td')
+    # strip and remove raw content
+    data = [el.text.strip() for el in data[1:]]
 
     subjects = []
-    for offered_subject in subjects_in_page:
+    for sub in data:
 
-        code = offered_subject.strip()[:5]
-        name = offered_subject.strip()[5:]
+        code = sub[:5]
+        name = sub[5:]
 
         subjects.append({
             'nome' : name.strip(),
