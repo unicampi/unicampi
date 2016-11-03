@@ -3,13 +3,15 @@ Unicamp API
 
 |travis| |master-coverage|
 
-.. |travis| image:: https://travis-ci.org/gabisurita/unicampi.svg?branch=master
+.. |travis| image::
+    https://travis-ci.org/gabisurita/unicampi.svg?branch=master
     :target: https://travis-ci.org/gabisurita/unicampi
 
 .. |master-coverage| image::
-    https://coveralls.io/repos/gabisurita/UnicAmPI/badge.svg?branch=master
-    :alt: Coverage
-    :target: https://coveralls.io/r/gabisurita/UnicAmPI
+   https://coveralls.io/repos/github/gabisurita/unicampi/badge.svg?branch=master
+   :target: https://coveralls.io/github/gabisurita/unicampi?branch=master
+
+
 
 Uma API para os dados públicos da Unicamp. 
 
