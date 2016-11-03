@@ -13,7 +13,7 @@ PUBLIC_MENU_URL = 'http://www.daconline.unicamp.br/altmatr/menupublico.do'
 INSTITUTES_URL = ('http://www.dac.unicamp.br/sistemas/horarios/grad/G2S0/'
                   'indiceP.htm')
 
-SUBJECTS_URL = 'http://www.dac.unicamp.br/sistemas/horarios/grad/G2S0/%s.htm'
+COURSES_URL = 'http://www.dac.unicamp.br/sistemas/horarios/grad/G2S0/%s.htm'
 
 OFFERINGS_URL = ('http://www.daconline.unicamp.br/altmatr/conspub_situacaovag'
                  'aspordisciplina.do?org.apache.struts.taglib.html.TOKEN=%s&'
