@@ -1,7 +1,5 @@
 bs4
 cornice
 lxml
-pep8
 pyramid
 requests
-tox

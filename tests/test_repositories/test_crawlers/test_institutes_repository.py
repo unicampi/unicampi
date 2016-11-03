@@ -1,8 +1,10 @@
 # coding:utf-8
 
+"""Institutes Repository Test"""
+
 from unittest import TestCase
 
-from unicampi.repositories.crawling_repositories import InstitutesRepository
+from unicampi.repositories.crawlers import InstitutesRepository
 
 
 class InstitutesRepositoryTest(TestCase):
@@ -37,12 +39,19 @@ class InstitutesRepositoryTest(TestCase):
         i1 = InstitutesRepository(name__in=['IC', 'FEEC'])
         i2 = InstitutesRepository().filter(name__in=['IC', 'FEEC'])
 
-        self.assertDictEqual(i1.matching, i2.matching)
+        self.assertDictEqual(i1.query, i2.query)
 
     def test_filter(self):
-        with self.assertRaises(NotImplementedError):
-            InstitutesRepository().filter(sigla__in=['IC', 'IFCH']).all()
+        expected = ['IC', 'IFCH']
+        institutes = InstitutesRepository().filter(sigla__in=expected).all()
+        self.assertEqual(len(institutes), len(expected))
 
-    def test_query(self):
-        with self.assertRaises(NotImplementedError):
-            InstitutesRepository().query(sigla__in=['IC', 'FEEC'])
+    def test_filter_on_initialization(self):
+        expected = ['IC', 'IFCH']
+        institutes = InstitutesRepository(sigla__in=expected).all()
+        self.assertEqual(len(institutes), len(expected))
+
+    def test_where(self):
+        expected = ['IC', 'IFCH']
+        institutes = InstitutesRepository().where(sigla__in=expected)
+        self.assertEqual(len(institutes), len(expected))

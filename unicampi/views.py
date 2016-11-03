@@ -2,9 +2,6 @@
 
 """Views"""
 
-# Author: gabisurita -- <gabsurita@gmail.com>
-# License: GPL 3.0
-
 from cornice.resource import resource
 
 from .repositories import (CoursesRepository, EnrollmentsRepository,

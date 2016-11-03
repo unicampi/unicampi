@@ -1,8 +1,10 @@
 # coding:utf-8
 
+"""Offerings Repository Test"""
+
 from unittest import TestCase
 
-from unicampi.repositories.crawling_repositories import OfferingsRepository
+from unicampi.repositories.crawlers import OfferingsRepository
 
 
 class OfferingsRepositoryTest(TestCase):
@@ -18,6 +20,12 @@ class OfferingsRepositoryTest(TestCase):
         self.assertIsNotNone(items)
         self.assertIsInstance(items, list)
         self.assertGreater(len(items), 0)
+
+    def test_global_fetching_throws_error(self):
+        # Offerings depend on course and period, so calling `.all()`
+        # without querying for these beforehand should throw an error.
+        with self.assertRaises(RuntimeError):
+            OfferingsRepository().all()
 
     def test_find(self):
         offering = (OfferingsRepository()

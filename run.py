@@ -1,9 +1,5 @@
 """Run"""
 
-# Author: gabisurita -- <gabsurita@gmail.com>
-# License: GPL 3.0
-
-
 from wsgiref.simple_server import make_server
 
 from pyramid.config import Configurator

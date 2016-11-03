@@ -2,10 +2,6 @@
 
 """Urls"""
 
-# Author: gabisurita -- <gabsurita@gmail.com>
-# License: GPL 3.0
-
-
 DAC_URL = "http://www.dac.unicamp.br/"
 
 PUBLIC_MENU_URL = 'http://www.daconline.unicamp.br/altmatr/menupublico.do'

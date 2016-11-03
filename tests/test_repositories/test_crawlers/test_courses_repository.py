@@ -1,8 +1,10 @@
-# -- coding: utf-8 --
+# coding: utf-8
+
+"""Courses Repository Test"""
 
 from unittest import TestCase
 
-from unicampi.repositories.crawling_repositories import CoursesRepository
+from unicampi.repositories.crawlers import CoursesRepository
 
 
 class CoursesRepositoryTest(TestCase):
@@ -17,8 +19,10 @@ class CoursesRepositoryTest(TestCase):
         self.assertIsInstance(items, list)
         self.assertGreater(len(items), 0)
 
-    def test_all_global_fetching(self):
-        with self.assertRaises(NotImplementedError):
+    def test_global_fetching_throws_error(self):
+        # Courses are dependent of an institute (yet), so calling `.all()`
+        # without querying for an institute should throw an error.
+        with self.assertRaises(RuntimeError):
             CoursesRepository().all()
 
     def test_find(self):
@@ -38,9 +42,10 @@ class CoursesRepositoryTest(TestCase):
             CoursesRepository().filter(institute='IC').find(id=_id)
 
     def test_filter(self):
-        with self.assertRaises(NotImplementedError):
-            CoursesRepository().filter(sigla={'$in': ['IC', 'IFCH']}).all()
+        expected = ['MO878', 'MC102']
+        courses = (CoursesRepository()
+                   .filter(institute='IC', sigla__in=expected)
+                   .all())
 
-    def test_query(self):
-        with self.assertRaises(NotImplementedError):
-            CoursesRepository().query(sigla={'$in': ['IC', 'FEEC']})
+        for course in courses:
+            self.assertIn(course['sigla'], expected)
