@@ -1,0 +1,14 @@
+# Swap files
+.*.swp
+.*.swo
+
+# Default things to ignore
+.cache
+.venv
+.tox
+build
+dist
+*.pyc
+*.egg-info
+*.coverage
+
