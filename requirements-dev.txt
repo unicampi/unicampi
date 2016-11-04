@@ -1,0 +1,7 @@
+pytest
+webtest
+coverage
+coveralls
+flake8
+pep8
+tox
