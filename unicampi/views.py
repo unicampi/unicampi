@@ -1,109 +1,106 @@
 # coding:utf-8
 
-from cornice.resource import resource, view
-from cornice import Service
-from unicampi import dacParser
+"""Views"""
+
+from cornice.resource import resource
+
+from .repositories import (CoursesRepository, EnrollmentsRepository,
+                           InstitutesRepository, OfferingsRepository)
 
 ENDPOINTS = {
     'Institutos': {
         'collection_path': '/institutos',
-        'path': '/institutos/{sigla}',
-     }, 
+        'path': '/institutos/{id}',
+    },
     'Disciplinas': {
         'collection_path': '/institutos/{instituto}/disciplinas',
-        'path': '/disciplinas/{sigla}',
-     },
+        'path': '/disciplinas/{id}',
+    },
     'Oferecimentos': {
-        'collection_path': '/periodos/{periodo}/oferecimentos/{sigla}',
-        'path': '/periodos/{periodo}/oferecimentos/{sigla}/{turma}',
-     },
+        'collection_path': '/periodos/{periodo}/oferecimentos/{disciplina}',
+        'path': '/periodos/{periodo}/oferecimentos/{disciplina}/turma/{id}',
+    },
     'Matriculados': {
-        'path': '/periodos/{periodo}/oferecimentos/{sigla}/{turma}/matriculados',
-     },
+        'collection_path': '/periodos/{periodo}/oferecimentos/{disciplina}'
+                           '/turma/{turma}/matriculados',
+        'path': '/periodos/{periodo}/oferecimentos/{disciplina}/turma/{turma}'
+                '/matriculados/{id}',
+    },
 }
 
 
-class ApiResource(object):
+class BaseResource(object):
+    """Base Resource.
+
+    Base mixin for any cornice resource.
+
+    """
 
     def __init__(self, request):
         self.request = request
+
+    @property
+    def params(self):
+        return self.request.matchdict
+
+
+class ModelResource(BaseResource):
+    """Model Resource.
+
+    Base class for model resources (i.e., resources that are associated with
+    a repository -- a collection of entries).
+
+    """
+
+    repository = None
+
+    def collection_get(self):
+        return self.repository().all()
+
+    def get(self):
+        try:
+            return self.repository().find(self.params['id'])
+
+        except KeyError:
+            self.request.errors.add('body', 'id', 'The entry does not exist')
+            self.request.errors.status = '404'
 
 
 @resource(path='/')
-class Hello(ApiResource):
-    
-    def __init__(self, request):
-        self.request = request
-    
+class Hello(BaseResource):
     def get(self):
         return {'path': ENDPOINTS}
 
 
 @resource(**ENDPOINTS['Institutos'])
-class Institute(ApiResource):
-
-    def __init__(self, request):
-        super(Institute, self).__init__(request)
-        self.institute_list = dacParser.getInstitutes()
-
-    def collection_get(self):
-        return self.institute_list
-
-    def get(self):
-        institute = [inst for inst in self.institute_list
-                     if inst['sigla'].upper() == self.request.matchdict['sigla'].upper()]
-
-        if institute:
-            return institute[0]
-        else:
-            raise KeyError
+class Institute(ModelResource):
+    repository = InstitutesRepository
 
 
 @resource(**ENDPOINTS['Disciplinas'])
-class Subject(ApiResource):
-
-    def collection_get(self):
-        institute = self.request.matchdict['instituto'].upper()
-        return  dacParser.getSubjects(institute)
-
-    def get(self):
-        name = self.request.matchdict['sigla'].upper()
-        return dacParser.getSubject(name)
+class Courses(ModelResource):
+    def repository(self):
+        return (CoursesRepository()
+                .filter(institute=self.params.get('instituto')))
 
 
 @resource(**ENDPOINTS['Oferecimentos'])
-class Offering(ApiResource):
+class Offering(ModelResource):
+    def repository(self):
+        year, term = self.params['periodo'].lower().split('s', 1)
+        course = self.params['disciplina'].upper()
 
-    def __init__(self, request):
-        self.request = request
-        self.periodo = request.matchdict['periodo'].lower()
-        self.ano, self.sem = self.periodo.split('s', 1)
-
-    def collection_get(self):
-        data = self.request.matchdict
-        return dacParser.getOfferings(data['sigla'].upper(),
-                                      self.ano,
-                                      self.sem)
-
-    def get(self):
-        data = self.request.matchdict
-        self.offering = dacParser.getOffering(data['sigla'].upper(),
-                                              data['turma'].upper(),
-                                              self.ano, self.sem)
-
-        self.enrollments = self.offering.pop('alunos', {})
-
-        return self.offering
+        return (OfferingsRepository()
+                .filter(year=year, term=term, course=course))
 
 
 @resource(**ENDPOINTS['Matriculados'])
-class Enrollments(Offering):
+class Enrollments(ModelResource):
+    def repository(self):
+        year, term = self.params['periodo'].lower().split('s', 1)
+        course = self.params['disciplina'].upper()
+        offering = self.params['turma'].lower()
 
-    def __init__(self, request):
-        self.request = request
-        self.periodo = request.matchdict['periodo'].lower()
-        self.ano, self.sem = self.periodo.split('s', 1)
-
-    def get(self):
-        super(Enrollments, self).get()
-        return self.enrollments
+        return (EnrollmentsRepository()
+                .filter(year=year, term=term, course=course,
+                        offering=offering))

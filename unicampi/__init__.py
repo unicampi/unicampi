@@ -1,8 +1,9 @@
-"""Main entry point
-"""
+"""Many Entry Point"""
+
 from pyramid.config import Configurator
 from pyramid.events import NewRequest
 API_VERSION = '0.04'
+
 
 def main(global_config, **settings):
     config = Configurator(settings=settings)
@@ -20,5 +21,6 @@ def main(global_config, **settings):
           'Access-Control-Max-Age': '1728000',
           })
       event.request.add_response_callback(cors_headers)
+
     config.add_subscriber(add_cors_headers_response_callback, NewRequest)
     return config.make_wsgi_app()

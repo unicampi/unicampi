@@ -35,8 +35,8 @@ $(INSTALL_STAMP): $(PYTHON) setup.py
 	touch $(INSTALL_STAMP)
 
 install-dev: $(INSTALL_STAMP) $(DEV_STAMP)
-$(DEV_STAMP): $(PYTHON) dev-requirements.txt
-	$(VENV)/bin/pip install -Ur dev-requirements.txt
+$(DEV_STAMP): $(PYTHON) requirements-dev.txt
+	$(VENV)/bin/pip install -Ur requirements-dev.txt
 	touch $(DEV_STAMP)
 
 install-docs: $(DOC_STAMP)

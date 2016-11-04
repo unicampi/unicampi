@@ -1,22 +1,24 @@
 # This is the main testing file which can be run as `python setup.py test`
 
-import sys
 from setuptools import setup, find_packages
 
 REQUIREMENTS = [
     'bs4',
     'cornice',
     'lxml',
-    'pep8',
     'pyramid',
-    'requests',
+    'requests'
 ]
 
-TEST_REQUIREMENTS = [
-    'tox',
+REQUIREMENTS_DEV = [
     'pytest',
+    'webtest',
+    'coverage',
+    'coveralls',
+    'flake8',
+    'pep8',
+    'tox',
 ]
-
 
 setup(
     name='unicampi',
@@ -26,12 +28,11 @@ setup(
     long_description=open('README.rst').read(),
     author='Gabriela Surita',
     author_email='gabsurita@gmail.com',
-    
+
     install_requires=REQUIREMENTS,
-    tests_require=TEST_REQUIREMENTS,
-    
+    tests_require=REQUIREMENTS_DEV,
+
     packages=find_packages(),
     include_package_data=True,
     test_suite='tests',
-    )
-
+)
