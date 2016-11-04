@@ -1,7 +1,11 @@
 Unicamp API
 ===========
 
-|travis| |master-coverage|
+|slack| |travis| |master-coverage|
+
+.. |slack| image:: 
+    https://img.shields.io/badge/slack-unicampi-blue.svg
+   :target: https://unicampi-slack.herokuapp.com/
 
 .. |travis| image::
     https://travis-ci.org/gabisurita/unicampi.svg?branch=master
@@ -10,7 +14,6 @@ Unicamp API
 .. |master-coverage| image::
    https://coveralls.io/repos/github/gabisurita/unicampi/badge.svg?branch=master
    :target: https://coveralls.io/github/gabisurita/unicampi?branch=master
-
 
 
 Uma API para os dados públicos da Unicamp. 
