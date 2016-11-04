@@ -8,7 +8,7 @@ API_VERSION = '0.04'
 def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.include("cornice")
-    #config.include("pyramid_swagger")
+    # config.include("pyramid_swagger")
     config.scan("unicampi.views")
 
     def add_cors_headers_response_callback(event):
