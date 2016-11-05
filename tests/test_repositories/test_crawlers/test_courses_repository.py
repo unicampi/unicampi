@@ -31,8 +31,8 @@ class CoursesRepositoryTest(TestCase):
         self.assertIsNotNone(course)
         self.assertIsInstance(course, dict)
         self.assertEqual(set(course.keys()),
-                         {'nome', 'pré-requisitos', 'créditos', 'sigla',
-                          'ementa'})
+                         {'nome', 'requisitos', 'créditos',
+                          'sigla', 'ementa'})
         self.assertEqual(course['nome'], u'Teoria e Aplicações de Grafos')
 
     def test_find_not_found(self):

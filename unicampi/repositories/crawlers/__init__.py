@@ -97,7 +97,7 @@ class CoursesRepository(base.CrawlerRepository):
             'nome': name,
             'sigla': code.replace(' ', '_'),
             'ementa': content,
-            'pré-requisitos': requires,
+            'requisitos': requires,
             'créditos': int(credits),
         }
 
