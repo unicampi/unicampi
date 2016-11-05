@@ -1,5 +1,5 @@
 VIRTUALENV = virtualenv
-#SPHINX_BUILDDIR = docs/_build
+SPHINX_BUILDDIR = docs/_build
 VENV := $(shell echo $${VIRTUAL_ENV-.venv})
 PYTHON = $(VENV)/bin/python
 DEV_STAMP = $(VENV)/.dev_env_installed.stamp
