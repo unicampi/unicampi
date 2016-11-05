@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from webtest import TestApp
 
-from unicampi import main
+from unicampi import UnicamPI
 
 
 class EnrollmentsViewTest(TestCase):
@@ -12,26 +12,39 @@ class EnrollmentsViewTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.app = TestApp(main({}))
+        cls.app = TestApp(UnicamPI.initiate().app)
 
     def test_sanity(self):
         self.assertIsNotNone(self.app)
 
     def test_collection_get(self):
         response = self.app.get('/periodos/2016s2/oferecimentos/MC878'
-                                '/turma/a/matriculados',
+                                '/turmas/a/matriculados',
                                 status=200)
         data = response.json
         self.assertIsInstance(data, list)
 
     def test_get(self):
         response = self.app.get('/periodos/2016s2/oferecimentos/MC878'
-                                '/turma/a/matriculados/117801',
+                                '/turmas/a/matriculados/117801',
                                 status=200)
         data = response.json
         self.assertIsInstance(data, dict)
 
     def test_get_not_found(self):
         self.app.get('/periodos/2016s2/oferecimentos/MC878'
-                     '/turma/a/matriculados/188972',
+                     '/turmas/a/matriculados/188972',
                      status=404, expect_errors=True)
+
+    def test_options(self):
+        response = self.app.options('/periodos/2016s2/oferecimentos/MC878'
+                                    '/turmas/a/matriculados', status=200)
+        data = response.json
+        self.assertIsInstance(data, dict)
+
+    def test_collection_options(self):
+        response = self.app.options('/periodos/2016s2/oferecimentos/MC878'
+                                    '/turmas/a/matriculados/117801',
+                                    status=200)
+        data = response.json
+        self.assertIsInstance(data, dict)

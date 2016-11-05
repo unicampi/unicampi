@@ -16,6 +16,11 @@ __all__ = ['CoursesRepository', 'EnrollmentsRepository',
 
 
 class InstitutesRepository(base.CrawlerRepository):
+    def _fetch_and_parse_one(self, id):
+        """Does nothing, as `.find()` was already overridden to find one
+        institute using the list of all of them.
+        """
+
     def _fetch_and_parse_all(self):
         page = requests.get(urls.INSTITUTES_URL)
         soup = BeautifulSoup(page.text, 'lxml')
