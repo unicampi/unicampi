@@ -19,19 +19,11 @@ class InstitutesRepository(base.CrawlerRepository):
     def _fetch_and_parse_all(self):
         page = requests.get(urls.INSTITUTES_URL)
         soup = BeautifulSoup(page.text, 'lxml')
-        institutes_a = soup.find_all('a', 'cursos')
-        content_arr = []
-        for link in institutes_a:
-            insitute_link = link.get('href')
-            institute_abbreviation = link.get('name')
-            institute_text = link.get_text()
-            # Parse institute name and institute abbreviation
-            institute_name = institute_text.split('-')[0].rstrip()
-            final_obj = {'sigla': institute_abbreviation,
-                         'nome': institute_name, 'link': insitute_link}
-            content_arr.append(final_obj)
-
-        return content_arr
+        return [{
+            'nome': link.get_text().split('-')[0].rstrip(),
+            'sigla': link.get('name'),
+            'link': link.get('href')
+        } for link in soup.find_all('a', 'cursos')]
 
     def find(self, id):
         try:
