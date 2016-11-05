@@ -1,5 +1,3 @@
-.. _kinto-concepts:
-
 Quickstart
 ##########
 
