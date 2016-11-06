@@ -44,3 +44,12 @@ Para listar os endpoints disponíveis, utilize a URL base.
 
 Alguns exemplos de endpoins estão listados na wiki:
 https://github.com/gabisurita/unicampi/wiki/Exemplos-de-endpoints
+
+Ressalva de Responsabilidade
+============================
+
+* Este é um sistema independente de qualquer órgão oficial da Unicamp mantido
+  pela sua equipe de desenvolvimento.
+* A Unicamp está isenta de qualquer responsabilidade relativa ao sistema.
+* A equipe de desenvolvimento não se responsabiliza pela integridade dos dados
+  e pela equivalência com as páginas oficiais.
