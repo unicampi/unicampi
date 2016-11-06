@@ -27,6 +27,7 @@ class Serializer(object):
     _preprocesses = {
         'uppercase': lambda x: x.upper(),
         'lowercase': lambda x: x.lower(),
+        'split-year-term': lambda x: x.lower().rstrip().split('s'),
     }
 
     def __init__(self, data, schema):
