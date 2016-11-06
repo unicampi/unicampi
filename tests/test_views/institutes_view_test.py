@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from webtest import TestApp
 
-from unicampi import main
+from unicampi import UnicamPI
 
 
 class InstituteViewTest(TestCase):
@@ -12,7 +12,7 @@ class InstituteViewTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.app = TestApp(main({}))
+        cls.app = TestApp(UnicamPI.initiate().app)
 
     def test_sanity(self):
         self.assertIsNotNone(self.app)
@@ -27,5 +27,20 @@ class InstituteViewTest(TestCase):
         data = response.json
         self.assertIsInstance(data, dict)
 
+    def test_get_case_insensitive(self):
+        response = self.app.get('/institutos/ic', status=200)
+        data = response.json
+        self.assertIsInstance(data, dict)
+
     def test_get_not_found(self):
         self.app.get('/institutos/ICdjjadij', status=404, expect_errors=True)
+
+    def test_options(self):
+        response = self.app.options('/institutos', status=200)
+        data = response.json
+        self.assertIsInstance(data, dict)
+
+    def test_collection_options(self):
+        response = self.app.options('/institutos/IC', status=200)
+        data = response.json
+        self.assertIsInstance(data, dict)
