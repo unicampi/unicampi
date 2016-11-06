@@ -22,5 +22,5 @@ script:
 after_success:
   # Report coverage results to coveralls.io
   - pip install coveralls
-  - coverage run --source=unicampi setup.py test
+  - coverage run setup.py test
   - coveralls
