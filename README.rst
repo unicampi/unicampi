@@ -28,7 +28,7 @@ Instalando
 
 Para instalar o ambiente de desenvolvimento local::
 
-    git clone https://github.com/gabisurita/unicampi
+    git clone https://github.com/unicampi/unicampi
     make install
     make serve
 
