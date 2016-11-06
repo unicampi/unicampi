@@ -13,8 +13,8 @@ Unicamp API
    :target: https://unicampi-slack.herokuapp.com/
 
 .. |travis| image::
-   https://travis-ci.org/gabisurita/unicampi.svg?branch=master
-   :target: https://travis-ci.org/gabisurita/unicampi
+   https://travis-ci.org/unicampi/unicampi.svg?branch=master
+   :target: https://travis-ci.org/unicampi/unicampi
 
 .. |master-coverage| image::
    https://coveralls.io/repos/github/gabisurita/unicampi/badge.svg?branch=master
