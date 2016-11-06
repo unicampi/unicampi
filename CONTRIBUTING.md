@@ -69,7 +69,7 @@ a clonagem e o desenvolvimento em um *branch* diferente do **master**:
    *Nota 1: por favor, inclua testes e documentação para todos os
    artefatos criados ou modificados.*
 
-   *Nota 2: liste as modificações realizadas no arquivo `CHANGELOG.rst`
+   *Nota 2: liste as modificações realizadas no arquivo `CHANGELOG.rst`*
 
    *Nota 3: se esta é sua primeira contribuição, adicione seu nome ao
    arquivo CONTRIBUTORS.rst.*
