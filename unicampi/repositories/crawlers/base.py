@@ -21,7 +21,8 @@ class OnlineFilter(object):
         'in': lambda entry, field, value: entry.get(field) in value,
         'not_in': lambda entry, field, value: entry.get(field) not in value,
         'contains': lambda entry, field, value: value in entry.get(field),
-        'not_contains': lambda entry, field, value: value in entry.get(field),
+        'not_contains': (lambda entry, field, value:
+                         value not in entry.get(field)),
     }
 
     def __init__(self, **query):

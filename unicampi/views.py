@@ -71,7 +71,7 @@ class Offerings(ModelResource):
 
     route_parameters = {
         'periodo': {
-            'preprocess': ['lowercase', lambda x: x.lower().split('s')],
+            'preprocess': 'split-year-term',
             'examples': ['2015s1', '2014s2'],
         },
         'disciplina': {
@@ -97,7 +97,7 @@ class Enrollments(ModelResource):
 
     route_parameters = {
         'periodo': {
-            'preprocess': ['lowercase', lambda x: x.lower().split('s')],
+            'preprocess': 'split-year-term',
             'examples': ['2015s1', '2014s2'],
         },
         'disciplina': {
