@@ -5,16 +5,16 @@ Unicamp API
 
 
 .. |docs| image::
-    https://readthedocs.com/projects/unicampi-unicampi/badge/?version=latest
+   https://readthedocs.com/projects/unicampi-unicampi/badge/?version=latest
    :target: https://unicampi.readthedocs.io/
 
 .. |slack| image::
-    https://img.shields.io/badge/slack-unicampi-blue.svg
+   https://img.shields.io/badge/slack-unicampi-blue.svg
    :target: https://unicampi-slack.herokuapp.com/
 
 .. |travis| image::
-    https://travis-ci.org/gabisurita/unicampi.svg?branch=master
-    :target: https://travis-ci.org/gabisurita/unicampi
+   https://travis-ci.org/gabisurita/unicampi.svg?branch=master
+   :target: https://travis-ci.org/gabisurita/unicampi
 
 .. |master-coverage| image::
    https://coveralls.io/repos/github/gabisurita/unicampi/badge.svg?branch=master
