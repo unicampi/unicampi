@@ -5,8 +5,8 @@ Unicamp API
 
 
 .. |docs| image::
-   https://readthedocs.com/projects/unicampi-unicampi/badge/?version=latest
-   :target: https://unicampi.readthedocs.io/
+   https://readthedocs.com/projects/unicampi-unicampi/badge/
+   :target: https://unicampi-unicampi.readthedocs-hosted.com/
 
 .. |slack| image::
    https://img.shields.io/badge/slack-unicampi-blue.svg
