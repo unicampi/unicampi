@@ -5,14 +5,10 @@
 These test_repositories crawl the web after their data.
 
 """
-
 import requests
 from bs4 import BeautifulSoup
 
 from . import urls, base
-
-__all__ = ['CoursesRepository', 'EnrollmentsRepository',
-           'InstitutesRepository', 'OfferingsRepository']
 
 
 class InstitutesRepository(base.CrawlerRepository):
@@ -70,22 +66,19 @@ class CoursesRepository(base.CrawlerRepository):
 
     def _fetch_and_parse_one(self, id):
         page = requests.get(urls.COURSES_URL % id)
+
         soup = BeautifulSoup(page.text, 'lxml')
-        tds = soup.find_all('table')
 
-        data = tds[1].find_all('td')[1]
-
-        f = base.ContentFinder(data.text)
-
-        main_info = f.split[0]
+        ct = base.ContentFinder(soup.text)
+        main_info = ct.split[3]
         code = main_info[:5]
         name = main_info[5:].strip()
 
-        content = f.find_by_content('Ementa:', offset=1)
-        credits = f.find_by_content('Créditos:', offset=0)[-3:]
-        requires_list = f.find_by_content('Pré-Requisitos:',
-                                          offset=1,
-                                          end_pattern='Turma:')
+        content = ct.find_by_content('Ementa:', offset=1)
+        credits = ct.find_by_content('Créditos:', offset=0)[-3:]
+        requires_list = ct.find_by_content('Pré-Requisitos:',
+                                           offset=1,
+                                           end_pattern='Turma:')
 
         req_dates = requires_list[::2]
         req_values = requires_list[1::2]
@@ -97,13 +90,63 @@ class CoursesRepository(base.CrawlerRepository):
         for i in range(len(req_values)):
             req_values[i] = [v.strip().split('  ') for v in req_values[i]]
 
-        requires = dict(zip(req_dates, req_values))
+        requirements = []
+
+        for date, val in zip(req_dates, req_values):
+            requirements.append({
+                'disciplinas': val,
+                'periodo': date
+            })
+
+        classes = []
+
+        for i in range(100):
+            try:
+                class_id = ct.find_by_content('Turma', pos=i),
+                # data is tuple(Turma   A')
+                class_id[0].split(':')[1].strip(),
+            except:
+                break
+
+            # data is ["Ter", "14:00/PE11", "15:00/PE11",
+            #          "Qui", "14:00/PE11", "15:00/PE11"]
+            when = ct.find_by_content('Dia', end_pattern='Docente',
+                                      offset=1, pos=i)
+            dates = {}
+
+            for el in when:
+                # weekday
+                if len(el) == 3:
+                    day = el
+                    dates[day] = {'horarios': [], 'salas': []}
+                # time and room
+                else:
+                    time, room = el.split('/')
+                    dates[day]['horarios'].append(time)
+                    dates[day]['salas'].append(room)
+
+            professors = ct.find_by_content('Docente', end_pattern='Reserva',
+                                            offset=1, pos=i),
+
+            # Data is "Reserva(Curso/Ano):  0010/--, 0041/--"
+            reservations = ct.find_by_content('Reserva', pos=i)
+            reservations = reservations.split(':')[1].strip()
+            reservations = reservations.split(', ')
+
+            classes.append({
+                'turma': class_id[0].split(':')[1].strip(),
+                'horario': dates,
+                'professores': professors,
+                'reservas': reservations,
+            })
+
         return {
             'nome': name,
             'sigla': code.replace(' ', '_'),
             'ementa': content,
-            'requisitos': requires,
+            'requisitos': requirements,
             'créditos': int(credits),
+            'turmas': classes
         }
 
 
