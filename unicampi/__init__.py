@@ -34,7 +34,7 @@ class UnicamPI:
 
     """
 
-    API_VERSION = '0.0.6'
+    API_VERSION = '0.0.7'
     app = None
     config = None
     resources = None
