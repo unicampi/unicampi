@@ -5,6 +5,8 @@ branch = True
 
 [report]
 exclude_lines =
+    no cover
+    break
     pass
     raise NotImplementedError
     if __name__ == .__main__.:

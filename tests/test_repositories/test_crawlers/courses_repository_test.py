@@ -8,6 +8,7 @@ from unicampi.repositories.crawlers import CoursesRepository
 
 
 class CoursesRepositoryTest(TestCase):
+
     def test_sanity(self):
         i = CoursesRepository()
         self.assertIsNotNone(i)
@@ -32,8 +33,10 @@ class CoursesRepositoryTest(TestCase):
         self.assertIsInstance(course, dict)
         self.assertEqual(set(course.keys()),
                          {'nome', 'requisitos', 'créditos',
-                          'sigla', 'ementa'})
+                          'sigla', 'ementa', 'turmas'})
         self.assertEqual(course['nome'], u'Teoria e Aplicações de Grafos')
+        self.assertIsInstance(course['requisitos'], list)
+        self.assertEqual(course['turmas'][0]['turma'], 'A')
 
     def test_find_not_found(self):
         _id = 'non-existent-course'

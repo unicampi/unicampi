@@ -63,22 +63,25 @@ class ContentFinder(object):
         self.data = data
         self.split = [s.strip() for s in data.split(separator) if s.strip()]
 
-    def find_by_content(self, pattern, offset=0, count=None,
-                        end_pattern=None):
-        try:
-            pattern = pattern.decode('utf-8')
-        except:
-            pass
+    def find_by_content(self, pattern, pos=0, offset=0,
+                        count=None, end_pattern=None):
+
+        # decode if Python 2.x
+        if hasattr(pattern, 'decode'):
+            pattern = pattern.decode('utf-8')  # no cover
 
         for piece, i in zip(self.split, range(len(self.split))):
             if pattern in piece:
-                start_at = i
-                break
+                if pos:
+                    pos -= 1
+                else:
+                    start_at = i
+                    break
 
         if count:
-            return self.split[start_at + offset:start_at + count]
+            return self.split[start_at + offset:start_at + count + offset]
 
-        elif end_pattern:
+        if end_pattern:  # no cover
             for piece, i in zip(self.split[start_at:],
                                 range(start_at, len(self.split))):
                 if end_pattern in piece:
