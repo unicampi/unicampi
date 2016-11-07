@@ -149,7 +149,7 @@ class CoursesRepository(base.CrawlerRepository):
             'sigla': code.replace(' ', '_'),
             'ementa': content,
             'requisitos': requirements,
-            'créditos': int(credits),
+            'creditos': int(credits),
             'turmas': classes
         }
 
