@@ -18,7 +18,8 @@ class InstitutesRepository(base.CrawlerRepository):
         """
 
     def _fetch_and_parse_all(self):
-        page = requests.get(urls.INSTITUTES_URL)
+        page = requests.get(urls.INSTITUTES_URL.format(term=urls.PERIODS['2']))
+
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
 
@@ -42,7 +43,9 @@ class CoursesRepository(base.CrawlerRepository):
     _required_querying_fields = {'institute'}
 
     def _fetch_and_parse_all(self):
-        page = requests.get(urls.COURSES_URL % self.query['institute'])
+        page = requests.get(urls.COURSES_URL.format(id=self.query['institute'],
+                                                    term=urls.PERIODS['2']))
+
         page.raise_for_status()
 
         soup = BeautifulSoup(page.text, 'lxml')
@@ -65,7 +68,8 @@ class CoursesRepository(base.CrawlerRepository):
         return courses
 
     def _fetch_and_parse_one(self, id):
-        page = requests.get(urls.COURSES_URL % id)
+        page = requests.get(urls.COURSES_URL.format(id=id,
+                                                    term=urls.PERIODS['2']))
 
         soup = BeautifulSoup(page.text, 'lxml')
 
@@ -158,11 +162,8 @@ class OfferingsRepository(base.CrawlerRepository):
             token_page = s.get(urls.PUBLIC_MENU_URL)
             token = token_page.content[1839:1871].decode('ascii')
 
-            page = s.get(urls.OFFERINGS_URL % (token,
-                                               self.query['term'],
-                                               self.query['year'],
-                                               self.query['course'],
-                                               'a'))
+            page = s.get(urls.OFFERINGS_URL.format(token=token, **self.query))
+
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
 
@@ -171,7 +172,7 @@ class OfferingsRepository(base.CrawlerRepository):
         data = [lin.find_all('td') for lin in data.find_all('tr')[2:]]
 
         return [{
-                    'turma': offering[0].text,
+                    'turma': offering[0].text.strip(),
                     'vagas': offering[1].text,
                     'matriculados': offering[2].text,
                 } for offering in data]
@@ -181,11 +182,8 @@ class OfferingsRepository(base.CrawlerRepository):
             token_page = s.get(urls.PUBLIC_MENU_URL)
             token = token_page.content[1839:1871].decode('ascii')
 
-            page = s.get(urls.OFFERING_URL % (token,
-                                              self.query['term'],
-                                              self.query['year'],
-                                              self.query['course'],
-                                              id))
+            page = s.get(urls.OFFERING_URL.format(id=id, token=token, **self.query))
+
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
 
@@ -215,7 +213,7 @@ class OfferingsRepository(base.CrawlerRepository):
                 'nome': students_data[i + 2].strip(),
                 'curso': students_data[i + 3],
                 'tipo': students_data[i + 4],
-                'modalidade': students_data[i + 5],
+                'modalidade': students_data[i + 5].strip(),
             })
 
         return {
