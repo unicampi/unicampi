@@ -1,8 +1,15 @@
 Changelog
 =========
 
-0.0.7 (Current)
+0.0.8 (Current)
 ---------------
+
+**API**
+
+* Add all institutes to `/institutes` endpoint.
+
+0.0.7
+-----
 
 **API**
 
