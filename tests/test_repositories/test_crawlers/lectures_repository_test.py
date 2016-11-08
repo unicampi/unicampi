@@ -1,19 +1,19 @@
 # coding:utf-8
 
-"""Offerings Repository Test"""
+"""Lectures Repository Test"""
 
 from unittest import TestCase
 
-from unicampi.repositories.crawlers import OfferingsRepository
+from unicampi.repositories.crawlers import LecturesRepository
 
 
-class OfferingsRepositoryTest(TestCase):
+class LecturesRepositoryTest(TestCase):
     def test_sanity(self):
-        i = OfferingsRepository()
+        i = LecturesRepository()
         self.assertIsNotNone(i)
 
     def test_all(self):
-        items = (OfferingsRepository()
+        items = (LecturesRepository()
                  .filter(year=2016, term=2, course='MC878')
                  .all())
 
@@ -22,22 +22,22 @@ class OfferingsRepositoryTest(TestCase):
         self.assertGreater(len(items), 0)
 
     def test_global_fetching_throws_error(self):
-        # Offerings depend on course and period, so calling `.all()`
+        # Lectures depend on course and period, so calling `.all()`
         # without querying for these beforehand should throw an error.
         with self.assertRaises(RuntimeError):
-            OfferingsRepository().all()
+            LecturesRepository().all()
 
     def test_find(self):
-        offering = (OfferingsRepository()
-                    .filter(year=2016, term=2, course='MC878')
-                    .find('a'))
+        lecture = (LecturesRepository()
+                   .filter(year=2016, term=2, course='MC878')
+                   .find('a'))
 
-        self.assertIsNotNone(offering)
-        self.assertIsInstance(offering, dict)
-        self.assertEqual(offering['professor'], 'Christiane Neme Campos')
+        self.assertIsNotNone(lecture)
+        self.assertIsInstance(lecture, dict)
+        self.assertEqual(lecture['professor'], 'Christiane Neme Campos')
 
     def test_find_not_found(self):
         with self.assertRaises(KeyError):
-            (OfferingsRepository()
+            (LecturesRepository()
              .filter(year=2016, term=2, course='MC878')
              .find(id='non-existent-institute'))

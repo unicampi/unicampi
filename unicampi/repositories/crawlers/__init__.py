@@ -8,17 +8,23 @@ These test_repositories crawl the web after their data.
 import requests
 from bs4 import BeautifulSoup
 
-from . import urls, base
+from . import urls
+from .base import CrawlerRepository
+from .utils import ContentFinder, OnlineFilter
 
 
-class InstitutesRepository(base.CrawlerRepository):
+class ActiveInstitutesRepository(CrawlerRepository):
+    _required_querying_fields = {'term'}
+
     def _fetch_and_parse_one(self, id):
         """Does nothing, as `.find()` was already overridden to find one
         institute using the list of all of them.
         """
 
     def _fetch_and_parse_all(self):
-        page = requests.get(urls.INSTITUTES_URL)
+        term = str(self.query['term'])
+        page = requests.get(urls.INSTITUTES_URL.format(term=urls.PERIODS[term]))
+
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
 
@@ -38,11 +44,14 @@ class InstitutesRepository(base.CrawlerRepository):
             raise KeyError('unknown entry %s' % id)
 
 
-class CoursesRepository(base.CrawlerRepository):
-    _required_querying_fields = {'institute'}
+class ActiveCoursesRepository(CrawlerRepository):
+    _required_querying_fields = {'institute', 'term'}
 
     def _fetch_and_parse_all(self):
-        page = requests.get(urls.COURSES_URL % self.query['institute'])
+        term = str(self.query['term'])
+        page = requests.get(urls.COURSES_URL.format(id=self.query['institute'],
+                                                    term=urls.PERIODS[term]))
+
         page.raise_for_status()
 
         soup = BeautifulSoup(page.text, 'lxml')
@@ -65,11 +74,12 @@ class CoursesRepository(base.CrawlerRepository):
         return courses
 
     def _fetch_and_parse_one(self, id):
-        page = requests.get(urls.COURSES_URL % id)
+        page = requests.get(urls.COURSES_URL.format(id=id,
+                                                    term=urls.PERIODS['2']))
 
         soup = BeautifulSoup(page.text, 'lxml')
 
-        ct = base.ContentFinder(soup.text)
+        ct = ContentFinder(soup.text)
         main_info = ct.split[3]
         code = main_info[:5]
         name = main_info[5:].strip()
@@ -145,12 +155,12 @@ class CoursesRepository(base.CrawlerRepository):
             'sigla': code.replace(' ', '_'),
             'ementa': content,
             'requisitos': requirements,
-            'créditos': int(credits),
+            'creditos': int(credits),
             'turmas': classes
         }
 
 
-class OfferingsRepository(base.CrawlerRepository):
+class LecturesRepository(CrawlerRepository):
     _required_querying_fields = {'term', 'year', 'course'}
 
     def _fetch_and_parse_all(self):
@@ -158,11 +168,8 @@ class OfferingsRepository(base.CrawlerRepository):
             token_page = s.get(urls.PUBLIC_MENU_URL)
             token = token_page.content[1839:1871].decode('ascii')
 
-            page = s.get(urls.OFFERINGS_URL % (token,
-                                               self.query['term'],
-                                               self.query['year'],
-                                               self.query['course'],
-                                               'a'))
+            page = s.get(urls.LECTURES_URL.format(token=token, **self.query))
+
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
 
@@ -171,7 +178,7 @@ class OfferingsRepository(base.CrawlerRepository):
         data = [lin.find_all('td') for lin in data.find_all('tr')[2:]]
 
         return [{
-                    'turma': offering[0].text,
+                    'turma': offering[0].text.strip(),
                     'vagas': offering[1].text,
                     'matriculados': offering[2].text,
                 } for offering in data]
@@ -181,18 +188,15 @@ class OfferingsRepository(base.CrawlerRepository):
             token_page = s.get(urls.PUBLIC_MENU_URL)
             token = token_page.content[1839:1871].decode('ascii')
 
-            page = s.get(urls.OFFERING_URL % (token,
-                                              self.query['term'],
-                                              self.query['year'],
-                                              self.query['course'],
-                                              id))
+            page = s.get(urls.LECTURE_URL.format(id=id, token=token, **self.query))
+
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
 
         # Get table 6 (general info)
         data = tds[6]
 
-        f = base.ContentFinder(data.text)
+        f = ContentFinder(data.text)
         teacher = f.find_by_content('Docente:').split(':', 1)[1].strip()
         situation = f.find_by_content('Situação:').split(':', 1)[1].strip()
 
@@ -215,7 +219,7 @@ class OfferingsRepository(base.CrawlerRepository):
                 'nome': students_data[i + 2].strip(),
                 'curso': students_data[i + 3],
                 'tipo': students_data[i + 4],
-                'modalidade': students_data[i + 5],
+                'modalidade': students_data[i + 5].strip(),
             })
 
         return {
@@ -230,26 +234,26 @@ class OfferingsRepository(base.CrawlerRepository):
         }
 
 
-class EnrollmentsRepository(OfferingsRepository):
+class EnrollmentsRepository(LecturesRepository):
     """Enrollments CrawlerRepository.
 
     Enrollments are always associated to a class (the offering of a course).
-    Because OfferingsRepository already parses and provides us with the
+    Because LecturesRepository already parses and provides us with the
     enrollments when searching for a given class, we need only to sub-class
     it and filter for said enrollments.
 
     """
 
-    _required_querying_fields = {'term', 'year', 'course', 'offering'}
+    _required_querying_fields = {'term', 'year', 'course', 'lecture'}
 
     def all(self):
         self._assert_valid_query()
         enrollments = (super(EnrollmentsRepository, self)
-                       .find(id=self.query['offering'])['alunos'])
+                       .find(id=self.query['lecture'])['alunos'])
 
         new_query = {k: v for k, v in self.query.items() if
                      k not in self._required_querying_fields}
-        return base.OnlineFilter(**new_query).commit(enrollments)
+        return OnlineFilter(**new_query).commit(enrollments)
 
     def find(self, id):
         try:

@@ -4,8 +4,8 @@
 
 from . import UnicamPI
 from .core.views import BaseResource, ModelResource
-from .repositories import (CoursesRepository, EnrollmentsRepository,
-                           InstitutesRepository, OfferingsRepository)
+from .repositories import (ActiveCoursesRepository, EnrollmentsRepository,
+                           ActiveInstitutesRepository, LecturesRepository)
 
 
 class Docs(BaseResource):
@@ -21,29 +21,44 @@ class Docs(BaseResource):
         }
 
 
-class Institutes(ModelResource):
-    name = 'Institutos'
-    description = 'Recupera institutos da UNICAMP.'
-    collection_endpoint = '/institutos'
+class ActiveInstitutes(ModelResource):
+    name = 'Institutos ativos'
+    description = ('Recupera institutos da UNICAMP que oferecem disciplinas',
+                   ' em um periodo')
+    endpoint = '/institutos/{id}/periodos/{periodo}'
+    collection_endpoint = '/institutos/periodos/{periodo}'
 
     route_parameters = {
+        'periodo': {
+            'preprocess': 'split-year-term',
+            'examples': ['2015s1', '2014s2'],
+        },
         'id': {
             'preprocess': 'uppercase',
             'examples': ['IC', 'feec', 'iFcH'],
         },
     }
 
-    repository = InstitutesRepository
+    def repository(self):
+        year, term = self.params['periodo']
+        institutes = ActiveInstitutesRepository(term=term)
+
+        return institutes
 
 
-class Courses(ModelResource):
-    name = 'Disciplinas'
-    description = 'Disciplinas de um determinado instituto na UNICAMP.'
+class ActiveCourses(ModelResource):
+    name = 'Disciplinas ativas'
+    description = ('Disciplinas ativas em um periodo em'
+                   'determinado instituto na UNICAMP.')
 
-    endpoint = '/disciplinas/{id}'
-    collection_endpoint = '/institutos/{instituto}/disciplinas'
+    endpoint = '/disciplinas/{id}/periodos/{periodo}'
+    collection_endpoint = '/institutos/{instituto}/periodos/{periodo}/disciplinas'
 
     route_parameters = {
+        'periodo': {
+            'preprocess': 'split-year-term',
+            'examples': ['2015s1', '2014s2'],
+        },
         'id': {
             'preprocess': 'uppercase',
             'examples': ['MC102', 'mc878'],
@@ -55,7 +70,9 @@ class Courses(ModelResource):
     }
 
     def repository(self):
-        courses = CoursesRepository()
+        year, term = self.params['periodo']
+
+        courses = ActiveCoursesRepository().filter(term=term)
 
         if 'instituto' in self.params:
             courses = courses.filter(institute=self.params['instituto'])
@@ -63,11 +80,11 @@ class Courses(ModelResource):
         return courses
 
 
-class Offerings(ModelResource):
+class Lectures(ModelResource):
     name = 'Oferecimentos'
     description = 'Turmas de uma determinada disciplina e período.'
-    collection_endpoint = ('/periodos/{periodo}'
-                           '/oferecimentos/{disciplina}/turmas')
+    collection_endpoint = ('/disciplinas/{disciplina}'
+                           '/periodos/{periodo}/turmas')
 
     route_parameters = {
         'periodo': {
@@ -83,7 +100,7 @@ class Offerings(ModelResource):
     def repository(self):
         year, term = self.params['periodo']
 
-        return (OfferingsRepository()
+        return (LecturesRepository()
                 .filter(year=year, term=term,
                         course=self.params['disciplina']))
 
@@ -92,7 +109,8 @@ class Enrollments(ModelResource):
     name = 'Matrículas'
     description = 'Matrículas em uma turma.'
 
-    collection_endpoint = ('/periodos/{periodo}/oferecimentos/{disciplina}'
+    collection_endpoint = ('/disciplinas/{disciplina}'
+                           '/periodos/{periodo}'
                            '/turmas/{turma}/matriculados')
 
     route_parameters = {
@@ -116,4 +134,4 @@ class Enrollments(ModelResource):
         return (EnrollmentsRepository()
                 .filter(year=year, term=term,
                         course=self.params['disciplina'],
-                        offering=self.params['turma']))
+                        lecture=self.params['turma']))

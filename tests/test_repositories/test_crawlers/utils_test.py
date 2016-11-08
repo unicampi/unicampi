@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from unicampi.repositories.crawlers.base import (OnlineFilter, ContentFinder)
+from unicampi.repositories.crawlers.utils import (OnlineFilter, ContentFinder)
 
 
 class OnlineFilterTest(TestCase):
