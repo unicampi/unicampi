@@ -4,23 +4,23 @@
 
 from unittest import TestCase
 
-from unicampi.repositories.crawlers import InstitutesRepository
+from unicampi.repositories.crawlers import ActiveInstitutesRepository
 
 
-class InstitutesRepositoryTest(TestCase):
+class ActiveInstitutesRepositoryTest(TestCase):
     def test_sanity(self):
-        i = InstitutesRepository()
+        i = ActiveInstitutesRepository()
         self.assertIsNotNone(i)
 
     def test_all(self):
-        items = InstitutesRepository().all()
+        items = ActiveInstitutesRepository(term=2).all()
 
         self.assertIsNotNone(items)
         self.assertIsInstance(items, list)
         self.assertGreater(len(items), 0)
 
     def test_find(self):
-        institute = InstitutesRepository().find(id='IC')
+        institute = ActiveInstitutesRepository(term=2).find(id='IC')
 
         self.assertIsNotNone(institute)
         self.assertIsInstance(institute, dict)
@@ -33,25 +33,25 @@ class InstitutesRepositoryTest(TestCase):
         _id = 'non-existent-institute'
 
         with self.assertRaises(KeyError):
-            InstitutesRepository().find(id=_id)
+            ActiveInstitutesRepository(term=2).find(id=_id)
 
     def test_filter_equals_local_initiation(self):
-        i1 = InstitutesRepository(name__in=['IC', 'FEEC'])
-        i2 = InstitutesRepository().filter(name__in=['IC', 'FEEC'])
+        i1 = ActiveInstitutesRepository(term=2, name__in=['IC', 'FEEC'])
+        i2 = ActiveInstitutesRepository(term=2).filter(name__in=['IC', 'FEEC'])
 
         self.assertDictEqual(i1.query, i2.query)
 
     def test_filter(self):
         expected = ['IC', 'IFCH']
-        institutes = InstitutesRepository().filter(sigla__in=expected).all()
+        institutes = ActiveInstitutesRepository(term=2).filter(sigla__in=expected).all()
         self.assertEqual(len(institutes), len(expected))
 
     def test_filter_on_initialization(self):
         expected = ['IC', 'IFCH']
-        institutes = InstitutesRepository(sigla__in=expected).all()
+        institutes = ActiveInstitutesRepository(term=2, sigla__in=expected).all()
         self.assertEqual(len(institutes), len(expected))
 
     def test_where(self):
         expected = ['IC', 'IFCH']
-        institutes = InstitutesRepository().where(sigla__in=expected)
+        institutes = ActiveInstitutesRepository(term=2).where(sigla__in=expected)
         self.assertEqual(len(institutes), len(expected))

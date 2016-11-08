@@ -18,30 +18,35 @@ class CoursesViewTest(TestCase):
         self.assertIsNotNone(self.app)
 
     def test_collection_get(self):
-        response = self.app.get('/institutos/IC/disciplinas', status=200)
+        response = self.app.get('/periodos/2016s2/institutos/IC/disciplinas',
+                                status=200)
         data = response.json
         self.assertIsInstance(data, list)
 
     def test_get(self):
-        response = self.app.get('/disciplinas/MC878', status=200)
+        response = self.app.get('/periodos/2016s2/disciplinas/MC878',
+                                status=200)
         data = response.json
         self.assertIsInstance(data, dict)
 
     def test_get_case_insensitive(self):
-        response = self.app.get('/disciplinas/mc878', status=200)
+        response = self.app.get('/periodos/2016s2/disciplinas/mc878',
+                                status=200)
         data = response.json
         self.assertIsInstance(data, dict)
 
     def test_get_not_found(self):
-        self.app.get('/disciplinas/mc910910', status=404, expect_errors=True)
+        self.app.get('/periodos/2016s2/disciplinas/mc910910',
+                     status=404, expect_errors=True)
 
     def test_options(self):
-        response = self.app.options('/institutos/IC/disciplinas', status=200)
+        response = self.app.options('/periodos/2016s2/institutos/IC/disciplinas',
+                                    status=200)
         data = response.json
         self.assertIsInstance(data, dict)
 
     def test_collection_options(self):
-        response = self.app.options('/disciplinas/MC102',
+        response = self.app.options('/periodos/2016s2/disciplinas/MC102',
                                     status=200)
         data = response.json
         self.assertIsInstance(data, dict)

@@ -8,17 +8,22 @@ These test_repositories crawl the web after their data.
 import requests
 from bs4 import BeautifulSoup
 
-from . import urls, base
+from . import urls
+from .base import CrawlerRepository
+from .utils import ContentFinder, OnlineFilter
 
 
-class InstitutesRepository(base.CrawlerRepository):
+class ActiveInstitutesRepository(CrawlerRepository):
+    _required_querying_fields = {'term'}
+
     def _fetch_and_parse_one(self, id):
         """Does nothing, as `.find()` was already overridden to find one
         institute using the list of all of them.
         """
 
     def _fetch_and_parse_all(self):
-        page = requests.get(urls.INSTITUTES_URL.format(term=urls.PERIODS['2']))
+        term = str(self.query['term'])
+        page = requests.get(urls.INSTITUTES_URL.format(term=urls.PERIODS[term]))
 
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
@@ -39,12 +44,13 @@ class InstitutesRepository(base.CrawlerRepository):
             raise KeyError('unknown entry %s' % id)
 
 
-class CoursesRepository(base.CrawlerRepository):
-    _required_querying_fields = {'institute'}
+class ActiveCoursesRepository(CrawlerRepository):
+    _required_querying_fields = {'institute', 'term'}
 
     def _fetch_and_parse_all(self):
+        term = str(self.query['term'])
         page = requests.get(urls.COURSES_URL.format(id=self.query['institute'],
-                                                    term=urls.PERIODS['2']))
+                                                    term=urls.PERIODS[term]))
 
         page.raise_for_status()
 
@@ -73,7 +79,7 @@ class CoursesRepository(base.CrawlerRepository):
 
         soup = BeautifulSoup(page.text, 'lxml')
 
-        ct = base.ContentFinder(soup.text)
+        ct = ContentFinder(soup.text)
         main_info = ct.split[3]
         code = main_info[:5]
         name = main_info[5:].strip()
@@ -154,7 +160,7 @@ class CoursesRepository(base.CrawlerRepository):
         }
 
 
-class OfferingsRepository(base.CrawlerRepository):
+class OfferingsRepository(CrawlerRepository):
     _required_querying_fields = {'term', 'year', 'course'}
 
     def _fetch_and_parse_all(self):
@@ -190,7 +196,7 @@ class OfferingsRepository(base.CrawlerRepository):
         # Get table 6 (general info)
         data = tds[6]
 
-        f = base.ContentFinder(data.text)
+        f = ContentFinder(data.text)
         teacher = f.find_by_content('Docente:').split(':', 1)[1].strip()
         situation = f.find_by_content('Situação:').split(':', 1)[1].strip()
 
@@ -247,7 +253,7 @@ class EnrollmentsRepository(OfferingsRepository):
 
         new_query = {k: v for k, v in self.query.items() if
                      k not in self._required_querying_fields}
-        return base.OnlineFilter(**new_query).commit(enrollments)
+        return OnlineFilter(**new_query).commit(enrollments)
 
     def find(self, id):
         try:

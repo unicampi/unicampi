@@ -4,17 +4,17 @@
 
 from unittest import TestCase
 
-from unicampi.repositories.crawlers import CoursesRepository
+from unicampi.repositories.crawlers import ActiveCoursesRepository
 
 
-class CoursesRepositoryTest(TestCase):
+class ActiveCoursesRepositoryTest(TestCase):
 
     def test_sanity(self):
-        i = CoursesRepository()
+        i = ActiveCoursesRepository()
         self.assertIsNotNone(i)
 
     def test_all(self):
-        items = CoursesRepository(institute='IC').all()
+        items = ActiveCoursesRepository(term=2, institute='IC').all()
 
         self.assertIsNotNone(items)
         self.assertIsInstance(items, list)
@@ -24,15 +24,15 @@ class CoursesRepositoryTest(TestCase):
         # Courses are dependent of an institute (yet), so calling `.all()`
         # without querying for an institute should throw an error.
         with self.assertRaises(RuntimeError):
-            CoursesRepository().all()
+            ActiveCoursesRepository().all()
 
     def test_find(self):
-        course = CoursesRepository(institute='IC').find(id='MC878')
+        course = ActiveCoursesRepository(term=2, institute='IC').find(id='MC878')
 
         self.assertIsNotNone(course)
         self.assertIsInstance(course, dict)
         self.assertEqual(set(course.keys()),
-                         {'nome', 'requisitos', 'créditos',
+                         {'nome', 'requisitos', 'creditos',
                           'sigla', 'ementa', 'turmas'})
         self.assertEqual(course['nome'], u'Teoria e Aplicações de Grafos')
         self.assertIsInstance(course['requisitos'], list)
@@ -42,11 +42,11 @@ class CoursesRepositoryTest(TestCase):
         _id = 'non-existent-course'
 
         with self.assertRaises(KeyError):
-            CoursesRepository().filter(institute='IC').find(id=_id)
+            ActiveCoursesRepository(term=2).filter(institute='IC').find(id=_id)
 
     def test_filter(self):
         expected = ['MO878', 'MC102']
-        courses = (CoursesRepository()
+        courses = (ActiveCoursesRepository(term=2)
                    .filter(institute='IC', sigla__in=expected)
                    .all())
 

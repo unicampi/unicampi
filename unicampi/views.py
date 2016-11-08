@@ -4,8 +4,8 @@
 
 from . import UnicamPI
 from .core.views import BaseResource, ModelResource
-from .repositories import (CoursesRepository, EnrollmentsRepository,
-                           InstitutesRepository, OfferingsRepository)
+from .repositories import (ActiveCoursesRepository, EnrollmentsRepository,
+                           ActiveInstitutesRepository, OfferingsRepository)
 
 
 class Docs(BaseResource):
@@ -21,29 +21,42 @@ class Docs(BaseResource):
         }
 
 
-class Institutes(ModelResource):
-    name = 'Institutos'
-    description = 'Recupera institutos da UNICAMP.'
-    collection_endpoint = '/institutos'
+class ActiveInstitutes(ModelResource):
+    name = 'Institutos ativos'
+    description = ('Recupera institutos da UNICAMP que oferecem disciplinas',
+                   ' em um periodo')
+    collection_endpoint = '/periodos/{periodo}/institutos'
 
     route_parameters = {
+        'periodo': {
+            'preprocess': 'split-year-term',
+            'examples': ['2015s1', '2014s2'],
+        },
         'id': {
             'preprocess': 'uppercase',
             'examples': ['IC', 'feec', 'iFcH'],
         },
     }
 
-    repository = InstitutesRepository
+    def repository(self):
+        year, term = self.params['periodo']
+        institutes = ActiveInstitutesRepository(term=term)
+
+        return institutes
 
 
-class Courses(ModelResource):
-    name = 'Disciplinas'
+class ActiveCourses(ModelResource):
+    name = 'Disciplinas ativas'
     description = 'Disciplinas de um determinado instituto na UNICAMP.'
 
-    endpoint = '/disciplinas/{id}'
-    collection_endpoint = '/institutos/{instituto}/disciplinas'
+    endpoint = '/periodos/{periodo}/disciplinas/{id}'
+    collection_endpoint = '/periodos/{periodo}/institutos/{instituto}/disciplinas'
 
     route_parameters = {
+        'periodo': {
+            'preprocess': 'split-year-term',
+            'examples': ['2015s1', '2014s2'],
+        },
         'id': {
             'preprocess': 'uppercase',
             'examples': ['MC102', 'mc878'],
@@ -55,7 +68,9 @@ class Courses(ModelResource):
     }
 
     def repository(self):
-        courses = CoursesRepository()
+        year, term = self.params['periodo']
+
+        courses = ActiveCoursesRepository().filter(term=term)
 
         if 'instituto' in self.params:
             courses = courses.filter(institute=self.params['instituto'])

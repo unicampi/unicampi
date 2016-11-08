@@ -1,7 +1,8 @@
 """Repositories"""
 
-from .crawlers import (CoursesRepository, EnrollmentsRepository,
-                       InstitutesRepository, OfferingsRepository)
+from .crawlers import (ActiveCoursesRepository, EnrollmentsRepository,
+                       ActiveInstitutesRepository, OfferingsRepository)
 
-__all__ = ['CoursesRepository', 'EnrollmentsRepository',
-           'InstitutesRepository', 'OfferingsRepository']
+
+__all__ = [ActiveCoursesRepository, EnrollmentsRepository,
+           ActiveInstitutesRepository, OfferingsRepository]

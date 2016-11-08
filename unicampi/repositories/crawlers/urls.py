@@ -4,14 +4,14 @@
 
 PERIODS = {
     '1': 'G1S0',
-    '1e1': 'G1S1',
-    '1e2': 'G1S2',
-    '1r': 'G5A3',
+    '1esp1': 'G1S1',
+    '1esp2': 'G1S2',
+    '1rec': 'G5A3',
     '2': 'G2S0',
-    '2e1': 'G2S1',
-    '2e2': 'G2S2',
-    '2r': 'G6A3',
-    'fv': 'G5A0',
+    '2esp1': 'G2S1',
+    '2esp2': 'G2S2',
+    '2rec': 'G6A3',
+    'f': 'G5A0',
 }
 
 DAC_URL = "http://www.dac.unicamp.br/"
