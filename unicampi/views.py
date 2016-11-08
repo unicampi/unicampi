@@ -24,7 +24,7 @@ class Docs(BaseResource):
 
 class Institutes(ModelResource):
     name = 'Institutos'
-    description = 'Recupera institutos da UNICAMP em um periodo'
+    description = 'Recupera institutos da UNICAMP.'
     collection_endpoint = '/institutos'
 
     route_parameters = {
