@@ -4,12 +4,26 @@ Changelog
 0.0.7 (Current)
 ---------------
 
-* Course requirements now are presented as an array of objects 
+**API**
+
+* Course requirements now are presented as an array of objects
   containing a list "OR" disciplines.
-* Courses with no requirements now have a list of empty requirements
-  (fixes #35).
 * Courses now have a "turmas" attribute corresponding to the current
   term classes (fixes #6).
+* Courses and Institutes now match term info to comply with the crawled data.
+* Courses and Institutes now come before term on endpoints.
+* Moved `/oferecimentos` to `/disciplina/{disciplina}/.../turmas`.
+* Replace attribute `créditos` with `creditos`.
+
+**Bug fixes**
+
+* Courses with no requirements now have a list of empty requirements
+  (fixes #35).
+
+**Internals**
+
+* Rename `Courses -> ActiveCourses` and `Institutes -> ActiveInstitutes`.
+* Rename  `Offerings -> Lectures`.
 
 0.0.6
 -----
