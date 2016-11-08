@@ -160,7 +160,7 @@ class ActiveCoursesRepository(CrawlerRepository):
         }
 
 
-class OfferingsRepository(CrawlerRepository):
+class LecturesRepository(CrawlerRepository):
     _required_querying_fields = {'term', 'year', 'course'}
 
     def _fetch_and_parse_all(self):
@@ -168,7 +168,7 @@ class OfferingsRepository(CrawlerRepository):
             token_page = s.get(urls.PUBLIC_MENU_URL)
             token = token_page.content[1839:1871].decode('ascii')
 
-            page = s.get(urls.OFFERINGS_URL.format(token=token, **self.query))
+            page = s.get(urls.LECTURES_URL.format(token=token, **self.query))
 
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
@@ -188,7 +188,7 @@ class OfferingsRepository(CrawlerRepository):
             token_page = s.get(urls.PUBLIC_MENU_URL)
             token = token_page.content[1839:1871].decode('ascii')
 
-            page = s.get(urls.OFFERING_URL.format(id=id, token=token, **self.query))
+            page = s.get(urls.LECTURE_URL.format(id=id, token=token, **self.query))
 
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
@@ -234,22 +234,22 @@ class OfferingsRepository(CrawlerRepository):
         }
 
 
-class EnrollmentsRepository(OfferingsRepository):
+class EnrollmentsRepository(LecturesRepository):
     """Enrollments CrawlerRepository.
 
     Enrollments are always associated to a class (the offering of a course).
-    Because OfferingsRepository already parses and provides us with the
+    Because LecturesRepository already parses and provides us with the
     enrollments when searching for a given class, we need only to sub-class
     it and filter for said enrollments.
 
     """
 
-    _required_querying_fields = {'term', 'year', 'course', 'offering'}
+    _required_querying_fields = {'term', 'year', 'course', 'lecture'}
 
     def all(self):
         self._assert_valid_query()
         enrollments = (super(EnrollmentsRepository, self)
-                       .find(id=self.query['offering'])['alunos'])
+                       .find(id=self.query['lecture'])['alunos'])
 
         new_query = {k: v for k, v in self.query.items() if
                      k not in self._required_querying_fields}

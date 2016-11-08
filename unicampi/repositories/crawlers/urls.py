@@ -23,12 +23,12 @@ INSTITUTES_URL = ('http://www.dac.unicamp.br/sistemas/horarios/grad/{term}/'
 
 COURSES_URL = 'http://www.dac.unicamp.br/sistemas/horarios/grad/{term}/{id}.htm'
 
-OFFERINGS_URL = ('http://www.daconline.unicamp.br/altmatr/conspub_situacaovagas'
-                 'pordisciplina.do?org.apache.struts.taglib.html.TOKEN={token}&'
-                 'cboSubG={term}&cboSubP=0&cboAno={year}&txtDisciplina={course}'
-                 '&txtTurma=a&btnAcao=Continuar')
+LECTURES_URL = ('http://www.daconline.unicamp.br/altmatr/conspub_situacaovagas'
+                'pordisciplina.do?org.apache.struts.taglib.html.TOKEN={token}&'
+                'cboSubG={term}&cboSubP=0&cboAno={year}&txtDisciplina={course}'
+                '&txtTurma=a&btnAcao=Continuar')
 
-OFFERING_URL = ('http://www.daconline.unicamp.br/altmatr/conspub_matriculados'
-                'pordisciplinaturma.do?org.apache.struts.taglib.html.TOKEN={token}&'
-                'cboSubG={term}&cboSubP=0&cboAno={year}&txtDisciplina={course}&'
-                'txtTurma={id}&btnAcao=Continuar')
+LECTURE_URL = ('http://www.daconline.unicamp.br/altmatr/conspub_matriculados'
+               'pordisciplinaturma.do?org.apache.struts.taglib.html.TOKEN={token}&'
+               'cboSubG={term}&cboSubP=0&cboAno={year}&txtDisciplina={course}&'
+               'txtTurma={id}&btnAcao=Continuar')

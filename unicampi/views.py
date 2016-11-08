@@ -5,7 +5,7 @@
 from . import UnicamPI
 from .core.views import BaseResource, ModelResource
 from .repositories import (ActiveCoursesRepository, EnrollmentsRepository,
-                           ActiveInstitutesRepository, OfferingsRepository)
+                           ActiveInstitutesRepository, LecturesRepository)
 
 
 class Docs(BaseResource):
@@ -25,7 +25,8 @@ class ActiveInstitutes(ModelResource):
     name = 'Institutos ativos'
     description = ('Recupera institutos da UNICAMP que oferecem disciplinas',
                    ' em um periodo')
-    collection_endpoint = '/periodos/{periodo}/institutos'
+    endpoint = '/institutos/{id}/periodos/{periodo}'
+    collection_endpoint = '/institutos/periodos/{periodo}'
 
     route_parameters = {
         'periodo': {
@@ -47,10 +48,11 @@ class ActiveInstitutes(ModelResource):
 
 class ActiveCourses(ModelResource):
     name = 'Disciplinas ativas'
-    description = 'Disciplinas de um determinado instituto na UNICAMP.'
+    description = ('Disciplinas ativas em um periodo em'
+                   'determinado instituto na UNICAMP.')
 
-    endpoint = '/periodos/{periodo}/disciplinas/{id}'
-    collection_endpoint = '/periodos/{periodo}/institutos/{instituto}/disciplinas'
+    endpoint = '/disciplinas/{id}/periodos/{periodo}'
+    collection_endpoint = '/institutos/{instituto}/periodos/{periodo}/disciplinas'
 
     route_parameters = {
         'periodo': {
@@ -78,11 +80,11 @@ class ActiveCourses(ModelResource):
         return courses
 
 
-class Offerings(ModelResource):
+class Lectures(ModelResource):
     name = 'Oferecimentos'
     description = 'Turmas de uma determinada disciplina e período.'
-    collection_endpoint = ('/periodos/{periodo}'
-                           '/oferecimentos/{disciplina}/turmas')
+    collection_endpoint = ('/disciplinas/{disciplina}'
+                           '/periodos/{periodo}/turmas')
 
     route_parameters = {
         'periodo': {
@@ -98,7 +100,7 @@ class Offerings(ModelResource):
     def repository(self):
         year, term = self.params['periodo']
 
-        return (OfferingsRepository()
+        return (LecturesRepository()
                 .filter(year=year, term=term,
                         course=self.params['disciplina']))
 
@@ -107,7 +109,8 @@ class Enrollments(ModelResource):
     name = 'Matrículas'
     description = 'Matrículas em uma turma.'
 
-    collection_endpoint = ('/periodos/{periodo}/oferecimentos/{disciplina}'
+    collection_endpoint = ('/disciplinas/{disciplina}'
+                           '/periodos/{periodo}'
                            '/turmas/{turma}/matriculados')
 
     route_parameters = {
@@ -131,4 +134,4 @@ class Enrollments(ModelResource):
         return (EnrollmentsRepository()
                 .filter(year=year, term=term,
                         course=self.params['disciplina'],
-                        offering=self.params['turma']))
+                        lecture=self.params['turma']))

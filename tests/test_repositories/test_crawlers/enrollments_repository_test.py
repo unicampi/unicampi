@@ -15,7 +15,7 @@ class EnrollmentsRepositoryTest(TestCase):
     def test_all(self):
         enrollments = (EnrollmentsRepository()
                        .filter(year='2016', term='2', course='MC878',
-                               offering='a')
+                               lecture='a')
                        .all())
 
         self.assertIsNotNone(enrollments)
@@ -23,7 +23,7 @@ class EnrollmentsRepositoryTest(TestCase):
         self.assertGreater(len(enrollments), 0)
 
     def test_global_fetching_throws_error(self):
-        # Enrollments depend on course, offering and period,
+        # Enrollments depend on course, lecture and period,
         # so calling `.all()` without querying for these
         # beforehand should throw an error.
         with self.assertRaises(RuntimeError):
@@ -32,7 +32,7 @@ class EnrollmentsRepositoryTest(TestCase):
     def test_find(self):
         enrollment = (EnrollmentsRepository()
                       .filter(year='2016', term='2', course='MC878',
-                              offering='a')
+                              lecture='a')
                       .find(id='117801'))
 
         self.assertIsNotNone(enrollment)
@@ -43,5 +43,5 @@ class EnrollmentsRepositoryTest(TestCase):
     def test_find_not_found(self):
         with self.assertRaises(KeyError):
             (EnrollmentsRepository()
-             .filter(year='2016', term='2', course='MC878', offering='a')
+             .filter(year='2016', term='2', course='MC878', lecture='a')
              .find(id='non-existent-institute'))
