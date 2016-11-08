@@ -18,10 +18,12 @@ DAC_URL = "http://www.dac.unicamp.br/"
 
 PUBLIC_MENU_URL = 'http://www.daconline.unicamp.br/altmatr/menupublico.do'
 
-INSTITUTES_URL = ('http://www.dac.unicamp.br/sistemas/horarios/grad/{term}/'
-                  'indiceP.htm')
+INSTITUTES_URL = 'http://www.dac.unicamp.br/portal/grad/cursos_regulares/cursos/'
 
-COURSES_URL = 'http://www.dac.unicamp.br/sistemas/horarios/grad/{term}/{id}.htm'
+ACTIVE_INSTITUTES_URL = ('http://www.dac.unicamp.br/sistemas/horarios/grad/{term}/'
+                         'indiceP.htm')
+
+ACTIVE_COURSES_URL = 'http://www.dac.unicamp.br/sistemas/horarios/grad/{term}/{id}.htm'
 
 LECTURES_URL = ('http://www.daconline.unicamp.br/altmatr/conspub_situacaovagas'
                 'pordisciplina.do?org.apache.struts.taglib.html.TOKEN={token}&'

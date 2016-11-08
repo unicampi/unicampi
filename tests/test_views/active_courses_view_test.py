@@ -7,7 +7,7 @@ from webtest import TestApp
 from unicampi import UnicamPI
 
 
-class CoursesViewTest(TestCase):
+class ActiveCoursesViewTest(TestCase):
     app = None
 
     @classmethod

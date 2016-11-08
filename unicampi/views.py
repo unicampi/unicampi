@@ -4,8 +4,9 @@
 
 from . import UnicamPI
 from .core.views import BaseResource, ModelResource
-from .repositories import (ActiveCoursesRepository, EnrollmentsRepository,
-                           ActiveInstitutesRepository, LecturesRepository)
+from .repositories import (InstitutesRepository,
+                           ActiveCoursesRepository, ActiveInstitutesRepository,
+                           LecturesRepository, EnrollmentsRepository)
 
 
 class Docs(BaseResource):
@@ -19,6 +20,24 @@ class Docs(BaseResource):
             'map': [r.describe(request=self.request) for r in
                     UnicamPI.resources]
         }
+
+
+class Institutes(ModelResource):
+    name = 'Institutos'
+    description = 'Recupera institutos da UNICAMP em um periodo'
+    collection_endpoint = '/institutos'
+
+    route_parameters = {
+        'id': {
+            'preprocess': 'uppercase',
+            'examples': ['IC', 'feec', 'iFcH'],
+        },
+    }
+
+    def repository(self):
+        institutes = InstitutesRepository()
+
+        return institutes
 
 
 class ActiveInstitutes(ModelResource):
