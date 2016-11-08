@@ -13,6 +13,38 @@ from .base import CrawlerRepository
 from .utils import ContentFinder, OnlineFilter
 
 
+class InstitutesRepository(CrawlerRepository):
+    def _fetch_and_parse_one(self, id):
+        """Does nothing, as `.find()` was already overridden to find one
+        institute using the list of all of them.
+        """
+
+    def _fetch_and_parse_all(self):
+        page = requests.get(urls.INSTITUTES_URL)
+        soup = BeautifulSoup(page.text, 'lxml')
+
+        institutes = []
+
+        for table in soup.find_all('table', 'cursos'):
+
+            link = table.find('a')
+            # degrees = table.text
+
+            institutes.append({
+                'nome': link.get_text().split('-')[0].rstrip(),
+                'sigla': link.get('name').upper(),
+                'website': link.get('href'),
+            })
+
+        return institutes
+
+    def find(self, id):
+        try:
+            return self.where(sigla=id)[0]
+        except IndexError:
+            raise KeyError('unknown entry %s' % id)
+
+
 class ActiveInstitutesRepository(CrawlerRepository):
     _required_querying_fields = {'term'}
 
@@ -23,7 +55,7 @@ class ActiveInstitutesRepository(CrawlerRepository):
 
     def _fetch_and_parse_all(self):
         term = str(self.query['term'])
-        page = requests.get(urls.INSTITUTES_URL.format(term=urls.PERIODS[term]))
+        page = requests.get(urls.ACTIVE_INSTITUTES_URL.format(term=urls.PERIODS[term]))
 
         soup = BeautifulSoup(page.text, 'lxml')
         tds = soup.find_all('table')
@@ -49,8 +81,8 @@ class ActiveCoursesRepository(CrawlerRepository):
 
     def _fetch_and_parse_all(self):
         term = str(self.query['term'])
-        page = requests.get(urls.COURSES_URL.format(id=self.query['institute'],
-                                                    term=urls.PERIODS[term]))
+        page = requests.get(urls.ACTIVE_COURSES_URL.format(id=self.query['institute'],
+                                                           term=urls.PERIODS[term]))
 
         page.raise_for_status()
 
@@ -74,8 +106,8 @@ class ActiveCoursesRepository(CrawlerRepository):
         return courses
 
     def _fetch_and_parse_one(self, id):
-        page = requests.get(urls.COURSES_URL.format(id=id,
-                                                    term=urls.PERIODS['2']))
+        page = requests.get(urls.ACTIVE_COURSES_URL.format(id=id,
+                                                           term=urls.PERIODS['2']))
 
         soup = BeautifulSoup(page.text, 'lxml')
 
