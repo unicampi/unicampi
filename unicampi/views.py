@@ -17,8 +17,8 @@ class Docs(BaseResource):
     def get(self):
         return {
             'api_version': UnicamPI.API_VERSION,
-            'map': [r.describe(request=self.request) for r in
-                    UnicamPI.resources]
+            'map': sorted([r.describe(request=self.request) for r in
+                           UnicamPI.resources], key=lambda d: d['route'])
         }
 
 
